@@ -1,3 +1,6 @@
+`ifndef _CPU
+`define	_CPU
+
 `include "Defines.vh"
 `include "pc_reg.v"
 `include "IF.v"
@@ -227,3 +230,5 @@ Regfile regfile0(
 );
 
 endmodule
+
+`endif

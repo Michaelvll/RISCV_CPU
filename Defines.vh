@@ -10,6 +10,8 @@
 `define InstInvalid	 	1'b0
 `define InstAddrBus	 	31: 0
 `define InstBus		 	31: 0
+`define InstMemNum		131071
+`define InstMemNumLog2	17
 
 `define AluOpBus		9:0
 `define AluSelBus		2:0

@@ -19,11 +19,11 @@ module Resicv_min_sopc(
 
 		.rom_data_i(inst),
 		.rom_ce_o(rom_ce),
-		.rom_addr_o(inst_addr),
+		.rom_addr_o(inst_addr)
 	);
 
 	Inst_rom inst_rom0 (
-		.ce(ce),
+		.ce(rom_ce),
 		.addr(inst_addr),
 		.inst(inst)
 	);

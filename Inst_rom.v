@@ -1,7 +1,7 @@
 `ifndef _INST_ROM
 `define _INST_ROM
 
-`include "Define.vh"
+`include "Defines.vh"
 
 module Inst_rom (
 	input wire					ce,

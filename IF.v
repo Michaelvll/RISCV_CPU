@@ -1,21 +1,33 @@
 `ifndef _IF
 `define _IF
 
-`include Defines
-`include pc_reg
+`include "Defines.vh"
+`include "pc_reg.v"
 
 module IF (
-    input wire clk,
-    input wire rst,
-    // input wire stall_s1_s2,
-    // input wire pcsrc,
-    // input wire jump_s4,
-    // input wire baddr_s4,
-    // input wire jaddr_s4,
+    input wire  clk,
+    input wire  rst,
 
-    output reg [31:0]inst
+    output reg[`InstBus]    inst
 );
-    
+
+wire [`InstAddrBus] if_pc;
+
+pc_reg pc (
+    .rst(rst),
+    .pc(if_pc),
+    .ce(ce)
+);
+
+always @ (posedge clk)
+begin
+    if (rst) 
+        inst <= `ZeroWord;
+    else
+    begin
+        
+    end
+end
 
 endmodule
 

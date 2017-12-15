@@ -1,11 +1,13 @@
 `ifndef _pc_reg
 `define _pc_reg
 
-module PC_reg (
+`include "Defines.vh"
+
+module pc_reg (
     input wire clk,
     input wire rst,
 
-    output reg [31:0]pc,
+    output reg [`InstAddrBus]pc,
     output reg ce
 );
     
@@ -13,11 +15,11 @@ module PC_reg (
     begin
         if (rst) 
         begin
-            ce <= `ChipDisable
+            ce <= `ChipDisable;
         end
         else
         begin
-            ce <= `ChipEnable
+            ce <= `ChipEnable;
         end
 	end
 
@@ -26,7 +28,7 @@ module PC_reg (
         if (ce == `ChipEnable)
             pc <= pc + 4'h4;
         else
-            pc <= `Zero
+            pc <= `ZeroWord;
     end
 
 endmodule

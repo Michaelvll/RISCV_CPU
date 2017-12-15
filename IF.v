@@ -8,24 +8,26 @@ module IF (
     input wire  clk,
     input wire  rst,
 
-    output reg[`InstBus]    inst
+	input wire[`InstAddrBus]	pc_i,
+	input wire[`InstBus]		rom_data_i,
+	output reg[`InstAddrBus]	pc_o,
+    output reg[`InstBus]    	inst_o,
+	output wire[`InstAddrBus]	rom_addr_o
 );
 
-wire [`InstAddrBus] if_pc;
+assign rom_addr_o = pc_i;
 
-pc_reg pc (
-    .rst(rst),
-    .pc(if_pc),
-    .ce(ce)
-);
-
-always @ (posedge clk)
+always @ (*)
 begin
     if (rst) 
-        inst <= `ZeroWord;
+    begin
+		pc_o		<=	`ZeroWord;
+        inst_o 		<=	`ZeroWord;
+    end
     else
     begin
-        
+        pc_o	<=	pc_i;
+		inst_o	<=	rom_data_i;
     end
 end
 

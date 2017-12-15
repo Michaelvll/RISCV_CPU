@@ -1,3 +1,5 @@
+`ifndef _IF_ID
+`define	_IF_ID
 `include "Defines.vh"
 
 module IF_ID(
@@ -15,14 +17,16 @@ always @ (posedge clk)
 begin
 	if (rst)
 	begin
-		id_pc <= `ZeroWord;
-		id_inst <= `ZeroWord;
+		id_pc   <=  `ZeroWord;
+		id_inst <=  `ZeroWord;
 	end
 	else
 	begin
-		id_pc <= if_pc;
-		id_inst <= if_inst;
+		id_pc	<=	if_pc;
+		id_inst	<=	if_inst;
 	end
 end
 
 endmodule
+
+`endif

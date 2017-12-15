@@ -1,7 +1,7 @@
 `include "Defines.vh"
 // `include "Common.vh"
 
-module regfile(
+module Regfile(
 	input wire clk,
 	input wire rst,
 
@@ -9,13 +9,13 @@ module regfile(
 	input wire[`RegAddrBus] w_addr, 
 	input wire[`RegBus]	 	w_data,
 
-	input wire				r_enable_1,
-	input wire[`RegAddrBus] r_addr_1,
-	output reg[`RegBus]		rdata1,
+	input wire				r1_enable,
+	input wire[`RegAddrBus] r1_addr,
+	output reg[`RegBus]		r1_data,
 
-	input wire				r_enable_2,
-	input wire[`RegAddrBus] r_addr_2,
-	output reg[`RegBus]	 	rdata2
+	input wire				r2_enable,
+	input wire[`RegAddrBus] r2_addr,
+	output reg[`RegBus]	 	r2_data
 );
 
 reg [`RegBus] regs[(1 << `RegAddrWidth) - 1 : 0];
@@ -37,30 +37,28 @@ always @ (*)
 begin
 	if (rst)
 	begin
-		rdata1 <= `ZeroWord;
+		r1_data <= `ZeroWord;
 	end
-	else if (r_enable_1 && r_addr_1 == w_addr && w_enable)
-		rdata1 <= w_data
-	else if (r_enable_1)
-		rdata1 <= regs[r_addr_1];
+	else if (r1_enable && r1_addr == w_addr && w_enable)
+		r1_data <= w_data;
+	else if (r1_enable)
+		r1_data <= regs[r1_addr];
 	else
-		rdata1 <= `ZeroWord;
-	end
+		r1_data <= `ZeroWord;
 end
 
 always @ (*)
 begin
 	if (rst)
 	begin
-		rdata2 <= `ZeroWord;
+		r2_data <= `ZeroWord;
 	end
-	else if (r_enable_2 && r_addr_2 == w_addr && w_enable)
-		rdata2 <= w_data
-	else if (r_enable_2)
-		rdata2 <= regs[r_addr_2];
+	else if (r2_enable && r2_addr == w_addr && w_enable)
+		r2_data <= w_data;
+	else if (r2_enable)
+		r2_data <= regs[r2_addr];
 	else
-		rdata2 <= `ZeroWord;
-	end
+		r2_data <= `ZeroWord;
 end
 
 

@@ -1,4 +1,6 @@
-`inlcude "Defines.vh"
+`ifndef _ID
+`define _ID
+`include "Defines.vh"
 
 module ID (
 	input wire					rst,
@@ -6,13 +8,13 @@ module ID (
 	input wire[`InstBus]		inst_i,
 
 	// Read data from regfile
-	input wire[`RegBus]		 	reg1_data_i,
-	input wire[`RegBus]		 	reg2_data_i,
+	input wire[`RegBus]		 	r1_data_i,
+	input wire[`RegBus]		 	r2_data_i,
 
-	output reg					reg1_re_o, // Enable read1 to regfile
-	output reg					reg2_re_o, // Enable read2 to regfile
-	output reg[`RegAddrBus]	 	reg1_addr_o,
-	output reg[`RegAddrBus]	 	reg2_addr_o,
+	output reg					r1_enable_o, // Enable read1 to regfile
+	output reg					r2_enable_o, // Enable read2 to regfile
+	output reg[`RegAddrBus]	 	r1_addr_o,
+	output reg[`RegAddrBus]	 	r2_addr_o,
 
 	// ifo. for EXE
 	output reg[`AluOpBus]		aluop_o,
@@ -20,7 +22,7 @@ module ID (
 	output reg[`RegBus]		 	alu1_data_o,
 	output reg[`RegBus]		 	alu2_data_o,
 	output reg					w_enable_o,
-	output reg[`RegAddrBus]	 	w_dir_o
+	output reg[`RegAddrBus]	 	w_addr_o
 );
 
 reg instvalid;
@@ -57,46 +59,50 @@ always @ (*)
 begin
 	if (rst)
 	begin
-		aluop_o		<=	`EXE_NOP_OP;
-		alusel_o	<=	`EXE_RES_NOP;
+		aluop_o		<=	`EX_NOP_OP;
+		alusel_o	<=	`EX_RES_NOP;
 		w_enable_o	<= 	`WriteDisable;
-		w_dir_o		<= 	`NOPRegAddr;
+		w_addr_o	<= 	`NOPRegAddr;
 		instvalid	<=	`InstValid;
-		reg1_re_o	<=	1'b0;
-		reg2_re_o	<=	1'b0;
-		reg1_addr_o	<=	`NOPRegAddr;
-		reg2_addr_o	<=	`NOPRegAddr;
+		r1_enable_o	<=	1'b0;
+		r2_enable_o	<=	1'b0;
+		r1_addr_o	<=	`NOPRegAddr;
+		r2_addr_o	<=	`NOPRegAddr;
 		imm <= `ZeroWord;
 	end
 	else
 	begin
-		aluop_o		<=	`EXE_NOP_OP;
-		alusel_o	<=	`EXE_RES_NOP;
+		aluop_o		<=	`EX_NOP_OP;
+		alusel_o	<=	`EX_RES_NOP;
 		w_enable_o	<= 	`WriteDisable;
-		w_dir_o		<= 	rd;
-		instvalid	<=	`InstInValid;
-		reg1_re_o	<=	1'b0;
-		reg2_re_o	<=	1'b0;
-		reg1_addr_o	<=	rs1;
-		reg2_addr_o	<=	rs2;
+		w_addr_o		<= 	rd;
+		instvalid	<=	`InstInvalid;
+		r1_enable_o	<=	1'b0;
+		r2_enable_o	<=	1'b0;
+		r1_addr_o	<=	rs1;
+		r2_addr_o	<=	rs2;
 		imm <= `ZeroWord;
 
 		case(opcode)
-			`EXE_LOGICI:
+			`EX_LOGICI:
 			begin
 				case(funct3)
 					3'b110: // ORI
 					begin
 						w_enable_o	<=	`WriteEnable;
-						aluop_o		<=	`EXE_OR_OP;
-						alusel_o	<=	`EXE_RES_LOGIC;
-						reg1_re_o	<=	1'b1;
-						reg2_re_o	<=	1'b0;
+						aluop_o		<=	`EX_OR_OP;
+						alusel_o	<=	`EX_RES_LOGIC;
+						r1_enable_o	<=	1'b1;
+						r2_enable_o	<=	1'b0;
 						imm			<=	{20'h00000, imm_I};
-						w_dir_o		<=	rd;
+						w_addr_o		<=	rd;
 						instvalid	<=	`InstValid;
 					end
+					default:
+					begin
+					end
 				endcase
+			end
 			default:
 			begin
 			end
@@ -108,9 +114,9 @@ always @ (*)
 begin
 	if (rst)
 		alu1_data_o	<=	`ZeroWord;
-	else if (reg1_re_o)
-		alu1_data_o	<=	reg1_data_i;
-	else if (!reg1_re_o)
+	else if (r1_enable_o)
+		alu1_data_o	<=	r1_data_i;
+	else if (!r1_enable_o)
 		alu1_data_o	<=	imm;
 	else
 		alu1_data_o	<=	`ZeroWord;
@@ -120,9 +126,9 @@ always @ (*)
 begin
 	if (rst)
 		alu2_data_o	<=	`ZeroWord;
-	else if (reg2_re_o)
-		alu2_data_o	<=	reg2_data_i;
-	else if (!reg2_re_o)
+	else if (r2_enable_o)
+		alu2_data_o	<=	r2_data_i;
+	else if (!r2_enable_o)
 		alu2_data_o	<=	imm;
 	else
 		alu2_data_o	<=	`ZeroWord;
@@ -130,3 +136,5 @@ end
 
 
 endmodule
+
+`endif

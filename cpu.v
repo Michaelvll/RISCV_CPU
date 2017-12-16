@@ -73,7 +73,7 @@ wire[`RegBus]			id_r2_data_i;
 wire[`RegBus]			id_r1_data_i;
 
 wire[`AluOpBus]			id_aluop_o;
-wire[`AluSelBus]		id_alusel_o;
+wire[`AluOutSelBus]		id_alusel_o;
 wire[`RegBus]			id_r1_data_o;
 wire[`RegBus]			id_r2_data_o;
 wire					id_w_enable_o;
@@ -91,8 +91,8 @@ ID id0 (
 	.r2_addr_o(id_r2_addr_o),
 	.aluop_o(id_aluop_o),
 	.alusel_o(id_alusel_o),
-	.alu1_data_o(id_r1_data_o),
-	.alu2_data_o(id_r2_data_o),
+	.r1_data_o(id_r1_data_o),
+	.r2_data_o(id_r2_data_o),
 	.w_enable_o(id_w_enable_o),
 	.w_addr_o(id_w_addr_o)
 );
@@ -100,7 +100,7 @@ ID id0 (
 // ================== ID_EX =========================
 
 wire[`AluOpBus]				ex_aluop_i;
-wire[`AluSelBus]			ex_alusel_i;
+wire[`AluOutSelBus]			ex_alusel_i;
 wire[`RegBus]				ex_r1_data_i;
 wire[`RegBus]				ex_r2_data_i;
 wire						ex_w_enable_i;

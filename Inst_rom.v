@@ -12,7 +12,7 @@ module Inst_rom (
 reg[`InstBus]	inst_mem[0: `InstMemNum-1];
 
 // Initialize the inst_mem with "inst_rom.data" file
-initial	$readmemh ("inst_rom.data", inst_mem);
+initial	$readmemb("inst_rom.mem", inst_mem);
 
 always @ (*)
 begin

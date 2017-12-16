@@ -4,7 +4,7 @@
 `include "cpu.v"
 `include "Inst_rom.v"
 
-module Resicv_min_sopc(
+module Riscv_min_sopc(
 	input wire clk,
 	input wire rst
 );

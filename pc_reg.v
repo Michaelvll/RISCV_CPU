@@ -10,6 +10,10 @@ module pc_reg (
     output reg [`InstAddrBus]	pc,
     output reg 					ce
 );
+    initial
+    begin
+        pc = `InstAddrWidth'h0;
+    end
     
 	always @(posedge clk) 
     begin
@@ -26,7 +30,7 @@ module pc_reg (
     always @(posedge clk) 
     begin
         if (ce == `ChipEnable)
-            pc <= pc + 4'h4;
+            pc <= pc + 32'h4;
         else
             pc <= `ZeroWord;
     end

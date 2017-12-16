@@ -15,7 +15,7 @@ module WB(
 );
 
 assign w_enable_o	=	w_enable_i;
-assign w_addr_o		=	w_addr_o;
+assign w_addr_o		=	w_addr_i;
 assign w_data_o		=	w_data_i;
 
 

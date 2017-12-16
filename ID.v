@@ -18,9 +18,9 @@ module ID (
 
 	// ifo. for EXE
 	output reg[`AluOpBus]		aluop_o,
-	output reg[`AluSelBus]		alusel_o,
-	output reg[`RegBus]		 	alu1_data_o,
-	output reg[`RegBus]		 	alu2_data_o,
+	output reg[`AluOutSelBus]	alusel_o,
+	output reg[`RegBus]		 	r1_data_o,
+	output reg[`RegBus]		 	r2_data_o,
 	output reg					w_enable_o,
 	output reg[`RegAddrBus]	 	w_addr_o
 );
@@ -84,17 +84,17 @@ begin
 		imm <= `ZeroWord;
 
 		case(opcode)
-			`EX_LOGICI:
+			`OP_IMM:
 			begin
 				case(funct3)
-					3'b110: // ORI
+					`FUNCT3_ORI: // ORI
 					begin
 						w_enable_o	<=	`WriteEnable;
 						aluop_o		<=	`EX_OR_OP;
 						alusel_o	<=	`EX_RES_LOGIC;
 						r1_enable_o	<=	1'b1;
 						r2_enable_o	<=	1'b0;
-						imm			<=	{20'h00000, imm_I};
+						imm			<=	{20'h0, imm_I};
 						w_addr_o		<=	rd;
 						instvalid	<=	`InstValid;
 					end
@@ -113,25 +113,25 @@ end
 always @ (*)
 begin
 	if (rst)
-		alu1_data_o	<=	`ZeroWord;
+		r1_data_o	<=	`ZeroWord;
 	else if (r1_enable_o)
-		alu1_data_o	<=	r1_data_i;
+		r1_data_o	<=	r1_data_i;
 	else if (!r1_enable_o)
-		alu1_data_o	<=	imm;
+		r1_data_o	<=	imm;
 	else
-		alu1_data_o	<=	`ZeroWord;
+		r1_data_o	<=	`ZeroWord;
 end
 
 always @ (*)
 begin
 	if (rst)
-		alu2_data_o	<=	`ZeroWord;
+		r2_data_o	<=	`ZeroWord;
 	else if (r2_enable_o)
-		alu2_data_o	<=	r2_data_i;
+		r2_data_o	<=	r2_data_i;
 	else if (!r2_enable_o)
-		alu2_data_o	<=	imm;
+		r2_data_o	<=	imm;
 	else
-		alu2_data_o	<=	`ZeroWord;
+		r2_data_o	<=	`ZeroWord;
 end
 
 

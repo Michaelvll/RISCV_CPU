@@ -20,7 +20,7 @@ begin
 	#1000 $stop;
 end
 
-riscv_min_sopc riscv_min_sopc0(
+Riscv_min_sopc riscv_min_sopc0(
 	.clk(CLOCK_50),
 	.rst(rst)
 );

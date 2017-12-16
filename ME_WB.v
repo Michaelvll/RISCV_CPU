@@ -1,6 +1,7 @@
 `ifndef _ME_WB
 `define _ME_WB
 `include "Defines.vh"
+`include "IDInstDef.vh"
 
 module ME_WB(
 	input wire					clk,

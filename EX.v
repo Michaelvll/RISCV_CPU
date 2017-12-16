@@ -1,20 +1,21 @@
 `ifndef _EX
 `define _EX
 `include "Defines.vh"
+`include "IDInstDef.vh"
 
 module EX(
 	input wire rst,
 	
-	input wire[`AluOpBus]	aluop_i,
-	input wire[`AluSelBus]	alusel_i,
-	input wire[`RegBus]		r1_data_i,
-	input wire[`RegBus]		r2_data_i,
-	input wire				w_enable_i,
-	input wire[`RegAddrBus]	w_addr_i,
+	input wire[`AluOpBus]		aluop_i,
+	input wire[`AluOutSelBus]	alusel_i,
+	input wire[`RegBus]			r1_data_i,
+	input wire[`RegBus]			r2_data_i,
+	input wire					w_enable_i,
+	input wire[`RegAddrBus]		w_addr_i	,
 
-	output reg 				w_enable_o,
-	output reg[`RegAddrBus]	w_addr_o,
-	output reg[`RegBus]		w_data_o
+	output reg 					w_enable_o,
+	output reg[`RegAddrBus]		w_addr_o,
+	output reg[`RegBus]			w_data_o
 );
 
 	reg[`RegBus]	logicout;
@@ -52,7 +53,7 @@ begin
 	else
 	begin
 		w_enable_o	<=	w_enable_i;
-		w_addr_o		<=	w_addr_i;
+		w_addr_o	<=	w_addr_i;
 		case (alusel_i)
 			`EX_RES_LOGIC:
 			begin

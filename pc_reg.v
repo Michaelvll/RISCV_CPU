@@ -2,6 +2,7 @@
 `define _pc_reg
 
 `include "Defines.vh"
+`include "IDInstDef.vh"
 
 module pc_reg (
     input wire 					clk,
@@ -10,6 +11,10 @@ module pc_reg (
     output reg [`InstAddrBus]	pc,
     output reg 					ce
 );
+    initial
+    begin
+        pc = `InstAddrWidth'h0;
+    end
     
 	always @(posedge clk) 
     begin
@@ -26,7 +31,7 @@ module pc_reg (
     always @(posedge clk) 
     begin
         if (ce == `ChipEnable)
-            pc <= pc + 4'h4;
+            pc <= pc + 32'h4;
         else
             pc <= `ZeroWord;
     end

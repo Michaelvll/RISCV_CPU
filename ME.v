@@ -1,6 +1,7 @@
 `ifndef _ME
 `define _ME
 `include "Defines.vh"
+`include "IDInstDef.vh"
 
 module ME(
 	input wire rst,

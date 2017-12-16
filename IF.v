@@ -2,6 +2,7 @@
 `define _IF
 
 `include "Defines.vh"
+`include "IDInstDef.vh"
 `include "pc_reg.v"
 
 module IF (

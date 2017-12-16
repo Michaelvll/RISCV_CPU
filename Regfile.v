@@ -1,4 +1,5 @@
 `include "Defines.vh"
+`include "IDInstDef.vh"
 // `include "Common.vh"
 
 module Regfile(

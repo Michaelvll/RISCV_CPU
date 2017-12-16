@@ -1,10 +1,11 @@
 `ifndef _RESICV_MIN_SOPC
 `define _RESICV_MIN_SOPC
 `include "Defines.vh"
+`include "IDInstDef.vh"
 `include "cpu.v"
 `include "Inst_rom.v"
 
-module Resicv_min_sopc(
+module Riscv_min_sopc(
 	input wire clk,
 	input wire rst
 );

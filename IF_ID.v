@@ -1,6 +1,7 @@
 `ifndef _IF_ID
 `define	_IF_ID
 `include "Defines.vh"
+`include "IDInstDef.vh"
 
 module IF_ID(
 	input wire	clk,

@@ -2,6 +2,7 @@
 `define _EX_ME
 
 `include "Defines.vh"
+`include "IDInstDef.vh"
 
 module EX_ME(
 	input wire		clk,

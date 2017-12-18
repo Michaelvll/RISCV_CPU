@@ -12,7 +12,7 @@
 `define EX_XOR_OP     	11'b00100111000
 `define EX_OR_OP      	11'b00100111100
 `define EX_AND_OP     	11'b00100111110
-`define EX_SLL_OP     	11'b00100110010
+`define EX_SLL_OP     	11'b00100110010 // Shift value in rs1 by the shift amoount in rs2[4:0]
 `define EX_SRL_OP		11'b00100111010
 `define EX_SRA_OP		11'b00100111011
 

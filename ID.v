@@ -94,7 +94,7 @@ begin
 				r2_enable_o	<=	1'b0;
 				r1_addr_o	<=	rs1;
 				r2_addr_o	<=	rs2;
-				imm			<=	imm_U;
+				imm			<=	{imm_U,12'h0};
 				w_enable_o	<=	`WriteEnable;
 				w_addr_o	<=	rd;
 				instvalid	<=	`InstValid;
@@ -344,7 +344,7 @@ begin
 				r2_enable_o	<=	1'b0;
 				r1_addr_o	<=	rs1;
 				r2_addr_o	<=	rs2;
-				imm <= `ZeroWord;
+				imm			<= `ZeroWord;
 				w_enable_o	<= 	`WriteDisable;
 				w_addr_o	<= 	rd;
 				instvalid	<=	`InstInvalid;

@@ -19,8 +19,9 @@ module EX(
 );
 
 	reg[`RegBus]	logicout;
+	reg[`RegBus]	shiftres;
 
-// ============ ALU calculate part =====================
+// ============ ALU logic part =====================
 always @ (*)
 begin
 	if (rst)
@@ -32,6 +33,16 @@ begin
 			begin
 				logicout	<=	r1_data_i | r2_data_i;
 			end
+			`EX_XOR_OP:
+			begin
+				logicout	<=	r1_data_i ^ r2_data_i;
+			end
+			`EX_AND_OP:
+			begin
+				logicout	<=	r1_data_i & r2_data_i;
+			end
+
+
 			default:
 			begin
 				logicout	<=	`ZeroWord;
@@ -40,15 +51,46 @@ begin
 	end	
 end
 
+// ============ ALU shift part =====================
+always @ (*)
+begin
+	if (rst)
+		logicout	<=	`ZeroWord;
+	else 
+	begin
+		case (aluop_i)
+			`EX_SLL_OP:
+			begin
+				shiftres	<=	r1_data_i << r2_data_i[4:0];
+			end
+			`EX_SRL_OP:
+				shiftres	<=	r1_data_i  >> r2_data_i[4:0];
+			begin
+			end
+			`EX_SRA_OP:
+			begin
+				shiftres	<=	(32{r1_data_i[31]}) << (6'd32 - {1'b0,r2_data_i[4:0]}) | r1_data_i >> r2_data_i[4:0];
+			end
+
+
+			default:
+			begin
+				shiftres	<=	`ZeroWord;
+			end
+		endcase
+	end	
+end
+
+
 // =========== ALU prepare write back ==================
 
 always @ (*)
 begin
 	if (rst)
 	begin
-		w_enable_o	<=	`WriteDisable;
+		w_enable_o		<=	`WriteDisable;
 		w_addr_o		<=	`ZeroWord;
-		w_data_o	<=	`ZeroWord;
+		w_data_o		<=	`ZeroWord;
 	end
 	else
 	begin
@@ -58,6 +100,10 @@ begin
 			`EX_RES_LOGIC:
 			begin
 				w_data_o	<=	logicout;
+			end
+			`EX_RES_SHIFT:
+			begin
+				w_data_o	<=	shiftres;
 			end
 			default:
 			begin

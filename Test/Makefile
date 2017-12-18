@@ -12,10 +12,11 @@ ELF = riscv32-unknown-elf
 CPP_FILES = $(wildcard *.cpp)
 S_FILES = $(wildcard *.[s|S])
 
-PROGRAM = $(if $(CPP_FILES),$(CPP_FILES)[,$(S_FILES)])
+STDNAME = inst_rom.mem
+PROGRAM = $(if $(CPP_FILES),$(basename $(CPP_FILES)),$(basename $(S_FILES)))
 
-ct: Cpp Bin Trasf
-st: S Bin Transf
+ct: Cpp Mem
+st: S Mem
 c: ct cleantmp
 s: st cleantmp
 dump:
@@ -29,12 +30,15 @@ Cpp:
 S:
 	$(SXX) $(S_FILES) -o $(PROGRAM).o -march=rv32i
 
-Bin:
+Mem:
 	$(LD) $(PROGRAM).o -o $(PROGRAM).om
-	$(BIN) $(PROGRAM).om -O binary $(PROGRAM).bin
+	$(BIN) $(PROGRAM).om -O verilog $(PROGRAM).mem
+	cp ./$(PROGRAM).mem ./$(STDNAME) -f
 
 Transf:
 	python3 ./bin2mem.py $(PROGRAM).bin $(PROGRAM).mem
+	cp ./$(PROGRAM).mem ./$(STDNAME) -f
+
 
 cleantmp:
 	@rm -f *.o *.om *.bin	

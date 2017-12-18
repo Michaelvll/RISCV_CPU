@@ -1,6 +1,6 @@
 .org 0x0
 .global _start
 _start:
-	ori t0, t1, 1
-	ori t1, t2, 2
-	ori t2, t1, 3
+	ori x1, x0, 1
+	ori x2, x1, 2
+	ori x1, x2, 5

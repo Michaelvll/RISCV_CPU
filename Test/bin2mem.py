@@ -11,5 +11,5 @@ s = open(INPUT, 'rb').read()
 s = binascii.b2a_hex(s)
 with open(OUTPUT, 'w') as f:
     for i in range(0, len(s), 8):
-        f.write(str(s[i:i + 8])[2:-2])
+        f.write(str(s[i:i + 8])[2:-1])
         f.write('\n')

@@ -2,6 +2,7 @@
 `define _ID
 `include "Defines.vh"
 `include "IDInstDef.vh"
+`include "ALUInstDef.vh"
 
 module ID (
 	input wire					rst,
@@ -83,39 +84,270 @@ begin
 	end
 	else
 	begin
-		aluop_o		<=	`EX_NOP_OP;
-		alusel_o	<=	`EX_RES_NOP;
-		w_enable_o	<= 	`WriteDisable;
-		w_addr_o		<= 	rd;
-		instvalid	<=	`InstInvalid;
-		r1_enable_o	<=	1'b0;
-		r2_enable_o	<=	1'b0;
-		r1_addr_o	<=	rs1;
-		r2_addr_o	<=	rs2;
-		imm <= `ZeroWord;
 
 		case(opcode)
+			`OP_LUI:
+			begin
+				aluop_o		<=	`EX_OR_OP;
+				alusel_o	<=	`EX_RES_LOGIC;
+				r1_enable_o	<=	1'b1;
+				r2_enable_o	<=	1'b0;
+				r1_addr_o	<=	rs1;
+				r2_addr_o	<=	rs2;
+				imm			<=	imm_U;
+				w_enable_o	<=	`WriteEnable;
+				w_addr_o	<=	rd;
+				instvalid	<=	`InstValid;
+			end
+
 			`OP_OPI:
 			begin
 				case(funct3)
+					`FUNCT3_ADDI:
+					begin
+
+					end
+
+					`FUNCT3_SLTI:
+					begin
+
+					end
+
+					`FUNCT3_SLTIU:
+					begin
+
+					end
+					
+					`FUNCT3_XORI:
+					begin
+						aluop_o		<=	`EX_XOR_OP;
+						alusel_o	<=	`EX_RES_LOGIC;
+						r1_enable_o	<=	1'b1;
+						r2_enable_o	<=	1'b0;
+						r1_addr_o	<=	rs1;
+						r2_addr_o	<=	rs2;
+						imm			<=	{20'h0, imm_I};
+						w_enable_o	<=	`WriteEnable;
+						w_addr_o	<=	rd;
+						instvalid	<=	`InstValid;
+					end
+
 					`FUNCT3_ORI: // ORI
 					begin
-						w_enable_o	<=	`WriteEnable;
 						aluop_o		<=	`EX_OR_OP;
 						alusel_o	<=	`EX_RES_LOGIC;
 						r1_enable_o	<=	1'b1;
 						r2_enable_o	<=	1'b0;
+						r1_addr_o	<=	rs1;
+						r2_addr_o	<=	rs2;
 						imm			<=	{20'h0, imm_I};
-						w_addr_o		<=	rd;
+						w_enable_o	<=	`WriteEnable;
+						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
 					end
+
+					`FUNCT3_ANDI:
+					begin
+						aluop_o		<=	`EX_AND_OP;
+						alusel_o	<=	`EX_RES_LOGIC;
+						r1_enable_o	<=	1'b1;
+						r2_enable_o	<=	1'b0;
+						r1_addr_o	<=	rs1;
+						r2_addr_o	<=	rs2;
+						imm			<=	{20'h0, imm_I};
+						w_enable_o	<=	`WriteEnable;
+						w_addr_o	<=	rd;
+						instvalid	<=	`InstValid;
+					end
+					
+					`FUNCT3_SLLI:
+					begin
+						aluop_o		<=	`EX_SLL_OP;
+						alusel_o	<=	`EX_RES_SHIFT;
+						r1_enable_o	<=	1'b1;
+						r2_enable_o	<=	1'b0;
+						r1_addr_o	<=	rs1;
+						r2_addr_o	<=	rs2;
+						imm			<=	{27'h0, rs2};
+						w_enable_o	<=	`WriteEnable;
+						w_addr_o	<=	rd;
+						instvalid	<=	`InstValid;
+					end
+
+					`FUNCT3_SRLI_SRAI:
+					begin
+						case(funct7):
+							`FUNCT7_SRLI:
+							begin
+								aluop_o		<=	`EX_SRL_OP;
+								alusel_o	<=	`EX_RES_SHIFT;
+								r1_enable_o	<=	1'b1;
+								r2_enable_o	<=	1'b0;
+								r1_addr_o	<=	rs1;
+								r2_addr_o	<=	rs2;
+								imm			<=	{27'h0, rs2};
+								w_enable_o	<=	`WriteEnable;
+								w_addr_o	<=	rd;
+								instvalid	<=	`InstValid;
+							end
+
+							`FUNCT7_SRAI:
+							begin
+								aluop_o		<=	`EX_SRA_OP;
+								alusel_o	<=	`EX_RES_SHIFT;
+								r1_enable_o	<=	1'b1;
+								r2_enable_o	<=	1'b0;
+								r1_addr_o	<=	rs1;
+								r2_addr_o	<=	rs2;
+								imm			<=	{27'h0, rs2};
+								w_enable_o	<=	`WriteEnable;
+								w_addr_o	<=	rd;
+								instvalid	<=	`InstValid;
+							end
+					end
+
 					default:
 					begin
 					end
 				endcase
 			end
+			
+			`OP_OP:
+			begin
+				case (funct3)
+					`FUNCT3_ADD_SUB:
+					begin
+						case (funct7)
+							`FUNCT7_ADD:
+							begin
+								// aluop_o		<=	`EX_XOR_OP;
+								// alusel_o	<=	`EX_RES_LOGIC;
+								// r1_enable_o	<=	1'b1;
+								// r2_enable_o	<=	1'b1;
+								// r1_addr_o	<=	rs1;
+								// r2_addr_o	<=	rs2;
+								// imm			<=	`ZeroWord;
+								// w_enable_o	<=	`WriteEnable;
+								// w_addr_o	<=	rd;
+								// instvalid	<=	`InstValid;
+							end
+
+							`FUNCT7_SUB:
+							begin
+
+							end
+					end
+
+					`FUNCT3_SLL:
+					begin
+						aluop_o		<=	`EX_SLL_OP;
+						alusel_o	<=	`EX_RES_SHIFT;
+						r1_enable_o	<=	1'b1;
+						r2_enable_o	<=	1'b1;
+						r1_addr_o	<=	rs1;
+						r2_addr_o	<=	rs2;
+						imm			<=	`ZeroWord;
+						w_enable_o	<=	`WriteEnable;
+						w_addr_o	<=	rd;
+						instvalid	<=	`InstValid;
+					end
+
+					`FUNCT3_SLT:
+					begin
+
+					end
+
+					`FUNCT3_SLTU:
+					begin
+
+					end
+
+					`FUNCT3_XOR:
+					begin
+						aluop_o		<=	`EX_XOR_OP;
+						alusel_o	<=	`EX_RES_LOGIC;
+						r1_enable_o	<=	1'b1;
+						r2_enable_o	<=	1'b1;
+						r1_addr_o	<=	rs1;
+						r2_addr_o	<=	rs2;
+						imm			<=	`ZeroWord;
+						w_enable_o	<=	`WriteEnable;
+						w_addr_o	<=	rd;
+						instvalid	<=	`InstValid;
+					end
+
+					`FUNCT_SRL:
+					begin
+						aluop_o		<=	`EX_SRL_OP;
+						alusel_o	<=	`EX_RES_SHIFT;
+						r1_enable_o	<=	1'b1;
+						r2_enable_o	<=	1'b1;
+						r1_addr_o	<=	rs1;
+						r2_addr_o	<=	rs2;
+						imm			<=	`ZeroWord;
+						w_enable_o	<=	`WriteEnable;
+						w_addr_o	<=	rd;
+						instvalid	<=	`InstValid;
+					end
+
+					`FUNCT3_SRA:
+					begin
+						aluop_o		<=	`EX_SRA_OP;
+						alusel_o	<=	`EX_RES_SHIFT;
+						r1_enable_o	<=	1'b1;
+						r2_enable_o	<=	1'b1;
+						r1_addr_o	<=	rs1;
+						r2_addr_o	<=	rs2;
+						imm			<=	`ZeroWord;
+						w_enable_o	<=	`WriteEnable;
+						w_addr_o	<=	rd;
+						instvalid	<=	`InstValid;
+					end
+					
+					`FUNCT3_OR:
+					begin
+						aluop_o		<=	`EX_OR_OP;
+						alusel_o	<=	`EX_RES_LOGIC;
+						r1_enable_o	<=	1'b1;
+						r2_enable_o	<=	1'b1;
+						r1_addr_o	<=	rs1;
+						r2_addr_o	<=	rs2;
+						imm			<=	`ZeroWord;
+						w_enable_o	<=	`WriteEnable;
+						w_addr_o	<=	rd;
+						instvalid	<=	`InstValid;
+					end
+
+					`FUNCT3_AND:
+					begin
+						aluop_o		<=	`EX_AND_OP;
+						alusel_o	<=	`EX_RES_LOGIC;
+						r1_enable_o	<=	1'b1;
+						r2_enable_o	<=	1'b1;
+						r1_addr_o	<=	rs1;
+						r2_addr_o	<=	rs2;
+						imm			<=	`ZeroWord;
+						w_enable_o	<=	`WriteEnable;
+						w_addr_o	<=	rd;
+						instvalid	<=	`InstValid;
+					end
+
+				endcase
+			end
+
+			
 			default:
 			begin
+				aluop_o		<=	`EX_NOP_OP;
+				alusel_o	<=	`EX_RES_NOP;
+				r1_enable_o	<=	1'b0;
+				r2_enable_o	<=	1'b0;
+				r1_addr_o	<=	rs1;
+				r2_addr_o	<=	rs2;
+				imm <= `ZeroWord;
+				w_enable_o	<= 	`WriteDisable;
+				w_addr_o	<= 	rd;
+				instvalid	<=	`InstInvalid;
 			end
 		endcase
 	end

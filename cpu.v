@@ -3,6 +3,7 @@
 
 `include "Defines.vh"
 `include "IDInstDef.vh"
+`include "ALUInstDef.vh"
 `include "pc_reg.v"
 `include "IF.v"
 `include "IF_ID.v"

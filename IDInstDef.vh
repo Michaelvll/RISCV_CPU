@@ -34,7 +34,7 @@
 `define FUNCT3_SB   3'b000
 `define FUNCT3_SH   3'b001
 `define FUNCT3_SW   3'b010
-// OP-IMM
+// OP_OPI
 `define FUNCT3_ADDI      3'b000
 `define FUNCT3_SLTI      3'b010
 `define FUNCT3_SLTIU     3'b011
@@ -43,7 +43,7 @@
 `define FUNCT3_ANDI      3'b111
 `define FUNCT3_SLLI      3'b001
 `define FUNCT3_SRLI_SRAI 3'b101
-// OP
+// OP_OP
 `define FUNCT3_ADD_SUB 3'b000
 `define FUNCT3_SLL     3'b001
 `define FUNCT3_SLT     3'b010

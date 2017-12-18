@@ -80,6 +80,13 @@ wire[`RegBus]			id_r2_data_o;
 wire					id_w_enable_o;
 wire[`RegAddrBus]		id_w_addr_o;
 
+wire					ex2id_w_enable;
+wire[`RegAddrBus]		ex2id_w_addr;
+wire[`RegBus]			ex2id_w_data;
+wire					me2id_w_enable;
+wire[`RegAddrBus]		me2id_w_addr;
+wire[`RegBus]			me2id_w_data;
+
 ID id0 (
 	.rst(rst),
 
@@ -95,7 +102,13 @@ ID id0 (
 	.r1_data_o(id_r1_data_o),
 	.r2_data_o(id_r2_data_o),
 	.w_enable_o(id_w_enable_o),
-	.w_addr_o(id_w_addr_o)
+	.w_addr_o(id_w_addr_o),
+	.ex_w_enable_i(ex2id_w_enable),
+	.ex_w_addr_i(ex2id_w_addr),
+	.ex_w_data_i(ex2id_w_data),
+	.mem_w_enable_i(me2id_w_enable),
+	.mem_w_addr_i(me2id_w_addr),
+	.mem_w_data_i(me2id_w_data)
 );
 
 // ================== ID_EX =========================
@@ -145,6 +158,11 @@ EX ex0 (
 	.w_data_o(ex_w_data_o)
 );
 
+// Forwarding wire
+assign ex2id_w_enable	=	ex_w_enable_o;
+assign ex2id_w_addr		=	ex_w_addr_o;
+assign ex2id_w_data		=	ex_w_data_o;
+
 // ================== EX_ME ===========================
 wire						me_w_enable_i;
 wire[`RegAddrBus]			me_w_addr_i;
@@ -163,6 +181,7 @@ EX_ME ex_me0 (
 	.me_w_data(me_w_data_i)
 );
 
+
 // ================== ME =============================
 wire						me_w_enable_o;
 wire[`RegAddrBus]			me_w_addr_o;
@@ -179,6 +198,12 @@ ME me0 (
 	.w_addr_o(me_w_addr_o),
 	.w_data_o(me_w_data_o)
 );
+
+// Forwarding wire
+assign me2id_w_enable	=	me_w_enable_o;	
+assign me2id_w_addr	=	me_w_addr_o;
+assign me2id_w_data	=	me_w_addr_o;
+
 
 // ================== ME_WB ===========================
 wire						wb_w_enable_i;

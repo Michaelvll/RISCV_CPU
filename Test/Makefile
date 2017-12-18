@@ -1,5 +1,3 @@
-PROGRAM = inst_test
-
 CROSS_COMPILE = riscv32-unknown-elf-
 
 CXX = $(CROSS_COMPILE)g++
@@ -13,6 +11,8 @@ ELF = riscv32-unknown-elf
 
 CPP_FILES = $(wildcard *.cpp)
 S_FILES = $(wildcard *.[s|S])
+
+PROGRAM = $(if $(CPP_FILES),$(CPP_FILES)[,$(S_FILES)])
 
 ct: Cpp Bin Trasf
 st: S Bin Transf

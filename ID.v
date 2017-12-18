@@ -176,7 +176,7 @@ begin
 
 					`FUNCT3_SRLI_SRAI:
 					begin
-						case(funct7):
+						case (funct7)
 							`FUNCT7_SRLI:
 							begin
 								aluop_o		<=	`EX_SRL_OP;
@@ -204,6 +204,10 @@ begin
 								w_addr_o	<=	rd;
 								instvalid	<=	`InstValid;
 							end
+						  default:
+						  begin
+						  end
+						endcase
 					end
 
 					default:
@@ -236,6 +240,7 @@ begin
 							begin
 
 							end
+						endcase
 					end
 
 					`FUNCT3_SLL:
@@ -275,33 +280,37 @@ begin
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
 					end
-
-					`FUNCT_SRL:
+					`FUNCT3_SRL_SRA:
 					begin
-						aluop_o		<=	`EX_SRL_OP;
-						alusel_o	<=	`EX_RES_SHIFT;
-						r1_enable_o	<=	1'b1;
-						r2_enable_o	<=	1'b1;
-						r1_addr_o	<=	rs1;
-						r2_addr_o	<=	rs2;
-						imm			<=	`ZeroWord;
-						w_enable_o	<=	`WriteEnable;
-						w_addr_o	<=	rd;
-						instvalid	<=	`InstValid;
-					end
-
-					`FUNCT3_SRA:
-					begin
-						aluop_o		<=	`EX_SRA_OP;
-						alusel_o	<=	`EX_RES_SHIFT;
-						r1_enable_o	<=	1'b1;
-						r2_enable_o	<=	1'b1;
-						r1_addr_o	<=	rs1;
-						r2_addr_o	<=	rs2;
-						imm			<=	`ZeroWord;
-						w_enable_o	<=	`WriteEnable;
-						w_addr_o	<=	rd;
-						instvalid	<=	`InstValid;
+					   case (funct7)
+                            `FUNCT7_SRL:
+                            begin
+                                aluop_o		<=	`EX_SRL_OP;
+                                alusel_o	<=	`EX_RES_SHIFT;
+                                r1_enable_o	<=	1'b1;
+                                r2_enable_o	<=	1'b1;
+                                r1_addr_o	<=	rs1;
+                                r2_addr_o	<=	rs2;
+                                imm			<=	`ZeroWord;
+                                w_enable_o	<=	`WriteEnable;
+                                w_addr_o	<=	rd;
+                                instvalid	<=	`InstValid;
+                            end
+    
+                            `FUNCT7_SRA:
+                            begin
+                                aluop_o		<=	`EX_SRA_OP;
+                                alusel_o	<=	`EX_RES_SHIFT;
+                                r1_enable_o	<=	1'b1;
+                                r2_enable_o	<=	1'b1;
+                                r1_addr_o	<=	rs1;
+                                r2_addr_o	<=	rs2;
+                                imm			<=	`ZeroWord;
+                                w_enable_o	<=	`WriteEnable;
+                                w_addr_o	<=	rd;
+                                instvalid	<=	`InstValid;
+                            end
+                        endcase
 					end
 					
 					`FUNCT3_OR:

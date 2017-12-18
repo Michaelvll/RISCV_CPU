@@ -1,8 +1,8 @@
 CROSS_COMPILE = riscv32-unknown-elf-
 
 CXX = $(CROSS_COMPILE)g++
-CXX_FLAGS = -O2
-SXX = $(CROSS_COMPILE)as
+CXX_FLAGS = -O2 -s
+AS = $(CROSS_COMPILE)as
 LD = $(CROSS_COMPILE)ld
 BIN = $(CROSS_COMPILE)objcopy
 DUMP = $(CROSS_COMPILE)objdump
@@ -15,29 +15,27 @@ S_FILES = $(wildcard *.[s|S])
 STDNAME = inst_rom.mem
 PROGRAM = $(if $(CPP_FILES),$(basename $(CPP_FILES)),$(basename $(S_FILES)))
 
-ct: Cpp Bin Trasf
-st: S Bin Transf
-c: ct cleantmp
-s: st cleantmp
-dump:
-	$(DUMP) $(PROGRAM).om $(DUMP_FLAGS)
-readelf:
-	$(ELF) -h $(PROGRAM).o
+%.mem: %.bin cleantmp
+	python3 ./bin2mem.py $< $@
+	cp $@ ./$(STDNAME) -f
 
-Cpp:
-	$(CXX) -o $(PROGRAM).o $(CPP_FILES) $(CXX_FLAGS)
+%.dump: %.om
+	$(DUMP) $< $(DUMP_FLAGS)
 
-S:
-	$(SXX) $(S_FILES) -o $(PROGRAM).o -march=rv32i
+%.readelf: %.o
+	$(ELF) -h $<
 
-Bin:
-	$(LD) $(PROGRAM).o -o $(PROGRAM).om
-	$(BIN) $(PROGRAM).om -O binary $(PROGRAM).bin
+%.bin: %.om
+	$(BIN) $< -O binary $@
 
-Transf:
-	python3 ./bin2mem.py $(PROGRAM).bin $(PROGRAM).mem
-	cp ./$(PROGRAM).mem ./$(STDNAME) -f
+%.om: %.o
+	$(LD) $< -o $@
 
+%.o: %.s
+	$(AS) -o $@ $< -march=rv32i
+
+%.s: %.cpp
+	$(CXX) -o $@ $< $(CXX_FLAGS)
 
 cleantmp:
 	@rm -f *.o *.om *.bin	

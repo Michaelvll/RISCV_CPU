@@ -2,6 +2,7 @@
 `define _EX
 `include "Defines.vh"
 `include "IDInstDef.vh"
+`include "ALUInstDef.vh"
 
 module EX(
 	input wire rst,
@@ -64,12 +65,12 @@ begin
 				shiftres	<=	r1_data_i << r2_data_i[4:0];
 			end
 			`EX_SRL_OP:
-				shiftres	<=	r1_data_i  >> r2_data_i[4:0];
 			begin
+				shiftres	<=	r1_data_i  >> r2_data_i[4:0];
 			end
 			`EX_SRA_OP:
 			begin
-				shiftres	<=	(32{r1_data_i[31]}) << (6'd32 - {1'b0,r2_data_i[4:0]}) | r1_data_i >> r2_data_i[4:0];
+				shiftres	<=	({32{r1_data_i[31]}} << (6'd32 - {1'b0,r2_data_i[4:0]})) | r1_data_i >> r2_data_i[4:0];
 			end
 
 

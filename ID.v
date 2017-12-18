@@ -125,9 +125,9 @@ always @ (*)
 begin
 	if (rst)
 		r1_data_o	<=	`ZeroWord;
-	else if (r1_enable_o && (ex_w_enable_i && (ex_w_addr_i == r1_addr_o)))
-		r1_data_o 	<=	ex_w_addr_i;
-	else if (r1_enable_o && (mem_w_enable_i && (mem_w_addr_i == r1_addr_o)))
+	else if (r1_enable_o && ex_w_enable_i && ex_w_addr_i == r1_addr_o)
+		r1_data_o 	<=	ex_w_data_i;
+	else if (r1_enable_o && mem_w_enable_i && mem_w_addr_i == r1_addr_o)
 		r1_data_o	<=	mem_w_data_i;
 	else if (r1_enable_o)
 		r1_data_o	<=	r1_data_i;
@@ -141,9 +141,9 @@ always @ (*)
 begin
 	if (rst)
 		r2_data_o	<=	`ZeroWord;
-	else if (r2_enable_o && (ex_w_enable_i && (ex_w_addr_i == r2_addr_o)))
-		r2_data_o 	<=	ex_w_addr_i;
-	else if (r2_enable_o && (mem_w_enable_i && (mem_w_addr_i == r2_addr_o)))
+	else if (r2_enable_o && ex_w_enable_i && ex_w_addr_i == r2_addr_o)
+		r2_data_o 	<=	ex_w_data_i;
+	else if (r2_enable_o && mem_w_enable_i && mem_w_addr_i == r2_addr_o)
 		r2_data_o	<=	mem_w_data_i;
 	else if (r2_enable_o)
 		r2_data_o	<=	r2_data_i;

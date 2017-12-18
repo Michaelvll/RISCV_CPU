@@ -13,17 +13,21 @@ module Inst_rom (
 reg[`InstBus]	inst_mem[0: `InstMemNum-1];
 
 // Initialize the inst_mem with "inst_rom.data" file
-initial	$readmemb("inst_rom.mem", inst_mem);
+initial	$readmemh("inst_rom.mem", inst_mem);
+reg[`InstBus] inst_tmp;
 
 always @ (*)
 begin
 	if (!ce)
 	begin
-		inst <= `ZeroWord;
+		inst = `ZeroWord;
 	end
 	else
 	begin
-		inst	<=	inst_mem[addr[`InstMemNumLog2 + 1: 2]];
+
+		inst_tmp	=	inst_mem[addr[`InstMemNumLog2 + 1: 2]];
+		inst		=	{inst_tmp[7:0], inst_tmp[15:8], inst_tmp[23:16], inst_tmp[31:24]};
+
 	end
 end
 

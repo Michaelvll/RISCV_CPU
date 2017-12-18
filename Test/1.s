@@ -1,1 +1,1 @@
-ori x1, x0, 0x1
+andi x1, x0, -0x800

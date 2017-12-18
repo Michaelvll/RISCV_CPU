@@ -202,8 +202,8 @@ ME me0 (
 
 // Forwarding wire
 assign me2id_w_enable	=	me_w_enable_o;	
-assign me2id_w_addr	=	me_w_addr_o;
-assign me2id_w_data	=	me_w_addr_o;
+assign me2id_w_addr		=	me_w_addr_o;
+assign me2id_w_data		=	me_w_data_o;
 
 
 // ================== ME_WB ===========================

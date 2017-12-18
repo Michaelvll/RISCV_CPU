@@ -16,7 +16,7 @@ end
 initial
 begin
 	rst = 1'b0;
-	#195 rst = 1'b1;
+	#800 rst = 1'b1;
 	#1000 $stop;
 end
 

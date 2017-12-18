@@ -15,8 +15,8 @@ S_FILES = $(wildcard *.[s|S])
 STDNAME = inst_rom.mem
 PROGRAM = $(if $(CPP_FILES),$(basename $(CPP_FILES)),$(basename $(S_FILES)))
 
-ct: Cpp Mem
-st: S Mem
+ct: Cpp Bin Trasf
+st: S Bin Transf
 c: ct cleantmp
 s: st cleantmp
 dump:
@@ -30,10 +30,9 @@ Cpp:
 S:
 	$(SXX) $(S_FILES) -o $(PROGRAM).o -march=rv32i
 
-Mem:
+Bin:
 	$(LD) $(PROGRAM).o -o $(PROGRAM).om
-	$(BIN) $(PROGRAM).om -O verilog $(PROGRAM).mem
-	cp ./$(PROGRAM).mem ./$(STDNAME) -f
+	$(BIN) $(PROGRAM).om -O binary $(PROGRAM).bin
 
 Transf:
 	python3 ./bin2mem.py $(PROGRAM).bin $(PROGRAM).mem

@@ -56,7 +56,7 @@ end
 always @ (*)
 begin
 	if (rst)
-		logicout	<=	`ZeroWord;
+		shiftres	<=	`ZeroWord;
 	else 
 	begin
 		case (aluop_i)

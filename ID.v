@@ -90,7 +90,7 @@ begin
 			begin
 				aluop_o		<=	`EX_OR_OP;
 				alusel_o	<=	`EX_RES_LOGIC;
-				r1_enable_o	<=	1'b1;
+				r1_enable_o	<=	1'b0;
 				r2_enable_o	<=	1'b0;
 				r1_addr_o	<=	rs1;
 				r2_addr_o	<=	rs2;

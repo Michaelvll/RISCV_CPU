@@ -82,6 +82,7 @@ begin
 		r2_addr_o	<=	`NOPRegAddr;
 		imm <= `ZeroWord;
 	end
+
 	else
 	begin
 
@@ -105,17 +106,44 @@ begin
 				case(funct3)
 					`FUNCT3_ADDI:
 					begin
-
+						aluop_o		<=	`EX_ADD_OP;
+						alusel_o	<=	`EX_RES_ARITH;
+						r1_enable_o	<=	1'b1;
+						r2_enable_o	<=	1'b0;
+						r1_addr_o	<=	rs1;
+						r2_addr_o	<=	rs2;
+						imm			<=	{{20{imm_I[11]}}, imm_I[11: 0]};
+						w_enable_o	<=	`WriteEnable;
+						w_addr_o	<=	rd;
+						instvalid	<=	`InstValid;
 					end
 
 					`FUNCT3_SLTI:
 					begin
-
+						aluop_o		<=	`EX_SLT_OP;
+						alusel_o	<=	`EX_RES_ARITH;
+						r1_enable_o	<=	1'b1;
+						r2_enable_o	<=	1'b0;
+						r1_addr_o	<=	rs1;
+						r2_addr_o	<=	rs2;
+						imm			<=	{{20{imm_I[11]}}, imm_I[11: 0]};
+						w_enable_o	<=	`WriteEnable;
+						w_addr_o	<=	rd;
+						instvalid	<=	`InstValid;
 					end
 
 					`FUNCT3_SLTIU:
 					begin
-
+						aluop_o		<=	`EX_SLTU_OP;
+						alusel_o	<=	`EX_RES_ARITH;
+						r1_enable_o	<=	1'b1;
+						r2_enable_o	<=	1'b0;
+						r1_addr_o	<=	rs1;
+						r2_addr_o	<=	rs2;
+						imm			<=	{{20{imm_I[11]}}, imm_I[11: 0]};
+						w_enable_o	<=	`WriteEnable;
+						w_addr_o	<=	rd;
+						instvalid	<=	`InstValid;
 					end
 					
 					`FUNCT3_XORI:
@@ -224,21 +252,30 @@ begin
 						case (funct7)
 							`FUNCT7_ADD:
 							begin
-								// aluop_o		<=	`EX_XOR_OP;
-								// alusel_o	<=	`EX_RES_LOGIC;
-								// r1_enable_o	<=	1'b1;
-								// r2_enable_o	<=	1'b1;
-								// r1_addr_o	<=	rs1;
-								// r2_addr_o	<=	rs2;
-								// imm			<=	`ZeroWord;
-								// w_enable_o	<=	`WriteEnable;
-								// w_addr_o	<=	rd;
-								// instvalid	<=	`InstValid;
+								aluop_o		<=	`EX_ADD_OP;
+								alusel_o	<=	`EX_RES_ARITH;
+								r1_enable_o	<=	1'b1;
+								r2_enable_o	<=	1'b1;
+								r1_addr_o	<=	rs1;
+								r2_addr_o	<=	rs2;
+								imm			<=	`ZeroWord;
+								w_enable_o	<=	`WriteEnable;
+								w_addr_o	<=	rd;
+								instvalid	<=	`InstValid;
 							end
 
 							`FUNCT7_SUB:
 							begin
-
+								aluop_o		<=	`EX_SUB_OP;
+								alusel_o	<=	`EX_RES_ARITH;
+								r1_enable_o	<=	1'b1;
+								r2_enable_o	<=	1'b1;
+								r1_addr_o	<=	rs1;
+								r2_addr_o	<=	rs2;
+								imm			<=	`ZeroWord;
+								w_enable_o	<=	`WriteEnable;
+								w_addr_o	<=	rd;
+								instvalid	<=	`InstValid;
 							end
 						endcase
 					end
@@ -259,12 +296,30 @@ begin
 
 					`FUNCT3_SLT:
 					begin
-
+						aluop_o		<=	`EX_SLT_OP;
+						alusel_o	<=	`EX_RES_ARITH;
+						r1_enable_o	<=	1'b1;
+						r2_enable_o	<=	1'b1;
+						r1_addr_o	<=	rs1;
+						r2_addr_o	<=	rs2;
+						imm			<=	`ZeroWord;
+						w_enable_o	<=	`WriteEnable;
+						w_addr_o	<=	rd;
+						instvalid	<=	`InstValid;
 					end
 
 					`FUNCT3_SLTU:
 					begin
-
+						aluop_o		<=	`EX_SLTU_OP;
+						alusel_o	<=	`EX_RES_ARITH;
+						r1_enable_o	<=	1'b1;
+						r2_enable_o	<=	1'b1;
+						r1_addr_o	<=	rs1;
+						r2_addr_o	<=	rs2;
+						imm			<=	`ZeroWord;
+						w_enable_o	<=	`WriteEnable;
+						w_addr_o	<=	rd;
+						instvalid	<=	`InstValid;
 					end
 
 					`FUNCT3_XOR:
@@ -343,7 +398,6 @@ begin
 
 				endcase
 			end
-
 			
 			default:
 			begin

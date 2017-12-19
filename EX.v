@@ -19,34 +19,77 @@ module EX(
 	output reg[`RegBus]			w_data_o
 );
 
-	reg[`RegBus]	logicout;
-	reg[`RegBus]	shiftres;
+reg[`RegBus]	logic_res;
+reg[`RegBus]	shift_res;
+reg[`RegBus]	arith_res;
+
+// ============ ALU Arithmatic part ================
+wire[`RegBus]	r2_data_i_mux;
+wire[`RegBus]	sum_res;
+wire			lt_res;
+
+assign r2_data_i_mux = (aluop_i == `EX_SUB_OP ? 
+						(~r2_data_i)+1: r2_data_i);
+
+assign sum_res = r1_data_i + r2_data_i_mux;
+
+assign lt_res = (aluop_i == `EX_SLT_OP ? 
+				$signed(a) < $signed(b): a < b;
+
+always @ (*) 
+begin
+	if (rst) 
+	begin
+		arith_res	<=	`ZeroWord;
+	end
+	else 
+	begin
+		case (aluop_i)
+			`EX_SLT_OP, `EX_SLTU_OP:
+			begin
+				arith_res	<=	{31'h0, lt_res};
+			end
+
+			`EX_ADD_OP, `EX_SUB_OP:
+			begin
+				arith_res	<=	sum_res;			
+			end
+
+			default: 
+			begin
+				arith_res	<=	`ZeroWord;
+			end
+		endcase
+	end
+end
+
+
 
 // ============ ALU logic part =====================
 always @ (*)
 begin
 	if (rst)
-		logicout	<=	`ZeroWord;
+		logic_res	<=	`ZeroWord;
 	else 
 	begin
 		case (aluop_i)
 			`EX_OR_OP:
 			begin
-				logicout	<=	r1_data_i | r2_data_i;
+				logic_res	<=	r1_data_i | r2_data_i;
 			end
 			`EX_XOR_OP:
 			begin
-				logicout	<=	r1_data_i ^ r2_data_i;
+				logic_res	<=	r1_data_i ^ r2_data_i;
 			end
 			`EX_AND_OP:
 			begin
-				logicout	<=	r1_data_i & r2_data_i;
+				logic_res	<=	r1_data_i & r2_data_i;
 			end
 
 
 			default:
 			begin
-				logicout	<=	`ZeroWord;
+				logic_res	<=	`ZeroWord;
 			end
 		endcase
 	end	
@@ -56,27 +99,27 @@ end
 always @ (*)
 begin
 	if (rst)
-		shiftres	<=	`ZeroWord;
+		shift_res	<=	`ZeroWord;
 	else 
 	begin
 		case (aluop_i)
 			`EX_SLL_OP:
 			begin
-				shiftres	<=	r1_data_i << r2_data_i[4:0];
+				shift_res	<=	r1_data_i << r2_data_i[4:0];
 			end
 			`EX_SRL_OP:
 			begin
-				shiftres	<=	r1_data_i  >> r2_data_i[4:0];
+				shift_res	<=	r1_data_i  >> r2_data_i[4:0];
 			end
 			`EX_SRA_OP:
 			begin
-				shiftres	<=	({32{r1_data_i[31]}} << (6'd32 - {1'b0,r2_data_i[4:0]})) | r1_data_i >> r2_data_i[4:0];
+				shift_res	<=	({32{r1_data_i[31]}} << (6'd32 - {1'b0,r2_data_i[4:0]})) | r1_data_i >> r2_data_i[4:0];
 			end
 
 
 			default:
 			begin
-				shiftres	<=	`ZeroWord;
+				shift_res	<=	`ZeroWord;
 			end
 		endcase
 	end	
@@ -100,11 +143,15 @@ begin
 		case (alusel_i)
 			`EX_RES_LOGIC:
 			begin
-				w_data_o	<=	logicout;
+				w_data_o	<=	logic_res;
 			end
 			`EX_RES_SHIFT:
 			begin
-				w_data_o	<=	shiftres;
+				w_data_o	<=	shift_res;
+			end
+			`EX_RES_ARITH:
+			begin
+				w_data_o	<=	arith_res;
 			end
 			default:
 			begin

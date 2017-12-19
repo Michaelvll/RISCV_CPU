@@ -1,1 +1,1 @@
-andi x1, x0, -0x800
+sltiu x1, x0, -0x800

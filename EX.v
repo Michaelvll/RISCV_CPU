@@ -28,13 +28,13 @@ wire[`RegBus]	r2_data_i_mux;
 wire[`RegBus]	sum_res;
 wire			lt_res;
 
-assign r2_data_i_mux = (aluop_i == `EX_SUB_OP ? 
-						(~r2_data_i)+1: r2_data_i);
+// assign sum_res = (aluop_i == `EX_SUB_OP ? 
+// 						r1_data_i - r2_data_i: r1_data_i + r2_data_i);
 
-assign sum_res = r1_data_i + r2_data_i_mux;
+// assign sum_res = r1_data_i + r2_data_i_mux;
 
-assign lt_res = (aluop_i == `EX_SLT_OP ? 
-				$signed(r1_data_i) < $signed(r2_data_i): r1_data_i < r2_data_i);
+// assign lt_res = (aluop_i == `EX_SLT_OP ? 
+// 				$signed(r1_data_i) < $signed(r2_data_i): r1_data_i < r2_data_i);
 
 always @ (*) 
 begin
@@ -45,14 +45,24 @@ begin
 	else 
 	begin
 		case (aluop_i)
-			`EX_SLT_OP, `EX_SLTU_OP:
+			`EX_SLT_OP:
 			begin
-				arith_res	<=	{31'h0, lt_res};
+				arith_res	<=	{31'h0, {$signed(r1_data_i) < $signed(r2_data_i)}};
 			end
 
-			`EX_ADD_OP, `EX_SUB_OP:
+			`EX_SLTU_OP:
 			begin
-				arith_res	<=	sum_res;			
+				arith_res	<=	{31'h0, {r1_data_i < r2_data_i}};
+			end
+
+			`EX_ADD_OP: 
+			begin
+				arith_res	<=	r1_data_i + r2_data_i;			
+			end
+			
+			`EX_SUB_OP:
+			begin
+				arith_res	<=	r1_data_i - r2_data_i;
 			end
 
 			default: 

@@ -13,10 +13,17 @@ module IF (
 	input wire[`InstBus]		rom_data_i,
 	output reg[`InstAddrBus]	pc_o,
     output reg[`InstBus]    	inst_o,
-	output wire[`InstAddrBus]	rom_addr_o
+	output wire[`InstAddrBus]	rom_addr_o,
+
+	output reg 					stall_req_o
 );
 
 assign rom_addr_o = pc_i;
+
+always @(*)
+begin
+	stall_req_o		=	1'b0;
+end
 
 always @ (*)
 begin

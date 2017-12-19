@@ -5,7 +5,6 @@ module Ctrl(
 	input wire			id_stall_req_i,
 	input wire			ex_stall_req_i,
 	input wire			me_stall_req_i,
-	input wire			wb_stall_req_i,
 
 	output reg[5:0]		stall
 );
@@ -16,8 +15,6 @@ module Ctrl(
 		begin
 			stall	<=	6'b000000;
 		end
-		else if (wb_stall_req_i)
-			stall	<=	6'b111111;
 		else if (me_stall_req_i)
 			stall	<=	6'b011111;
 		else if (ex_stall_req_i)

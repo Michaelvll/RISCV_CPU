@@ -16,7 +16,9 @@ module EX(
 
 	output reg 					w_enable_o,
 	output reg[`RegAddrBus]		w_addr_o,
-	output reg[`RegBus]			w_data_o
+	output reg[`RegBus]			w_data_o,
+
+	output reg					stall_req_o
 );
 
 reg[`RegBus]	logic_res;
@@ -35,6 +37,11 @@ wire			lt_res;
 
 // assign lt_res = (aluop_i == `EX_SLT_OP ? 
 // 				$signed(r1_data_i) < $signed(r2_data_i): r1_data_i < r2_data_i);
+
+always @ (*)
+begin
+	stall_req_o = 1'b0;
+end
 
 always @ (*) 
 begin

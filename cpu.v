@@ -15,6 +15,7 @@
 `include "ME_WB.v"
 `include "WB.v"
 `include "Regfile.v"
+`include "Ctrl.v"
 
 module cpu(
     input wire 		clk,
@@ -26,6 +27,23 @@ module cpu(
 	output wire[`InstAddrBus]	rom_addr_o
 );
 
+// ================== STALL Control =================
+wire 				if_stall_req;
+wire 				id_stall_req;
+wire 				ex_stall_req;
+wire 				me_stall_req;
+wire[5:0]			stall;
+
+
+Ctrl ctrl0(
+	.rst(rst),
+	.if_stall_req_i(if_stall_req),
+	.id_stall_req_i(id_stall_req),
+	.ex_stall_req_i(ex_stall_req),
+	.me_stall_req_i(me_stall_req),
+	.stall(stall)
+);
+
 // ================== IF ============================
 wire[`InstAddrBus]	pc;
 wire[`InstAddrBus]	if_pc_o;
@@ -35,7 +53,8 @@ pc_reg pc_reg0(
 	.clk(clk),
 	.rst(rst),
 	.pc(pc),
-	.ce(rom_ce_o)
+	.ce(rom_ce_o),
+	.stall(stall)
 );
 
 IF if0 (
@@ -46,7 +65,8 @@ IF if0 (
 	.rom_data_i(rom_data_i),
 	.pc_o(if_pc_o),
 	.inst_o(if_inst_o),
-	.rom_addr_o(rom_addr_o)
+	.rom_addr_o(rom_addr_o),
+	.stall_req_o(if_stall_req)
 );
 
 // ================== IF_ID =========================
@@ -60,7 +80,9 @@ IF_ID if_id0 (
 	.if_pc(if_pc_o),
 	.if_inst(if_inst_o),
 	.id_pc(id_pc_i),
-	.id_inst(id_inst_i)
+	.id_inst(id_inst_i),
+
+	.stall(stall)
 );
 
 // ================== ID ===========================
@@ -109,7 +131,9 @@ ID id0 (
 	.ex_w_data_i(ex2id_w_data),
 	.mem_w_enable_i(me2id_w_enable),
 	.mem_w_addr_i(me2id_w_addr),
-	.mem_w_data_i(me2id_w_data)
+	.mem_w_data_i(me2id_w_data),
+
+	.stall_req_o(id_stall_req)
 );
 
 // ================== ID_EX =========================
@@ -137,7 +161,9 @@ ID_EX id_ex0 (
 	.ex_r1_data(ex_r1_data_i),
 	.ex_r2_data(ex_r2_data_i),
 	.ex_w_enable(ex_w_enable_i),
-	.ex_w_addr(ex_w_addr_i)
+	.ex_w_addr(ex_w_addr_i),
+
+	.stall(stall)
 );
 
 // ================== EX ===========================
@@ -156,7 +182,9 @@ EX ex0 (
 	.w_addr_i(ex_w_addr_i),
 	.w_enable_o(ex_w_enable_o),
 	.w_addr_o(ex_w_addr_o),
-	.w_data_o(ex_w_data_o)
+	.w_data_o(ex_w_data_o),
+
+	.stall_req_o(ex_stall_req)
 );
 
 // Forwarding wire
@@ -179,7 +207,9 @@ EX_ME ex_me0 (
 	.ex_w_data(ex_w_data_o),
 	.me_w_enable(me_w_enable_i),
 	.me_w_addr(me_w_addr_i),
-	.me_w_data(me_w_data_i)
+	.me_w_data(me_w_data_i),
+
+	.stall(stall)
 );
 
 
@@ -197,7 +227,9 @@ ME me0 (
 	.w_data_i(me_w_data_i),
 	.w_enable_o(me_w_enable_o),
 	.w_addr_o(me_w_addr_o),
-	.w_data_o(me_w_data_o)
+	.w_data_o(me_w_data_o),
+
+	.stall_req_o(me_stall_req)
 );
 
 // Forwarding wire
@@ -220,7 +252,9 @@ ME_WB me_wb0 (
 	.me_w_data(me_w_data_o),
 	.wb_w_enable(wb_w_enable_i),
 	.wb_w_addr(wb_w_addr_i),
-	.wb_w_data(wb_w_data_i)
+	.wb_w_data(wb_w_data_i),
+
+	.stall(stall)
 );
 
 // ================== WB ==============================
@@ -238,6 +272,7 @@ WB wb0 (
 	.w_enable_o(wb_w_enable_o),
 	.w_addr_o(wb_w_addr_o),
 	.w_data_o(wb_w_data_o)
+
 );
 
 

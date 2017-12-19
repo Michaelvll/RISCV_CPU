@@ -9,7 +9,9 @@ module pc_reg (
     input wire					rst,
 
     output reg [`InstAddrBus]	pc,
-    output reg 					ce
+    output reg 					ce,
+	
+	input wire[5:0]				stall
 );
     initial
     begin
@@ -30,10 +32,10 @@ module pc_reg (
 
     always @(posedge clk) 
     begin
-        if (ce == `ChipEnable)
-            pc <= pc + 32'h4;
-        else
+        if (ce == `ChipDisable)
             pc <= `ZeroWord;
+        else if (!stall[0])
+            pc <= pc + 32'h4;
     end
 
 endmodule

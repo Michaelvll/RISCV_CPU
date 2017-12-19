@@ -13,7 +13,9 @@ module ME_WB(
 
 	output reg					wb_w_enable,
 	output reg[`RegAddrBus]		wb_w_addr,
-	output reg[`RegBus]			wb_w_data
+	output reg[`RegBus]			wb_w_data,
+
+	input wire[5:0]				stall
 );
 
 always @ (posedge clk)
@@ -24,12 +26,17 @@ begin
 		wb_w_addr		<=	`NOPRegAddr;
 		wb_w_data		<=	`ZeroWord;
 	end
-	else
+	else if (stall[4] && !stall[5])
+	begin
+		wb_w_enable		<=	`WriteDisable;
+		wb_w_addr		<=	`NOPRegAddr;
+		wb_w_data		<=	`ZeroWord;
+	end
+	else if (!stall[4])
 	begin
 		wb_w_enable		<=	me_w_enable;
 		wb_w_addr		<=	me_w_addr;
 		wb_w_data		<=	me_w_data;
-
 	end
 end
 

@@ -34,7 +34,9 @@ module ID (
 	// Forwarding from mem
 	input wire					mem_w_enable_i,
 	input wire[`RegAddrBus]		mem_w_addr_i,
-	input wire[`RegBus]			mem_w_data_i
+	input wire[`RegBus]			mem_w_data_i,
+
+	output reg					stall_req_o
 );
 
 reg instvalid;
@@ -76,6 +78,7 @@ begin
 		w_enable_o	<= 	`WriteDisable;
 		w_addr_o	<= 	`NOPRegAddr;
 		instvalid	<=	`InstValid;
+		stall_req_o	<=	1'b0;
 		r1_enable_o	<=	1'b0;
 		r2_enable_o	<=	1'b0;
 		r1_addr_o	<=	`NOPRegAddr;
@@ -99,6 +102,7 @@ begin
 				w_enable_o	<=	`WriteEnable;
 				w_addr_o	<=	rd;
 				instvalid	<=	`InstValid;
+				stall_req_o	<=	1'b0;
 			end
 
 			`OP_OPI:
@@ -116,6 +120,7 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
+						stall_req_o	<=	1'b0;
 					end
 
 					`FUNCT3_SLTI:
@@ -130,6 +135,7 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
+						stall_req_o	<=	1'b0;
 					end
 
 					`FUNCT3_SLTIU:
@@ -144,6 +150,7 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
+						stall_req_o	<=	1'b0;
 					end
 					
 					`FUNCT3_XORI:
@@ -158,6 +165,7 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
+						stall_req_o	<=	1'b0;
 					end
 
 					`FUNCT3_ORI: // ORI
@@ -172,6 +180,7 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
+						stall_req_o	<=	1'b0;
 					end
 
 					`FUNCT3_ANDI:
@@ -186,6 +195,7 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
+						stall_req_o	<=	1'b0;
 					end
 					
 					`FUNCT3_SLLI:
@@ -200,6 +210,7 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
+						stall_req_o	<=	1'b0;
 					end
 
 					`FUNCT3_SRLI_SRAI:
@@ -217,6 +228,7 @@ begin
 								w_enable_o	<=	`WriteEnable;
 								w_addr_o	<=	rd;
 								instvalid	<=	`InstValid;
+								stall_req_o	<=	1'b0;
 							end
 
 							`FUNCT7_SRAI:
@@ -231,6 +243,7 @@ begin
 								w_enable_o	<=	`WriteEnable;
 								w_addr_o	<=	rd;
 								instvalid	<=	`InstValid;
+								stall_req_o	<=	1'b0;
 							end
 						  default:
 						  begin
@@ -262,6 +275,7 @@ begin
 								w_enable_o	<=	`WriteEnable;
 								w_addr_o	<=	rd;
 								instvalid	<=	`InstValid;
+								stall_req_o	<=	1'b0;
 							end
 
 							`FUNCT7_SUB:
@@ -276,6 +290,7 @@ begin
 								w_enable_o	<=	`WriteEnable;
 								w_addr_o	<=	rd;
 								instvalid	<=	`InstValid;
+								stall_req_o	<=	1'b0;
 							end
 						endcase
 					end
@@ -292,6 +307,7 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
+						stall_req_o	<=	1'b0;
 					end
 
 					`FUNCT3_SLT:
@@ -306,6 +322,7 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
+						stall_req_o	<=	1'b0;
 					end
 
 					`FUNCT3_SLTU:
@@ -320,6 +337,7 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
+						stall_req_o	<=	1'b0;
 					end
 
 					`FUNCT3_XOR:
@@ -334,6 +352,7 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
+						stall_req_o	<=	1'b0;
 					end
 					`FUNCT3_SRL_SRA:
 					begin
@@ -350,6 +369,7 @@ begin
                                 w_enable_o	<=	`WriteEnable;
                                 w_addr_o	<=	rd;
                                 instvalid	<=	`InstValid;
+                                stall_req_o	<=	1'b0;
                             end
     
                             `FUNCT7_SRA:
@@ -364,6 +384,7 @@ begin
                                 w_enable_o	<=	`WriteEnable;
                                 w_addr_o	<=	rd;
                                 instvalid	<=	`InstValid;
+                                stall_req_o	<=	1'b0;
                             end
                         endcase
 					end
@@ -380,6 +401,7 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
+						stall_req_o	<=	1'b0;
 					end
 
 					`FUNCT3_AND:
@@ -394,6 +416,7 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
+						stall_req_o	<=	1'b0;
 					end
 
 				endcase

@@ -12,7 +12,7 @@ module EX(
 	input wire[`RegBus]			r1_data_i,
 	input wire[`RegBus]			r2_data_i,
 	input wire					w_enable_i,
-	input wire[`RegAddrBus]		w_addr_i	,
+	input wire[`RegAddrBus]		w_addr_i,
 
 	output reg 					w_enable_o,
 	output reg[`RegAddrBus]		w_addr_o,

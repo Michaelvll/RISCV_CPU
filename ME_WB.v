@@ -12,8 +12,8 @@ module ME_WB(
 	input wire[`RegBus]			me_w_data,
 
 	output reg					wb_w_enable,
-	output reg[`RegAddrBus]	wb_w_addr,
-	output reg[`RegBus]		wb_w_data
+	output reg[`RegAddrBus]		wb_w_addr,
+	output reg[`RegBus]			wb_w_data
 );
 
 always @ (posedge clk)

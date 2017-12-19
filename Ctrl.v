@@ -26,8 +26,11 @@ module Ctrl(
 			stall	<=	6'b000111;
 		else if (if_stall_req_i)
 			stall	<=	6'b000011;
+<<<<<<< HEAD
 		else 
 			stall	<=	6'b000000;
+=======
+>>>>>>> 068e79549c7ba3a4dfc3e262a6f5edde6e82d343
 	end
 
 

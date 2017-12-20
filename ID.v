@@ -53,7 +53,7 @@ wire[6:0]		funct7;
 wire[11:0]		imm_I;
 wire[11:0]		imm_S;
 wire[12:1]		imm_B;
-wire[31:12]	 	imm_U;
+wire[31:0]	 	imm_U;
 wire[31:0]		imm_J;
 
 
@@ -67,7 +67,7 @@ assign imm_I		=	inst_i[31:20];
 assign imm_S		=	{inst_i[31:25], inst_i[11:7]};
 assign imm_B		=	{inst_i[31], inst_i[7], 
 							inst_i[30:25], inst_i[11:8]};
-assign imm_U		=	inst_i[31:12];
+assign imm_U		=	{inst_i[31:12], 12'h0};
 assign imm_J		=	{{11{inst_i[31]}}, inst_i[31], inst_i[19:12],
 							inst_i[20], inst_i[30:21],1'h0};
 
@@ -105,7 +105,7 @@ begin
 				r2_enable_o		<=	1'b0;
 				r1_addr_o		<=	rs1;
 				r2_addr_o		<=	rs2;
-				imm				<=	{imm_U,12'h0};
+				imm				<=	imm_U;
 				w_enable_o		<=	`WriteEnable;
 				w_addr_o		<=	rd;
 				instvalid		<=	`InstValid;
@@ -113,6 +113,23 @@ begin
 				stall_req_o		<=	1'b0;
 				
 			end
+
+			`OP_AUIPC:
+			begin
+				aluop_o			<=	`EX_ADD_OP;
+				alusel_o		<=	`EX_RES_ARITH;
+				r1_enable_o		<=	1'b1;
+				r2_enable_o		<=	1'b0;
+				r1_addr_o		<=	`PC_addr;
+				r2_addr_o		<=	rs2;
+				imm				<=	imm_U;
+				w_enable_o		<=	`WriteEnable;
+				w_addr_o		<=	rd;
+				instvalid		<=	`InstValid;
+
+				stall_req_o		<=	1'b0;
+			end
+
 			`OP_JAL:
 			begin
 				aluop_o			<=	`EX_JAL_OP;
@@ -489,6 +506,8 @@ always @ (*)
 begin
 	if (rst)
 		r1_data_o	<=	`ZeroWord;
+	else if (r1_enable_o && r1_addr_o == `PC_addr)
+		r1_data_o	<=	pc_o;
 	else if (r1_enable_o && ex_w_enable_i && ex_w_addr_i == r1_addr_o)
 		r1_data_o 	<=	ex_w_data_i;
 	else if (r1_enable_o && mem_w_enable_i && mem_w_addr_i == r1_addr_o)

@@ -15,9 +15,10 @@ end
 
 initial
 begin
-	rst = 1'b0;
-	#800 rst = 1'b1;
-	#1000 $stop;
+	rst = 1'b1;
+	#1 		rst		= 	1'b0;
+	#800 	rst		= 	1'b1;
+	#1000 	$stop;
 end
 
 Riscv_min_sopc riscv_min_sopc0(

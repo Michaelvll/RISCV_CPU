@@ -41,10 +41,8 @@ wire[`InstAddrBus]	b_target_addr;
 // ============ ALU Data prepare part ================
 
 
-assign r2_data_i_mux = (aluop_i == `EX_SUB_OP ? 
+assign sum_res = (aluop_i == `EX_SUB_OP ? 
 						r1_data_i - r2_data_i: r1_data_i + r2_data_i);
-
-assign sum_res = r1_data_i + r2_data_i_mux;
 
 assign lt_res = (aluop_i == `EX_SLT_OP ? 
 				$signed(r1_data_i) < $signed(r2_data_i): r1_data_i < r2_data_i);

@@ -6,13 +6,14 @@ _start:
 	lui	x1, 0x80000		# x1 				= 0x80000000
 	
 	ori x1, x1, 0x010	# x1 = x1 | 0x010	= 0x80000010
-	jal x4, _start
 
 	lui x2, 0x80000		# x2				= 0x80000000
 	ori	x2, x2, 0x001	# x2 = x2 | 0x001	= 0x80000001
-
+	auipc x5, 0x79000	# x5 				= 0x80000010
+_hello:
 	add x3, x2, x1		# x3				= 0x00000011
-	addi x3, x3, 0x0fe	# x3				= 0x0000010f
+	addi x1, x3, 0x0fe	# x1				= 0x0000010f
+	jal x4, _hello
 	add x3, x3, x2		# x3				= 0x80000110
 
 	sub x3, x3, x2		# x3 				= 0x0000010f

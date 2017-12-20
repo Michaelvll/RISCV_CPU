@@ -3,7 +3,7 @@
 
 `include "Defines.vh"
 `include "IDInstDef.vh"
-`include "pc_reg.v"
+`include "PC_reg.v"
 
 module IF (
     input wire  clk,

@@ -4,7 +4,7 @@
 `include "Defines.vh"
 `include "IDInstDef.vh"
 
-module pc_reg (
+module PC_reg (
     input wire 					clk,
     input wire					rst,
 

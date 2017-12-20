@@ -94,10 +94,12 @@ begin
 			begin
 				logic_res	<=	r1_data_i | r2_data_i;
 			end
+			
 			`EX_XOR_OP:
 			begin
 				logic_res	<=	r1_data_i ^ r2_data_i;
 			end
+
 			`EX_AND_OP:
 			begin
 				logic_res	<=	r1_data_i & r2_data_i;

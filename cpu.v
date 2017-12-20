@@ -4,7 +4,7 @@
 `include "Defines.vh"
 `include "IDInstDef.vh"
 `include "ALUInstDef.vh"
-`include "pc_reg.v"
+`include "PC_reg.v"
 `include "IF.v"
 `include "IF_ID.v"
 `include "ID.v"
@@ -49,7 +49,7 @@ wire[`InstAddrBus]	pc;
 wire[`InstAddrBus]	if_pc_o;
 wire[`InstBus]		if_inst_o;
 
-pc_reg pc_reg0(
+PC_reg pc_reg0(
 	.clk(clk),
 	.rst(rst),
 	.pc(pc),

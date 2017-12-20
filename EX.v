@@ -7,41 +7,82 @@
 module EX(
 	input wire rst,
 	
+	input wire[`InstAddrBus]	pc_i, // In order to put addr calculation into ex
 	input wire[`AluOpBus]		aluop_i,
 	input wire[`AluOutSelBus]	alusel_i,
 	input wire[`RegBus]			r1_data_i,
 	input wire[`RegBus]			r2_data_i,
 	input wire					w_enable_i,
 	input wire[`RegAddrBus]		w_addr_i,
+	input wire[`RegBus]			link_addr_i,
 
 	output reg 					w_enable_o,
 	output reg[`RegAddrBus]		w_addr_o,
 	output reg[`RegBus]			w_data_o,
 
-	output reg					stall_req_o
+	output reg					stall_req_o,
+
+	output reg 					b_flag_o,
+	output reg[`InstAddrBus]	b_target_addr_o	
 );
 
-reg[`RegBus]	logic_res;
-reg[`RegBus]	shift_res;
-reg[`RegBus]	arith_res;
 
-// ============ ALU Arithmatic part ================
-wire[`RegBus]	r2_data_i_mux;
-wire[`RegBus]	sum_res;
-wire			lt_res;
+reg[`RegBus]		logic_res;
+reg[`RegBus]		shift_res;
+reg[`RegBus]		arith_res;
+reg[`RegBus]		J_B_res;
 
-// assign sum_res = (aluop_i == `EX_SUB_OP ? 
-// 						r1_data_i - r2_data_i: r1_data_i + r2_data_i);
+wire[`RegBus]		r2_data_i_mux;
+wire[`RegBus]		sum_res;
+wire				lt_res;
+wire[`InstAddrBus]	pc_plus_4;
+wire[`InstAddrBus]	b_target_addr;
 
-// assign sum_res = r1_data_i + r2_data_i_mux;
+// ============ ALU Data prepare part ================
 
-// assign lt_res = (aluop_i == `EX_SLT_OP ? 
-// 				$signed(r1_data_i) < $signed(r2_data_i): r1_data_i < r2_data_i);
+
+assign r2_data_i_mux = (aluop_i == `EX_SUB_OP ? 
+						r1_data_i - r2_data_i: r1_data_i + r2_data_i);
+
+assign sum_res = r1_data_i + r2_data_i_mux;
+
+assign lt_res = (aluop_i == `EX_SLT_OP ? 
+				$signed(r1_data_i) < $signed(r2_data_i): r1_data_i < r2_data_i);
+
+assign pc_plus_4 = pc_i + 4;
+assign b_target_addr = pc_i + r2_data_i;
+
+// ============ ALU J_B part ================
 
 always @ (*)
 begin
-	stall_req_o = 1'b0;
+	if (rst) 
+	begin
+		J_B_res		<=	`ZeroWord;
+		b_flag_o	<=	1'b0;
+	end
+	else
+	begin
+		case (aluop_i)
+			`EX_JAL_OP:
+			begin
+				b_flag_o			<=	1'b1;
+				b_target_addr_o		<=	b_target_addr;
+				J_B_res				<=	pc_plus_4;
+			end
+			default:
+			begin
+				b_flag_o			<=	1'b0;
+				b_target_addr_o		<=	`ZeroWord;
+				J_B_res				<=	`ZeroWord;
+			end	
+		endcase
+	end
+
 end
+
+
+// ============ ALU Arithmatic part ================
 
 always @ (*) 
 begin
@@ -54,22 +95,22 @@ begin
 		case (aluop_i)
 			`EX_SLT_OP:
 			begin
-				arith_res	<=	{31'h0, {$signed(r1_data_i) < $signed(r2_data_i)}};
+				arith_res	<=	{31'h0, lt_res};
 			end
 
 			`EX_SLTU_OP:
 			begin
-				arith_res	<=	{31'h0, {r1_data_i < r2_data_i}};
+				arith_res	<=	{31'h0, lt_res};
 			end
 
 			`EX_ADD_OP: 
 			begin
-				arith_res	<=	r1_data_i + r2_data_i;			
+				arith_res	<=	sum_res;			
 			end
 			
 			`EX_SUB_OP:
 			begin
-				arith_res	<=	r1_data_i - r2_data_i;
+				arith_res	<=	sum_res;
 			end
 
 			default: 
@@ -171,6 +212,10 @@ begin
 			`EX_RES_ARITH:
 			begin
 				w_data_o	<=	arith_res;
+			end
+			`EX_RES_J_B:
+			begin
+				w_data_o	<=	J_B_res;
 			end
 			default:
 			begin

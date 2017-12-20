@@ -9,7 +9,7 @@ reg rst;
 
 initial
 begin
-	CLOCK_50 = 1'b0;
+	CLOCK_50 = 1'b1;
 	forever #10 CLOCK_50 = ~CLOCK_50;
 end
 

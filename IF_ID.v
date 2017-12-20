@@ -13,7 +13,9 @@ module IF_ID(
 	output reg[`InstAddrBus]	id_pc,
 	output reg[`InstBus]		id_inst,
 
-	input wire[5:0]				stall
+	input wire[5:0]				stall,
+
+	input wire					ex_b_flag
 );
 
 always @ (posedge clk)
@@ -22,6 +24,11 @@ begin
 	begin
 		id_pc   <=  `ZeroWord;
 		id_inst <=  `ZeroWord;
+	end
+	else if (ex_b_flag)
+	begin
+		id_pc 	<=	`ZeroWord;
+		id_inst	<=	`ZeroWord;
 	end
 	else if(stall[1] && !stall[2])
 	begin

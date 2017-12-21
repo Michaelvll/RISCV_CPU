@@ -11,8 +11,8 @@ _start:
 	ori	x2, x2, 0x001	# x2 = x2 | 0x001	= 0x80000001
 	auipc x5, 0x79000	# x5 				= 0x80000010
 _hello:
-	add x3, x2, x1		# x3				= 0x00000011
-	addi x1, x3, 0x0fe	# x1				= 0x0000010f
+	add x3, x2, x1		# x3				= 0x00000011 (2) 0x80000110 (3) 0x0000020f
+	addi x1, x3, 0x0fe	# x1				= 0x0000010f (2) 0x8000020e
 	jal x4, _hello
 	add x3, x3, x2		# x3				= 0x80000110
 

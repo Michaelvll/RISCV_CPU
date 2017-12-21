@@ -22,8 +22,9 @@ module EX(
 
 	output reg					stall_req_o,
 
+	input wire[`RegBus]			b_offset_i,
 	output reg 					b_flag_o,
-	output reg[`InstAddrBus]	b_target_addr_o	
+	output reg[`InstAddrBus]	b_target_addr_o
 );
 
 
@@ -35,8 +36,10 @@ reg[`RegBus]		J_B_res;
 wire[`RegBus]		r2_data_i_mux;
 wire[`RegBus]		sum_res;
 wire				lt_res;
+wire				gt_res;
+wire				eq_res;
 wire[`InstAddrBus]	pc_plus_4;
-wire[`InstAddrBus]	b_target_addr;
+wire[`InstAddrBus]	pc_plus_offset;
 
 // ============ ALU Data prepare part ================
 
@@ -44,11 +47,16 @@ wire[`InstAddrBus]	b_target_addr;
 assign sum_res = (aluop_i == `EX_SUB_OP ? 
 						r1_data_i - r2_data_i: r1_data_i + r2_data_i);
 
-assign lt_res = (aluop_i == `EX_SLT_OP ? 
-				$signed(r1_data_i) < $signed(r2_data_i): r1_data_i < r2_data_i);
+assign lt_res = ((aluop_i == `EX_SLT_OP || aluop_i == `EX_BLT_OP ||
+				aluop_i == `EX_BGE_OP)? 
+				$signed(r1_data_i) < $signed(r2_data_i):
+				r1_data_i < r2_data_i);
+
+assign eq_res = (r1_data_i == r2_data_i);
 
 assign pc_plus_4 = pc_i + 4;
-assign b_target_addr = pc_i + r2_data_i;
+
+assign pc_plus_offset = pc_i + b_offset_i;
 
 // ============ ALU J_B part ================
 
@@ -65,9 +73,41 @@ begin
 			`EX_JAL_OP:
 			begin
 				b_flag_o			<=	1'b1;
-				b_target_addr_o		<=	b_target_addr;
+				b_target_addr_o		<=	pc_plus_offset;
 				J_B_res				<=	pc_plus_4;
 			end
+			
+			`EX_JALR_OP:
+			begin
+				b_flag_o			<=	1'b1;
+				b_target_addr_o		<=	pc_plus_offset;
+				J_B_res				<=	pc_plus_4;
+			end
+
+			`EX_BEQ_OP:
+			begin
+				b_flag_o			<=	eq_res;
+				b_target_addr_o		<=	pc_plus_offset;
+			end
+
+			`EX_BNE_OP:
+			begin
+				b_flag_o			<= ~eq_res;
+				b_target_addr_o		<= pc_plus_offset;
+			end
+
+			`EX_BLT_OP,`EX_BLTU_OP:
+			begin
+				b_flag_o			<=	lt_res;
+				b_target_addr_o		<=	pc_plus_offset;
+			end
+
+			`EX_BGE_OP,`EX_BGEU_OP:
+			begin
+				b_flag_o			<=	~lt_res;
+				b_target_addr_o		<=	pc_plus_offset;
+			end
+
 			default:
 			begin
 				b_flag_o			<=	1'b0;

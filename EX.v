@@ -80,7 +80,7 @@ begin
 			`EX_JALR_OP:
 			begin
 				b_flag_o			<=	1'b1;
-				b_target_addr_o		<=	pc_plus_offset;
+				b_target_addr_o		<=	{sum_res[31:1], 1'h0};
 				J_B_res				<=	pc_plus_4;
 			end
 
@@ -149,6 +149,11 @@ begin
 			`EX_SUB_OP:
 			begin
 				arith_res	<=	sum_res;
+			end
+
+			`EX_AUIPC_OP:
+			begin
+			  	arith_res	<=	pc_plus_offset;
 			end
 
 			default: 
@@ -229,6 +234,12 @@ end
 always @ (*)
 begin
 	if (rst)
+	begin
+		w_enable_o		<=	`WriteDisable;
+		w_addr_o		<=	`ZeroWord;
+		w_data_o		<=	`ZeroWord;
+	end
+	else if (w_enable_i && w_addr_i == `ZeroWord)
 	begin
 		w_enable_o		<=	`WriteDisable;
 		w_addr_o		<=	`ZeroWord;

@@ -16,6 +16,7 @@
 `define EX_SLL_OP     	11'b00100110010 // Shift value in rs1 by the shift amoount in rs2[4:0]
 `define EX_SRL_OP		11'b00100111010
 `define EX_SRA_OP		11'b00100111011
+`define EX_AUIPC_OP     11'b00101110000
 
 `define EX_JAL_OP          11'b11011110000
 `define EX_JALR_OP         11'b11001110000

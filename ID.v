@@ -115,11 +115,11 @@ begin
 
 			`OP_AUIPC:
 			begin
-				aluop_o			<=	`EX_ADD_OP;
+				aluop_o			<=	`EX_AUIPC_OP;
 				alusel_o		<=	`EX_RES_ARITH;
-				r1_enable_o		<=	1'b1;
+				r1_enable_o		<=	1'b0;
 				r2_enable_o		<=	1'b0;
-				r1_addr_o		<=	`PC_addr;
+				r1_addr_o		<=	rs1;
 				r2_addr_o		<=	rs2;
 				imm				<=	imm_U;
 				w_enable_o		<=	`WriteEnable;
@@ -150,7 +150,7 @@ begin
 			begin
 				aluop_o			<=	`EX_JALR_OP;
 				alusel_o		<=	`EX_RES_J_B;
-				r1_enable_o		<=	1'b0;
+				r1_enable_o		<=	1'b1;
 				r2_enable_o		<=	1'b0;
 				r1_addr_o		<=	rs1;
 				r2_addr_o		<=	rs2;
@@ -223,7 +223,7 @@ begin
 					end
 					`FUNCT3_BLTU:
 					begin
-						aluop_o			<=	`EX_BLT_OP;
+						aluop_o			<=	`EX_BLTU_OP;
 						alusel_o		<=	`EX_RES_NOP;
 						r1_enable_o		<=	1'b1;
 						r2_enable_o		<=	1'b1;
@@ -237,7 +237,7 @@ begin
 					end
 					`FUNCT3_BGEU:
 					begin
-						aluop_o			<=	`EX_BGE_OP;
+						aluop_o			<=	`EX_BGEU_OP;
 						alusel_o		<=	`EX_RES_NOP;
 						r1_enable_o		<=	1'b1;
 						r2_enable_o		<=	1'b1;
@@ -599,8 +599,6 @@ always @ (*)
 begin
 	if (rst)
 		r1_data_o	<=	`ZeroWord;
-	else if (r1_enable_o && r1_addr_o == `PC_addr)
-		r1_data_o	<=	pc_o;
 	else if (r1_enable_o && ex_w_enable_i && ex_w_addr_i == r1_addr_o)
 		r1_data_o 	<=	ex_w_data_i;
 	else if (r1_enable_o && mem_w_enable_i && mem_w_addr_i == r1_addr_o)

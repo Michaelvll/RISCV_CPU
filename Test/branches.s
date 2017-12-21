@@ -22,7 +22,7 @@ s1:
 
 s2:
 	ori x1, x0, 0x003	# (3) x1 = 0x00000003
-	or x1, x5, x0		# (3) x1 = 0x0000001c
+	or x2, x5, x0		# (3) x1 = 0x0000001c
 	beq x3, x3, s3		# x3 == x3, jump to s3
 
 	ori x1, x0, 0x111

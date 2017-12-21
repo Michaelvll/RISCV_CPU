@@ -53,7 +53,7 @@ wire[4:0]		rs2;
 wire[6:0]		funct7;
 wire[11:0]		imm_I;
 wire[11:0]		imm_S;
-wire[12:0]		imm_B;
+wire[31:0]		imm_B;
 wire[31:0]	 	imm_U;
 wire[31:0]		imm_J;
 
@@ -66,7 +66,7 @@ assign rs2			=	inst_i[24:20];
 assign funct7		=	inst_i[31:25];
 assign imm_I		=	inst_i[31:20];
 assign imm_S		=	{inst_i[31:25], inst_i[11:7]};
-assign imm_B		=	{inst_i[31], inst_i[7], 
+assign imm_B		=	{{20{inst_i[31]}}, inst_i[7], 
 							inst_i[30:25], inst_i[11:8],1'h0};
 assign imm_U		=	{inst_i[31:12], 12'h0};
 assign imm_J		=	{{12{inst_i[31]}}, inst_i[19:12],
@@ -173,7 +173,7 @@ begin
 						r2_enable_o		<=	1'b1;
 						r1_addr_o		<=	rs1;
 						r2_addr_o		<=	rs2;
-						imm				<=	{{20{imm_B[12]}},imm_B};
+						imm				<=	imm_B;
 						w_enable_o		<=	`WriteDisable;
 						w_addr_o		<=	`ZeroWord;
 						instvalid		<=	`InstValid;
@@ -187,7 +187,7 @@ begin
 						r2_enable_o		<=	1'b1;
 						r1_addr_o		<=	rs1;
 						r2_addr_o		<=	rs2;
-						imm				<=	{{20{imm_B[12]}},imm_B};
+						imm				<=	imm_B;
 						w_enable_o		<=	`WriteDisable;
 						w_addr_o		<=	`ZeroWord;
 						instvalid		<=	`InstValid;
@@ -201,7 +201,7 @@ begin
 						r2_enable_o		<=	1'b1;
 						r1_addr_o		<=	rs1;
 						r2_addr_o		<=	rs2;
-						imm				<=	{{20{imm_B[12]}},imm_B};
+						imm				<=	imm_B;
 						w_enable_o		<=	`WriteDisable;
 						w_addr_o		<=	`ZeroWord;
 						instvalid		<=	`InstValid;
@@ -215,7 +215,7 @@ begin
 						r2_enable_o		<=	1'b1;
 						r1_addr_o		<=	rs1;
 						r2_addr_o		<=	rs2;
-						imm				<=	{{20{imm_B[12]}},imm_B};
+						imm				<=	imm_B;
 						w_enable_o		<=	`WriteDisable;
 						w_addr_o		<=	`ZeroWord;
 						instvalid		<=	`InstValid;
@@ -229,7 +229,7 @@ begin
 						r2_enable_o		<=	1'b1;
 						r1_addr_o		<=	rs1;
 						r2_addr_o		<=	rs2;
-						imm				<=	{20'h0,imm_B};
+						imm				<=	imm_B;
 						w_enable_o		<=	`WriteDisable;
 						w_addr_o		<=	`ZeroWord;
 						instvalid		<=	`InstValid;
@@ -243,7 +243,7 @@ begin
 						r2_enable_o		<=	1'b1;
 						r1_addr_o		<=	rs1;
 						r2_addr_o		<=	rs2;
-						imm				<=	{20'h0,imm_B};
+						imm				<=	imm_B;
 						w_enable_o		<=	`WriteDisable;
 						w_addr_o		<=	`ZeroWord;
 						instvalid		<=	`InstValid;

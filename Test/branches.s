@@ -37,6 +37,9 @@ s4:
 bad:
 	ori x1, x0, 0x111
 
+s7:
+	ori x1, x0, 0x010	# (10) x1 = 0x00000010
+	bne x1, x3, s8		# (10) x1 != x3, jump to s8
 
 s6:
 	ori x1, x0, 0x008	# (8) x1 = 0x00000008
@@ -48,9 +51,6 @@ s5:
 	ori x1, x0, 0x007	# (7) x1 = 0x00000007
 	blt x3, x1, s6		# (7) x3 < 0, jump to s6
 
-s7:
-	ori x1, x0, 0x010	# (10) x1 = 0x00000010
-	bne x1, x3, s8		# (10) x1 != x3, jump to s8
 
 s3:
 	ori x1, x0, 0x004	# (4) x1 = 0x00000004
@@ -64,7 +64,7 @@ s8:
 	bne x1, x1, bad		# (11) x1 = x1, not jump
 	ori x1, x0, 0x012	# (12) x1 = 0x00000012
 
-	ori x3, x0, 0x014		# (12) x3 = 0x00000014
+	ori x3, x0, 0x014	# (12) x3 = 0x00000014
 
 _loop1:					# for x1 = 0x12 to 0x14
 	addi x1, x1, 0x1	# x1++

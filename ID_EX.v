@@ -26,10 +26,11 @@ module ID_EX(
 	output reg[`InstAddrBus]	ex_pc,
 
 	input wire[5:0]				stall,
+	input wire[`RegBus]			id_offset,
+	output reg[`RegBus]			ex_offset,
 
-	input wire					ex_b_flag,
-	input wire[`RegBus]			id_b_offset,
-	output reg[`RegBus]			ex_b_offset
+	// For jumps and branches
+	input wire					ex_b_flag
 );
 
 always @ (posedge clk)
@@ -43,9 +44,9 @@ begin
 		ex_w_enable		<=	`WriteDisable;
 		ex_w_addr		<=	`NOPRegAddr;
 		ex_pc			<=	`ZeroWord;
-		ex_b_offset		<=	`ZeroWord;
-		
+		ex_offset		<=	`ZeroWord;
 	end
+
 	else if (ex_b_flag)
 	begin
 		ex_aluop		<=	`EX_NOP_OP;
@@ -55,9 +56,9 @@ begin
 		ex_w_enable		<=	`WriteDisable;
 		ex_w_addr		<=	`NOPRegAddr;
 		ex_pc			<=	`ZeroWord;
-		ex_b_offset		<=	`ZeroWord;
-		
+		ex_offset		<=	`ZeroWord;
 	end
+	
 	else if (stall[2] && !stall[3])
 	begin
 		ex_aluop		<=	`EX_NOP_OP;
@@ -66,9 +67,10 @@ begin
 		ex_r2_data		<=	`ZeroWord;
 		ex_w_enable		<=	`WriteDisable;
 		ex_w_addr		<=	`NOPRegAddr;
-		ex_b_offset		<=	`ZeroWord;
+		ex_offset		<=	`ZeroWord;
 		ex_pc			<=	`ZeroWord;
 	end
+
 	else if (!stall[2])
 	begin
 		ex_aluop		<=	id_aluop;
@@ -78,7 +80,7 @@ begin
 		ex_w_enable		<=	id_w_enable;
 		ex_w_addr		<=	id_w_addr;
 		ex_pc			<=	id_pc;
-		ex_b_offset		<=	id_b_offset;
+		ex_offset		<=	id_offset;
 	end
 end
 

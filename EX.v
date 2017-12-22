@@ -131,26 +131,16 @@ begin
 	else 
 	begin
 		case (aluop_i)
-			`EX_SLT_OP:
+			`EX_SLT_OP, `EX_SLTU_OP:
 			begin
 				arith_res	<=	{31'h0, lt_res};
 			end
 
-			`EX_SLTU_OP:
-			begin
-				arith_res	<=	{31'h0, lt_res};
-			end
-
-			`EX_ADD_OP: 
+			`EX_ADD_OP, `EX_SUB_OP: 
 			begin
 				arith_res	<=	sum_res;			
 			end
 			
-			`EX_SUB_OP:
-			begin
-				arith_res	<=	sum_res;
-			end
-
 			`EX_AUIPC_OP:
 			begin
 			  	arith_res	<=	pc_plus_offset;

@@ -76,6 +76,8 @@ _loop2: 				# for x1 = 0x14 to -0x0a
 	sub x1, x1, x3		# x1 -= x3
 	bge x1, x0, _loop2
 # x1 = 0xfffffff6
+	nop
+	nop
 
 
 

@@ -59,19 +59,19 @@
 `define FUNCT3_FENCEI 3'b001
 
 // funct7
-`define FUNCT7_SLLI 7'b0000000
+`define FUNCT7_SLLI 1'b0
 // SRLI_SRAI
-`define FUNCT7_SRLI 7'b0000000
-`define FUNCT7_SRAI 7'b0100000
+`define FUNCT7_SRLI 1'b0
+`define FUNCT7_SRAI 1'b1
 // ADD_SUB
-`define FUNCT7_ADD  7'b0000000
-`define FUNCT7_SUB  7'b0100000
-`define FUNCT7_SLL  7'b0000000
-`define FUNCT7_SLT  7'b0000000
-`define FUNCT7_SLTU 7'b0000000
-`define FUNCT7_XOR  7'b0000000
+`define FUNCT7_ADD  1'b0
+`define FUNCT7_SUB  1'b1
+`define FUNCT7_SLL  1'b0
+`define FUNCT7_SLT  1'b0
+`define FUNCT7_SLTU 1'b0
+`define FUNCT7_XOR  1'b0
 // SRL_SRA
-`define FUNCT7_SRL 7'b0000000
-`define FUNCT7_SRA 7'b0100000
-`define FUNCT7_OR  7'b0000000
-`define FUNCT7_AND 7'b0000000
+`define FUNCT7_SRL 1'b0
+`define FUNCT7_SRA 1'b1
+`define FUNCT7_OR  1'b0
+`define FUNCT7_AND 1'b0

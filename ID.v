@@ -53,7 +53,7 @@ wire[4:0]		rd;
 wire[2:0]		funct3;
 wire[4:0]		rs1;
 wire[4:0]		rs2;
-wire[6:0]		funct7;
+wire			funct7;
 wire[11:0]		imm_I;
 wire[11:0]		imm_S;
 wire[31:0]		imm_B;
@@ -66,7 +66,7 @@ assign rd			=	inst_i[11:7];
 assign funct3		=	inst_i[14:12];
 assign rs1			=	inst_i[19:15];
 assign rs2			=	inst_i[24:20];
-assign funct7		=	inst_i[31:25];
+assign funct7		=	inst_i[30];
 assign imm_I		=	inst_i[31:20];
 assign imm_S		=	{inst_i[31:25], inst_i[11:7]};
 assign imm_B		=	{{20{inst_i[31]}}, inst_i[7], 

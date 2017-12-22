@@ -24,7 +24,14 @@ module cpu(
 	input wire[`RegBus]			rom_data_i,
 
 	output wire					rom_ce_o,
-	output wire[`InstAddrBus]	rom_addr_o
+	output wire[`InstAddrBus]	rom_addr_o,
+
+	input wire[`RegBus]			ram_r_data_i,
+	output wire[`RegBus]		ram_addr_o,
+	output wire[`RegBus]		ram_w_data_o,
+	output wire					ram_w_enable_o,
+	output wire[3:0]			ram_sel_o,
+	output wire					ram_ce_o
 );
 
 // ================== STALL Control =================
@@ -124,7 +131,8 @@ wire					me2id_w_enable;
 wire[`RegAddrBus]		me2id_w_addr;
 wire[`RegBus]			me2id_w_data;
 wire[`InstAddrBus]		id_pc_o;
-wire[`RegBus]			id_b_offset_o;
+wire[`RegBus]			id_offset_o;
+wire					ex2id_pre_ld;
 
 ID id0 (
 	.rst(rst),
@@ -152,9 +160,11 @@ ID id0 (
 	.mem_w_data_i(me2id_w_data),
 
 	.stall_req_o(id_stall_req),
-	.b_offset_o(id_b_offset_o),
+	.offset_o(id_offset_o),
 	.b_flag_o(id_b_flag_o),
-	.b_target_addr_o(id_b_target_addr_o)
+	.b_target_addr_o(id_b_target_addr_o),
+
+	.ex_pre_ld(ex2id_pre_ld)
 );
 
 // ================== ID_EX =========================
@@ -167,7 +177,7 @@ wire						ex_w_enable_i;
 wire[`RegAddrBus]			ex_w_addr_i;
 
 wire[`InstAddrBus]			ex_pc_i;
-wire[`RegBus]				ex_b_offset_i;
+wire[`RegBus]				ex_offset_i;
 
 
 ID_EX id_ex0 (
@@ -191,14 +201,17 @@ ID_EX id_ex0 (
 
 	.stall(stall),
 	.ex_b_flag(ex_b_flag_o),
-	.id_b_offset(id_b_offset_o),
-	.ex_b_offset(ex_b_offset_i)
+	.id_offset(id_offset_o),
+	.ex_offset(ex_offset_i)
 );
 
 // ================== EX ===========================
 wire						ex_w_enable_o;
 wire[`RegAddrBus]			ex_w_addr_o;
 wire[`RegBus]				ex_w_data_o;
+
+wire[`AluOpBus]				ex_aluop_o;
+wire[`RegBus]				ex_mem_addr_o;
 
 EX ex0 (
 	.rst(rst),
@@ -216,9 +229,14 @@ EX ex0 (
 
 	.stall_req_o(ex_stall_req),
 
-	.b_offset_i(ex_b_offset_i),
+	.offset_i(ex_offset_i),
 	.b_flag_o(ex_b_flag_o),
-	.b_target_addr_o(ex_b_target_addr_o)
+	.b_target_addr_o(ex_b_target_addr_o),
+
+	.aluop_o(ex_aluop_o),
+	.mem_addr_o(ex_mem_addr_o),
+
+	.is_ld(ex2id_pre_ld)
 );
 
 // Forwarding wire
@@ -230,6 +248,8 @@ assign ex2id_w_data		=	ex_w_data_o;
 wire						me_w_enable_i;
 wire[`RegAddrBus]			me_w_addr_i;
 wire[`RegBus]				me_w_data_i;
+wire[`AluOpBus]				me_aluop_i;
+wire[`RegBus]				me_mem_addr_i;
 
 
 EX_ME ex_me0 (
@@ -243,7 +263,12 @@ EX_ME ex_me0 (
 	.me_w_addr(me_w_addr_i),
 	.me_w_data(me_w_data_i),
 
-	.stall(stall)
+	.stall(stall),
+
+	.ex_aluop(ex_aluop_o),
+	.ex_mem_addr(ex_mem_addr_o),
+	.me_aluop(me_aluop_i),
+	.me_mem_addr(me_mem_addr_i)
 );
 
 
@@ -263,7 +288,17 @@ ME me0 (
 	.w_addr_o(me_w_addr_o),
 	.w_data_o(me_w_data_o),
 
-	.stall_req_o(me_stall_req)
+	.stall_req_o(me_stall_req),
+
+	.aluop_i(me_aluop_i),
+	.mem_addr_i(me_mem_addr_i),
+
+	.mem_r_data_i(ram_r_data_i),
+	.mem_w_enable_o(ram_w_enable_o),
+	.mem_sel_o(ram_sel_o),
+	.mem_w_data_o(ram_w_data_o),
+	.mem_addr_o(ram_addr_o),
+	.mem_ce_o(ram_ce_o)
 );
 
 // Forwarding wire

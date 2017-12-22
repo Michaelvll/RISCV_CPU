@@ -49,12 +49,24 @@ wire[`InstAddrBus]	pc;
 wire[`InstAddrBus]	if_pc_o;
 wire[`InstBus]		if_inst_o;
 
+wire				ex_b_flag_o;
+wire[`RegBus]		ex_b_target_addr_o;
+
+wire				id_b_flag_o;
+wire[`RegBus]		id_b_target_addr_o;
+
 PC_reg pc_reg0(
 	.clk(clk),
 	.rst(rst),
 	.pc(pc),
 	.ce(rom_ce_o),
-	.stall(stall)
+	.stall(stall),
+
+	.ex_b_flag_i(ex_b_flag_o),
+	.ex_b_target_addr_i(ex_b_target_addr_o),
+
+	.id_b_flag_i(id_b_flag_o),
+	.id_b_target_addr_i(id_b_target_addr_o)
 );
 
 IF if0 (
@@ -82,7 +94,9 @@ IF_ID if_id0 (
 	.id_pc(id_pc_i),
 	.id_inst(id_inst_i),
 
-	.stall(stall)
+	.stall(stall),
+	.ex_b_flag(ex_b_flag_o),
+	.id_b_flag(id_b_flag_o)
 );
 
 // ================== ID ===========================
@@ -109,10 +123,13 @@ wire[`RegBus]			ex2id_w_data;
 wire					me2id_w_enable;
 wire[`RegAddrBus]		me2id_w_addr;
 wire[`RegBus]			me2id_w_data;
+wire[`InstAddrBus]		id_pc_o;
+wire[`RegBus]			id_b_offset_o;
 
 ID id0 (
 	.rst(rst),
 
+	.pc_i(id_pc_i),
 	.inst_i(id_inst_i),
 	.r1_data_i(id_r1_data_i),
 	.r2_data_i(id_r2_data_i),
@@ -126,6 +143,7 @@ ID id0 (
 	.r2_data_o(id_r2_data_o),
 	.w_enable_o(id_w_enable_o),
 	.w_addr_o(id_w_addr_o),
+	.pc_o(id_pc_o),
 	.ex_w_enable_i(ex2id_w_enable),
 	.ex_w_addr_i(ex2id_w_addr),
 	.ex_w_data_i(ex2id_w_data),
@@ -133,7 +151,10 @@ ID id0 (
 	.mem_w_addr_i(me2id_w_addr),
 	.mem_w_data_i(me2id_w_data),
 
-	.stall_req_o(id_stall_req)
+	.stall_req_o(id_stall_req),
+	.b_offset_o(id_b_offset_o),
+	.b_flag_o(id_b_flag_o),
+	.b_target_addr_o(id_b_target_addr_o)
 );
 
 // ================== ID_EX =========================
@@ -145,11 +166,15 @@ wire[`RegBus]				ex_r2_data_i;
 wire						ex_w_enable_i;
 wire[`RegAddrBus]			ex_w_addr_i;
 
+wire[`InstAddrBus]			ex_pc_i;
+wire[`RegBus]				ex_b_offset_i;
+
 
 ID_EX id_ex0 (
 	.clk(clk),
 	.rst(rst),
 
+	.id_pc(id_pc_o),
 	.id_aluop(id_aluop_o),
 	.id_alusel(id_alusel_o),
 	.id_r1_data(id_r1_data_o),
@@ -162,8 +187,12 @@ ID_EX id_ex0 (
 	.ex_r2_data(ex_r2_data_i),
 	.ex_w_enable(ex_w_enable_i),
 	.ex_w_addr(ex_w_addr_i),
+	.ex_pc(ex_pc_i),
 
-	.stall(stall)
+	.stall(stall),
+	.ex_b_flag(ex_b_flag_o),
+	.id_b_offset(id_b_offset_o),
+	.ex_b_offset(ex_b_offset_i)
 );
 
 // ================== EX ===========================
@@ -174,6 +203,7 @@ wire[`RegBus]				ex_w_data_o;
 EX ex0 (
 	.rst(rst),
 
+	.pc_i(ex_pc_i),
 	.aluop_i(ex_aluop_i),
 	.alusel_i(ex_alusel_i),
 	.r1_data_i(ex_r1_data_i),
@@ -184,7 +214,11 @@ EX ex0 (
 	.w_addr_o(ex_w_addr_o),
 	.w_data_o(ex_w_data_o),
 
-	.stall_req_o(ex_stall_req)
+	.stall_req_o(ex_stall_req),
+
+	.b_offset_i(ex_b_offset_i),
+	.b_flag_o(ex_b_flag_o),
+	.b_target_addr_o(ex_b_target_addr_o)
 );
 
 // Forwarding wire

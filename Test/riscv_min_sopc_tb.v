@@ -9,15 +9,16 @@ reg rst;
 
 initial
 begin
-	CLOCK_50 = 1'b0;
+	CLOCK_50 = 1'b1;
 	forever #10 CLOCK_50 = ~CLOCK_50;
 end
 
 initial
 begin
-	rst = 1'b0;
-	#800 rst = 1'b1;
-	#1000 $stop;
+	rst = 1'b1;
+	#1 		rst		= 	1'b0;
+	#1900 	rst		= 	1'b1;
+	#2000 	$stop;
 end
 
 Riscv_min_sopc riscv_min_sopc0(

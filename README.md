@@ -8,7 +8,7 @@ This is a project of Computer System class of ACM honor class in SJTU.
 
 1. The aluop is firstly numbered by the opcode+funct3+(funct7?), then it is renumbered by the sequence: 0x1,0x2,..., to make the number shorter for better performance.
 
-## 跳转的处理
+### 跳转的处理
 1. 不开启ID_BRANCHES和ID_JALR的情况下
 	
 	EX发现需要跳转，将b_flag置成1，从而清空if_id，id_ex中的内容，从而实现清空流水，同时更新pc值，指向目标位置。相当于是轮盘赌的分支预测方法。

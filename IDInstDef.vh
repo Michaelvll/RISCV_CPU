@@ -1,3 +1,5 @@
+`define PC_addr     5'h20
+
 // Code by Evensgn
 // Last Modify: 2017-12-16
 

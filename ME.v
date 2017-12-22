@@ -12,21 +12,28 @@ module ME(
 
 	output reg 				w_enable_o,
 	output reg[`RegAddrBus]	w_addr_o,
-	output reg[`RegBus]		w_data_o
+	output reg[`RegBus]		w_data_o,
+
+	output	reg				stall_req_o
 );
+
+always @(*)
+begin
+	stall_req_o = 1'b0;
+end
 
 always @ (*)
 begin
 	if (rst)
 	begin
 		w_enable_o	<=	`WriteDisable;
-		w_addr_o		<=	`NOPRegAddr;
+		w_addr_o	<=	`NOPRegAddr;
 		w_data_o	<=	`ZeroWord;
 	end
 	else
 	begin
 		w_enable_o	<=	w_enable_i;
-		w_addr_o		<=	w_addr_i;
+		w_addr_o	<=	w_addr_i;
 		w_data_o	<=	w_data_i;
 	end
 end

@@ -39,7 +39,10 @@ module ID (
 	output reg					stall_req_o,
 
 	output reg[`InstAddrBus]	pc_o,
-	output reg[`RegBus]			b_offset_o
+	output reg[`RegBus]			b_offset_o,
+
+	output reg					b_flag_o,
+	output reg[`InstAddrBus]	b_target_addr_o
 );
 
 reg instvalid;
@@ -71,6 +74,92 @@ assign imm_B		=	{{20{inst_i[31]}}, inst_i[7],
 assign imm_U		=	{inst_i[31:12], 12'h0};
 assign imm_J		=	{{12{inst_i[31]}}, inst_i[19:12],
 							inst_i[20], inst_i[30:21],1'h0};
+
+wire				b_flag;
+wire[`InstAddrBus]	b_target_res;
+
+assign b_target_res = (opcode == `OP_JAL)? imm_J + pc_i: imm_B + pc_i;
+
+`ifdef ID_BRANCHES
+// This part may cause lower speed
+wire				lt_res;
+wire				gt_res;
+wire				eq_res;
+assign lt_res = ((aluop_o == `EX_BLT_OP ||
+				aluop_o == `EX_BGE_OP)? 
+				$signed(r1_data_o) < $signed(r2_data_o):
+				r1_data_o < r2_data_o);
+
+assign eq_res = (r1_data_o == r2_data_o);
+// end
+`endif //ID_BRANCHES
+
+`ifdef ID_JALR
+// This part can be much slower than the id_branches
+wire[`RegBus] sum_res;
+assign sum_res = r1_data_o + {{20{imm_I[11]}}, imm_I};
+//end
+`endif //ID_JALR
+
+
+always @(*)
+begin
+	case(opcode)
+		`OP_JAL:
+		begin
+			b_flag_o		<=	1'b1;
+			b_target_addr_o	<=	b_target_res;
+		end
+`ifdef ID_JALR
+		`OP_JALR:
+		begin
+			b_flag_o		<=	1'b1;
+			b_target_addr_o	<=	sum_res;
+		end
+`endif //ID_JALR
+
+`ifdef ID_BRANCHES
+// This part may cause lower speed
+		`OP_BRANCH:
+		begin
+			case (funct3)
+				`FUNCT3_BEQ:
+				begin
+					b_flag_o		<=	eq_res;
+					b_target_addr_o	<=	b_target_res;
+				end
+				`FUNCT3_BNE:
+				begin
+					b_flag_o		<=	~eq_res;
+					b_target_addr_o	<=	b_target_res;
+				end
+				`FUNCT3_BLT, `FUNCT3_BLTU:
+				begin
+					b_flag_o		<=	lt_res;
+					b_target_addr_o	<=	b_target_res;
+				end
+				`FUNCT3_BGE, `FUNCT3_BGEU:
+				begin
+					b_flag_o		<=	~lt_res;
+					b_target_addr_o	<=	b_target_res;
+				end
+				  
+				default:
+				begin
+					b_flag_o		<=	1'b0;
+					b_target_addr_o	<=	`ZeroWord;
+				end
+			endcase
+		end
+// end
+`endif //ID_BRANCHES
+		default:
+		begin
+			b_flag_o		<=	1'b0;
+			b_target_addr_o	<=	`ZeroWord;
+		end
+	endcase
+end
 
 
 always @ (*)

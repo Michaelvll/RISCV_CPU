@@ -15,7 +15,8 @@ module IF_ID(
 
 	input wire[5:0]				stall,
 
-	input wire					ex_b_flag
+	input wire					ex_b_flag,
+	input wire					id_b_flag
 );
 
 always @ (posedge clk)
@@ -25,7 +26,7 @@ begin
 		id_pc   <=  `ZeroWord;
 		id_inst <=  `ZeroWord;
 	end
-	else if (ex_b_flag)
+	else if (id_b_flag || ex_b_flag)
 	begin
 		id_pc 	<=	`ZeroWord;
 		id_inst	<=	`ZeroWord;

@@ -72,18 +72,18 @@ begin
 		case (aluop_i)
 			`EX_JAL_OP:
 			begin
-				b_flag_o			<=	1'b1;
-				b_target_addr_o		<=	pc_plus_offset;
 				J_B_res				<=	pc_plus_4;
 			end
 			
 			`EX_JALR_OP:
 			begin
+`ifndef ID_JALR
 				b_flag_o			<=	1'b1;
 				b_target_addr_o		<=	{sum_res[31:1], 1'h0};
+`endif //ID_JALR
 				J_B_res				<=	pc_plus_4;
 			end
-
+`ifndef ID_BRANCHES
 			`EX_BEQ_OP:
 			begin
 				b_flag_o			<=	eq_res;
@@ -107,7 +107,7 @@ begin
 				b_flag_o			<=	~lt_res;
 				b_target_addr_o		<=	pc_plus_offset;
 			end
-
+`endif //ID_BRANCHES
 			default:
 			begin
 				b_flag_o			<=	1'b0;

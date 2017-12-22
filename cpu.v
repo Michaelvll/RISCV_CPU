@@ -52,6 +52,9 @@ wire[`InstBus]		if_inst_o;
 wire				ex_b_flag_o;
 wire[`RegBus]		ex_b_target_addr_o;
 
+wire				id_b_flag_o;
+wire[`RegBus]		id_b_target_addr_o;
+
 PC_reg pc_reg0(
 	.clk(clk),
 	.rst(rst),
@@ -59,8 +62,11 @@ PC_reg pc_reg0(
 	.ce(rom_ce_o),
 	.stall(stall),
 
-	.b_flag_i(ex_b_flag_o),
-	.b_target_addr_i(ex_b_target_addr_o)
+	.ex_b_flag_i(ex_b_flag_o),
+	.ex_b_target_addr_i(ex_b_target_addr_o),
+
+	.id_b_flag_i(id_b_flag_o),
+	.id_b_target_addr_i(id_b_target_addr_o)
 );
 
 IF if0 (
@@ -89,7 +95,8 @@ IF_ID if_id0 (
 	.id_inst(id_inst_i),
 
 	.stall(stall),
-	.ex_b_flag(ex_b_flag_o)
+	.ex_b_flag(ex_b_flag_o),
+	.id_b_flag(id_b_flag_o)
 );
 
 // ================== ID ===========================
@@ -145,7 +152,9 @@ ID id0 (
 	.mem_w_data_i(me2id_w_data),
 
 	.stall_req_o(id_stall_req),
-	.b_offset_o(id_b_offset_o)
+	.b_offset_o(id_b_offset_o),
+	.b_flag_o(id_b_flag_o),
+	.b_target_addr_o(id_b_target_addr_o)
 );
 
 // ================== ID_EX =========================

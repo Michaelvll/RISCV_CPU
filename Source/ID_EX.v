@@ -14,8 +14,8 @@ module ID_EX(
 	input wire[`RegBus]			id_r1_data,
 	input wire[`RegBus]			id_r2_data,
 	input wire					id_w_enable,
-	input wire[`RegBus]			id_w_addr,
-	input wire[`RegBus]			id_link_addr,
+	input wire[`RegAddrBus]		id_w_addr,
+	
 
 	output reg[`AluOpBus]		ex_aluop,
 	output reg[`AluOutSelBus]	ex_alusel,

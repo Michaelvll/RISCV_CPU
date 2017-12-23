@@ -1,5 +1,5 @@
 	.org 0x0
-	.global _start
+	.globl _start
 
 _start:
 	lui	x3,0x0eeff

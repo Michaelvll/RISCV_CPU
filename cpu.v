@@ -155,9 +155,9 @@ ID id0 (
 	.ex_w_enable_i(ex2id_w_enable),
 	.ex_w_addr_i(ex2id_w_addr),
 	.ex_w_data_i(ex2id_w_data),
-	.mem_w_enable_i(me2id_w_enable),
-	.mem_w_addr_i(me2id_w_addr),
-	.mem_w_data_i(me2id_w_data),
+	.me_w_enable_i(me2id_w_enable),
+	.me_w_addr_i(me2id_w_addr),
+	.me_w_data_i(me2id_w_data),
 
 	.stall_req_o(id_stall_req),
 	.offset_o(id_offset_o),

@@ -33,9 +33,9 @@ module ID (
 	input wire[`RegBus]			ex_w_data_i,
 
 	// Forwarding from mem
-	input wire					mem_w_enable_i,
-	input wire[`RegAddrBus]		mem_w_addr_i,
-	input wire[`RegBus]			mem_w_data_i,
+	input wire					me_w_enable_i,
+	input wire[`RegAddrBus]		me_w_addr_i,
+	input wire[`RegBus]			me_w_data_i,
 
 	output wire					stall_req_o,
 	output reg[`RegBus]			offset_o,
@@ -44,13 +44,11 @@ module ID (
 	output reg[`InstAddrBus]	pc_o,
 
 	output reg					b_flag_o,
-	output reg[`InstAddrBus]	b_target_addr_o,
+	output reg[`InstAddrBus]	b_target_addr_o
 	
 	// For load and store
-	output wire[`RegBus]		inst_o
 );
 
-assign inst_o = inst_i;
 
 reg instvalid;
 reg[`RegBus] imm;
@@ -960,9 +958,9 @@ begin
 		r1_data_o		<=	ex_w_data_i;
 		r1_stall_req	<= 1'b0;
 	end		
-	else if (r1_enable_o && mem_w_enable_i && mem_w_addr_i == r1_addr_o)
+	else if (r1_enable_o && me_w_enable_i && me_w_addr_i == r1_addr_o)
 	begin
-		r1_data_o		<=	mem_w_data_i;
+		r1_data_o		<=	me_w_data_i;
 		r1_stall_req	<= 1'b0;
 	end	
 	else if (r1_enable_o)
@@ -998,9 +996,9 @@ begin
 		r2_data_o 		<=	ex_w_data_i;
 		r2_stall_req	<=	1'b0;
 	end		
-	else if (r2_enable_o && mem_w_enable_i && mem_w_addr_i == r2_addr_o)
+	else if (r2_enable_o && me_w_enable_i && me_w_addr_i == r2_addr_o)
 	begin
-		r2_data_o		<=	mem_w_data_i;
+		r2_data_o		<=	me_w_data_i;
 		r2_stall_req	<=	1'b0;
 	end		
 	else if (r2_enable_o)

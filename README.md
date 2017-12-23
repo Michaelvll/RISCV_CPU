@@ -8,21 +8,36 @@ This is a project of Computer System class of ACM honor class in SJTU.
 
 1. The aluop is firstly numbered by the opcode+funct3+(funct7?), then it is renumbered by the sequence: 0x1,0x2,..., to make the number shorter for better performance.
 
-### 跳转的处理
-1. 不开启ID_BRANCHES和ID_JALR的情况下
+### Branches and Jalr
+
+1. When turn off the switches *ID_BRANCHES* and *ID_JALR*
 	
-	EX发现需要跳转，将b_flag置成1，从而清空if_id，id_ex中的内容，从而实现清空流水，同时更新pc值，指向目标位置。相当于是轮盘赌的分支预测方法。
-1. 开启两个开关的情况下
-	ID阶段判断是否发生跳转，直接对IF_ID进行相应的清空操作，并向pc发出相应的修改信号，其中ID_BRANCHES会在一定程度上拖慢ID的速度，可能会造成流水不均衡（未测试），而ID_JALR的影响可能会更大。
+	EX find it needs to change PC, it will set b_flag to 1, so as to clear the content in if_id and id_ex, which clear the pipeline before EX, and set PC to the target address. This method can be regarded as always predict that the branch will not taken.
+1. When turn on the switches
 
-## Problem and solve
+	ID will find out whether should PC be changed, and clear IF_ID directly, and set PC to the target address. ID_BRANCHES will slow down ID to some degree, which may cause the pipeline become unbalanced (untested!), and the impact of ID_JALR is much larger than the former one.
 
-1. 如何处理指令造成的暂停流水
+### Stall for load
+
+As load can should take one more cycle to get the result of a register, it may stall the pipeline to avoid RAW hazard.
+
+### Makefile for test generation
+
+I write a makefile for make, which can make both .s and .cpp files automatically. And can easily compile the .cpp to .S file and see the dump result by using it. The guidance for using it is in [Makefile for risc v tool chain](https://gist.github.com/Michaelvll/46e069e29a8448326acadd7bb2bb1654).
+
+## Support ISA
+
+Now this project support almost all of the commands in rv32i. The suppoted commands are listed in the [Appendix A](#ApdxA)
+
+## Future
+
+I am trying to change the architecture from Havard architecture to Von Neumann architecture and add uart for memory access with icache and dcache.
+
+## Q&A
+
+1. Why op_imm, like xori command doesn't support imm larger than 0x7ff such as 0x801?
 	
-	我的想法：
-		
-		见xmind文件		
-
+	 Because the imm is signed.
 
 ## Reference
 
@@ -30,7 +45,56 @@ This is a project of Computer System class of ACM honor class in SJTU.
 1. 《自己动手写CPU》雷思磊
 1. [A Mips CPU written in verilog by sxtyzhangzk](https://github.com/sxtyzhangzk/mips-cpu.git)
 
-## Questions
+## Appendix
 
-1. Why op_imm, like xori command doesn't support imm larger than 0x7ff such as 0x801?
-	Because the imm is signed.
+### <span id="ApdxA">A. Suppoted commands</span>
+
+| Command | Support |
+|---------|---------|
+| LUI     | [O]     |
+| AUIPC   | [O]     |
+| JAL     | [O]     |
+| JALR    | [O]     |
+| BEQ     | [O]     |
+| BNE     | [O]     |
+| BLT     | [O]     |
+| BGE     | [O]     |
+| BLTU    | [O]     |
+| BGEU    | [O]     |
+| LB      | [O]     |
+| LH      | [O]     |
+| LW      | [O]     |
+| LBU     | [O]     |
+| LHU     | [O]     |
+| SB      | [O]     |
+| SH      | [O]     |
+| SW      | [O]     |
+| ADDI    | [O]     |
+| SLTI    | [O]     |
+| SLTIU   | [O]     |
+| XORI    | [O]     |
+| ORI     | [O]     |
+| ANDI    | [O]     |
+| SLLI    | [O]     |
+| SRLI    | [O]     |
+| SRAI    | [O]     |
+| ADD     | [O]     |
+| SUB     | [O]     |
+| SLL     | [O]     |
+| SLT     | [O]     |
+| SLTU    | [O]     |
+| XOR     | [O]     |
+| SRL     | [O]     |
+| SRA     | [O]     |
+| OR      | [O]     |
+| AND     | [O]     |
+| Fence   | [X]     |
+| Fence.I | [X]     |
+| ECALL   | [X]     |
+| EBREAK  | [X]     |
+| CSRRW   | [X]     |
+| CSRRS   | [X]     |
+| CSRRC   | [X]     |
+| CSRRWI  | [X]     |
+| CSRRSI  | [X]     |
+| CSRRCI  | [X]     |

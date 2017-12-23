@@ -1,5 +1,6 @@
 `ifndef _CPU
-`define	_CPU
+`define _CPU
+`timescale 1ns/1ps
 
 `include "Defines.vh"
 `include "IDInstDef.vh"

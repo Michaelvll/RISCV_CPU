@@ -58,21 +58,21 @@ begin
 				mem_addr_o		<=	mem_addr_i;
 				mem_w_data_o		<=	`ZeroWord;
 				case (mem_addr_i[1:0])
-					2'b00:	begin
+					2'b11:	begin
 						w_data_o	<=	{{24{mem_r_data_i[31]}},mem_r_data_i[31:24]};
-						mem_sel_o	<=	4'b0001;
-					end
-					2'b01:	begin
-						w_data_o	<=	{{24{mem_r_data_i[23]}},mem_r_data_i[23:16]};
-						mem_sel_o	<=	4'b0010;
+						mem_sel_o	<=	4'b0000;
 					end
 					2'b10:	begin
-						w_data_o	<=	{{24{mem_r_data_i[15]}},mem_r_data_i[15:8]};
-						mem_sel_o	<=	4'b0100;
+						w_data_o	<=	{{24{mem_r_data_i[23]}},mem_r_data_i[23:16]};
+						mem_sel_o	<=	4'b0000;
 					end
-					2'b11:	begin
+					2'b01:	begin
+						w_data_o	<=	{{24{mem_r_data_i[15]}},mem_r_data_i[15:8]};
+						mem_sel_o	<=	4'b0000;
+					end
+					2'b00:	begin
 						w_data_o	<=	{{24{mem_r_data_i[7]}},mem_r_data_i[7:0]};
-						mem_sel_o	<=	4'b1000;
+						mem_sel_o	<=	4'b0000;
 					end
 					default:	begin
 						w_data_o	<=	`ZeroWord;
@@ -87,13 +87,13 @@ begin
 				mem_addr_o		<= mem_addr_i;
 				mem_w_data_o		<=	`ZeroWord;
 				case (mem_addr_i[1:0])
-					2'b00:	begin
-						w_data_o	<=	{{16{mem_r_data_i[31]}},mem_r_data_i[31:16]};
-						mem_sel_o	<=	4'b0011;
-					end
 					2'b10:	begin
+						w_data_o	<=	{{16{mem_r_data_i[31]}},mem_r_data_i[31:16]};
+						mem_sel_o	<=	4'b0000;
+					end
+					2'b00:	begin
 						w_data_o	<=	{{16{mem_r_data_i[15]}},mem_r_data_i[15:0]};
-						mem_sel_o	<=	4'b1100;
+						mem_sel_o	<=	4'b0000;
 					end
 					default:	begin
 						w_data_o	<=	`ZeroWord;
@@ -105,9 +105,9 @@ begin
 				mem_w_enable_o	<=	`WriteDisable;
 				mem_ce_o		<=	`ChipEnable;
 				mem_addr_o		<=	mem_addr_i;
-				mem_w_data_o		<=	`ZeroWord;				
+				mem_w_data_o	<=	`ZeroWord;				
 				w_data_o		<=	mem_r_data_i;
-				mem_sel_o		<=	4'b1111;
+				mem_sel_o		<=	4'b0000;
 			end
 			`EX_LBU_OP:
 			begin
@@ -116,21 +116,21 @@ begin
 				mem_addr_o		<=	mem_addr_i;
 				mem_w_data_o		<=	`ZeroWord;			
 				case (mem_addr_i[1:0])
-					2'b00:	begin
+					2'b11:	begin
 						w_data_o	<=	{{24{1'b0}},mem_r_data_i[31:24]};
-						mem_sel_o	<=	4'b0001;
-					end
-					2'b01:	begin
-						w_data_o	<=	{{24{1'b0}},mem_r_data_i[23:16]};
-						mem_sel_o	<=	4'b0010;
+						mem_sel_o	<=	4'b0000;
 					end
 					2'b10:	begin
-						w_data_o	<=	{{24{1'b0}},mem_r_data_i[15:8]};
-						mem_sel_o	<=	4'b0100;
+						w_data_o	<=	{{24{1'b0}},mem_r_data_i[23:16]};
+						mem_sel_o	<=	4'b0000;
 					end
-					2'b11:	begin
+					2'b01:	begin
+						w_data_o	<=	{{24{1'b0}},mem_r_data_i[15:8]};
+						mem_sel_o	<=	4'b0000;
+					end
+					2'b00:	begin
 						w_data_o	<=	{{24{1'b0}},mem_r_data_i[7:0]};
-						mem_sel_o	<=	4'b1000;
+						mem_sel_o	<=	4'b0000;
 					end
 					default:	begin
 						w_data_o	<=	`ZeroWord;
@@ -145,13 +145,13 @@ begin
 				mem_addr_o		<=	mem_addr_i;
 				mem_w_data_o	<=	`ZeroWord;				
 				case (mem_addr_i[1:0])
-					2'b00:	begin
-						w_data_o	<=	{{16{1'b0}},mem_r_data_i[31:16]};
-						mem_sel_o	<=	4'b0011;
-					end
 					2'b10:	begin
+						w_data_o	<=	{{16{1'b0}},mem_r_data_i[31:16]};
+						mem_sel_o	<=	4'b0000;
+					end
+					2'b00:	begin
 						w_data_o	<=	{{16{1'b0}},mem_r_data_i[15:0]};
-						mem_sel_o	<=	4'b1100;
+						mem_sel_o	<=	4'b0000;
 					end
 					default:	begin
 						w_data_o	<=	`ZeroWord;

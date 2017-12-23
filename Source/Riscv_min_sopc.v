@@ -1,5 +1,8 @@
 `ifndef _RESICV_MIN_SOPC
 `define _RESICV_MIN_SOPC
+`timescale 1ns/1ps
+
+
 `include "Defines.vh"
 `include "IDInstDef.vh"
 `include "cpu.v"

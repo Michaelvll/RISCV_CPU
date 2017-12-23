@@ -14,18 +14,26 @@ module EX(
 	input wire[`RegBus]			r2_data_i,
 	input wire					w_enable_i,
 	input wire[`RegAddrBus]		w_addr_i,
-	input wire[`RegBus]			link_addr_i,
 
 	output reg 					w_enable_o,
 	output reg[`RegAddrBus]		w_addr_o,
 	output reg[`RegBus]			w_data_o,
 
 	output reg					stall_req_o,
+	input wire[`RegBus]			offset_i,
 
-	input wire[`RegBus]			b_offset_i,
+	//	For jumps and branches
 	output reg 					b_flag_o,
-	output reg[`InstAddrBus]	b_target_addr_o
+	output reg[`InstAddrBus]	b_target_addr_o,
+
+	// For load and store
+	output wire[`AluOpBus]		aluop_o,
+	output wire[`RegBus]		mem_addr_o,
+	// The data for store will be in w_data_o
+
+	output wire					is_ld
 );
+
 
 
 reg[`RegBus]		logic_res;
@@ -56,7 +64,19 @@ assign eq_res = (r1_data_i == r2_data_i);
 
 assign pc_plus_4 = pc_i + 4;
 
-assign pc_plus_offset = pc_i + b_offset_i;
+assign pc_plus_offset = pc_i + offset_i;
+
+// ============ ALU LOAD_STORE part ================
+
+assign aluop_o = aluop_i;
+
+assign mem_addr_o = r1_data_i + offset_i;
+
+assign is_ld = ((aluop_i == `EX_LB_OP) || 
+				(aluop_i == `EX_LH_OP) ||
+				(aluop_i == `EX_LW_OP) ||
+				(aluop_i == `EX_LBU_OP)||
+				(aluop_i == `EX_LHU_OP)) ? 1'b1 : 1'b0;
 
 // ============ ALU J_B part ================
 
@@ -255,6 +275,10 @@ begin
 			`EX_RES_J_B:
 			begin
 				w_data_o	<=	J_B_res;
+			end
+			`EX_RES_LD_ST:
+			begin
+				w_data_o	<=	r2_data_i;
 			end
 			default:
 			begin

@@ -1,5 +1,5 @@
 .org 0x0
-.global _start
+.globl _start
 
 _start:
 	lui x2, 0x04040			# x2				=	0x04040000

@@ -27,26 +27,36 @@ module ID (
 	output reg[`RegAddrBus]	 	w_addr_o,
 
 	// Forwarding from ex
+	input wire					ex_pre_ld,
 	input wire 					ex_w_enable_i,
 	input wire[`RegAddrBus]		ex_w_addr_i,
 	input wire[`RegBus]			ex_w_data_i,
 
 	// Forwarding from mem
-	input wire					mem_w_enable_i,
-	input wire[`RegAddrBus]		mem_w_addr_i,
-	input wire[`RegBus]			mem_w_data_i,
+	input wire					me_w_enable_i,
+	input wire[`RegAddrBus]		me_w_addr_i,
+	input wire[`RegBus]			me_w_data_i,
 
-	output reg					stall_req_o,
+	output wire					stall_req_o,
+	output reg[`RegBus]			offset_o,
 
+	// For jumps and branches
 	output reg[`InstAddrBus]	pc_o,
-	output reg[`RegBus]			b_offset_o,
 
 	output reg					b_flag_o,
 	output reg[`InstAddrBus]	b_target_addr_o
+	
+	// For load and store
 );
+
 
 reg instvalid;
 reg[`RegBus] imm;
+reg pre_ld;
+reg r1_stall_req;
+reg r2_stall_req;
+
+assign stall_req_o = r1_stall_req | r2_stall_req;
 
 wire[6:0]		opcode;
 wire[4:0]		rd;
@@ -175,9 +185,9 @@ begin
 		w_enable_o		<= 	`WriteDisable;
 		w_addr_o		<= 	`NOPRegAddr;
 		instvalid		<=	`InstValid;
-		imm 			<= `ZeroWord;
+		imm 			<=	`ZeroWord;
 
-		stall_req_o		<=	1'b0;
+		pre_ld		<=	1'b0;
 		
 	end
 
@@ -198,7 +208,7 @@ begin
 				w_addr_o		<=	rd;
 				instvalid		<=	`InstValid;
 
-				stall_req_o		<=	1'b0;
+				pre_ld		<=	1'b0;
 				
 			end
 
@@ -215,7 +225,7 @@ begin
 				w_addr_o		<=	rd;
 				instvalid		<=	`InstValid;
 
-				stall_req_o		<=	1'b0;
+				pre_ld		<=	1'b0;
 			end
 
 			`OP_JAL:
@@ -231,7 +241,7 @@ begin
 				w_addr_o		<=	rd;
 				instvalid		<=	`InstValid;
 
-				stall_req_o		<=	1'b0;
+				pre_ld		<=	1'b0;
 				
 			end
 
@@ -248,7 +258,7 @@ begin
 				w_addr_o		<=	rd;
 				instvalid		<=	`InstValid;
 
-				stall_req_o		<=	1'b0;
+				pre_ld		<=	1'b0;
 			end
 
 			`OP_BRANCH:
@@ -266,7 +276,7 @@ begin
 						w_enable_o		<=	`WriteDisable;
 						w_addr_o		<=	`ZeroWord;
 						instvalid		<=	`InstValid;
-						stall_req_o		<=	1'b0;
+						pre_ld		<=	1'b0;
 					end
 					`FUNCT3_BNE:
 					begin
@@ -280,7 +290,7 @@ begin
 						w_enable_o		<=	`WriteDisable;
 						w_addr_o		<=	`ZeroWord;
 						instvalid		<=	`InstValid;
-						stall_req_o		<=	1'b0;
+						pre_ld		<=	1'b0;
 					end
 					`FUNCT3_BLT:
 					begin
@@ -294,7 +304,7 @@ begin
 						w_enable_o		<=	`WriteDisable;
 						w_addr_o		<=	`ZeroWord;
 						instvalid		<=	`InstValid;
-						stall_req_o		<=	1'b0;
+						pre_ld		<=	1'b0;
 					end
 					`FUNCT3_BGE:
 					begin
@@ -308,7 +318,7 @@ begin
 						w_enable_o		<=	`WriteDisable;
 						w_addr_o		<=	`ZeroWord;
 						instvalid		<=	`InstValid;
-						stall_req_o		<=	1'b0;
+						pre_ld		<=	1'b0;
 					end
 					`FUNCT3_BLTU:
 					begin
@@ -322,7 +332,7 @@ begin
 						w_enable_o		<=	`WriteDisable;
 						w_addr_o		<=	`ZeroWord;
 						instvalid		<=	`InstValid;
-						stall_req_o		<=	1'b0;
+						pre_ld		<=	1'b0;
 					end
 					`FUNCT3_BGEU:
 					begin
@@ -336,10 +346,192 @@ begin
 						w_enable_o		<=	`WriteDisable;
 						w_addr_o		<=	`ZeroWord;
 						instvalid		<=	`InstValid;
-						stall_req_o		<=	1'b0;
+						pre_ld		<=	1'b0;
 					end
 					default:
 					begin
+						aluop_o			<=	`EX_NOP_OP;
+						alusel_o		<=	`EX_RES_NOP;
+						r1_enable_o		<=	1'b0;
+						r2_enable_o		<=	1'b0;
+						r1_addr_o		<=	`NOPRegAddr;
+						r2_addr_o		<=	`NOPRegAddr;
+						w_enable_o		<= 	`WriteDisable;
+						w_addr_o		<= 	`NOPRegAddr;
+						instvalid		<=	`InstValid;
+						imm 			<=	`ZeroWord;
+
+						pre_ld		<=	1'b0;
+					end
+				endcase
+			end
+
+			`OP_LOAD:
+			begin
+				case (funct3)
+					`FUNCT3_LB:
+					begin
+						aluop_o			<=	`EX_LB_OP;
+						alusel_o		<=	`EX_RES_LD_ST;
+						r1_enable_o		<=	1'b1;
+						r2_enable_o		<=	1'b0;
+						r1_addr_o		<=	rs1;
+						r2_addr_o		<=	rs2;
+						imm				<=	{{20{imm_I[11]}}, imm_I[11: 0]};
+						w_enable_o		<=	`WriteEnable;
+						w_addr_o		<=	rd;
+						instvalid		<=	`InstValid;
+
+						pre_ld		<=	1'b1;
+					end 
+					
+					`FUNCT3_LH:
+					begin
+						aluop_o			<=	`EX_LH_OP;
+						alusel_o		<=	`EX_RES_LD_ST;
+						r1_enable_o		<=	1'b1;
+						r2_enable_o		<=	1'b0;
+						r1_addr_o		<=	rs1;
+						r2_addr_o		<=	rs2;
+						imm				<=	{{20{imm_I[11]}}, imm_I[11: 0]};
+						w_enable_o		<=	`WriteEnable;
+						w_addr_o		<=	rd;
+						instvalid		<=	`InstValid;
+
+						pre_ld		<=	1'b1;
+					end
+
+					`FUNCT3_LW:
+					begin
+						aluop_o			<=	`EX_LW_OP;
+						alusel_o		<=	`EX_RES_LD_ST;
+						r1_enable_o		<=	1'b1;
+						r2_enable_o		<=	1'b0;
+						r1_addr_o		<=	rs1;
+						r2_addr_o		<=	rs2;
+						imm				<=	{{20{imm_I[11]}}, imm_I[11: 0]};
+						w_enable_o		<=	`WriteEnable;
+						w_addr_o		<=	rd;
+						instvalid		<=	`InstValid;
+
+						pre_ld		<=	1'b1;
+					end
+
+					`FUNCT3_LBU:
+					begin
+						aluop_o			<=	`EX_LBU_OP;
+						alusel_o		<=	`EX_RES_LD_ST;
+						r1_enable_o		<=	1'b1;
+						r2_enable_o		<=	1'b0;
+						r1_addr_o		<=	rs1;
+						r2_addr_o		<=	rs2;
+						imm				<=	{{20{imm_I[11]}}, imm_I[11: 0]};
+						w_enable_o		<=	`WriteEnable;
+						w_addr_o		<=	rd;
+						instvalid		<=	`InstValid;
+
+						pre_ld		<=	1'b1;
+					end
+
+					`FUNCT3_LHU:
+					begin
+						aluop_o			<=	`EX_LHU_OP;
+						alusel_o		<=	`EX_RES_LD_ST;
+						r1_enable_o		<=	1'b1;
+						r2_enable_o		<=	1'b0;
+						r1_addr_o		<=	rs1;
+						r2_addr_o		<=	rs2;
+						imm				<=	{{20{imm_I[11]}}, imm_I[11: 0]};
+						w_enable_o		<=	`WriteEnable;
+						w_addr_o		<=	rd;
+						instvalid		<=	`InstValid;
+
+						pre_ld		<=	1'b1;
+					end
+
+					default:
+					begin
+						aluop_o			<=	`EX_NOP_OP;
+						alusel_o		<=	`EX_RES_NOP;
+						r1_enable_o		<=	1'b0;
+						r2_enable_o		<=	1'b0;
+						r1_addr_o		<=	`NOPRegAddr;
+						r2_addr_o		<=	`NOPRegAddr;
+						w_enable_o		<= 	`WriteDisable;
+						w_addr_o		<= 	`NOPRegAddr;
+						instvalid		<=	`InstValid;
+						imm 			<=	`ZeroWord;
+
+						pre_ld		<=	1'b0;
+					end 
+				endcase
+			end
+
+			`OP_STORE:
+			begin
+				case (funct3)
+				  	`FUNCT3_SB: 
+					begin
+						aluop_o			<=	`EX_SB_OP;
+						alusel_o		<=	`EX_RES_LD_ST;
+						r1_enable_o		<=	1'b1;
+						r2_enable_o		<=	1'b1;
+						r1_addr_o		<=	rs1;
+						r2_addr_o		<=	rs2;
+						imm				<=	{{20{imm_S[11]}}, imm_S[11: 0]};
+						w_enable_o		<=	`WriteDisable;
+						w_addr_o		<=	rd;
+						instvalid		<=	`InstValid;
+
+						pre_ld		<=	1'b0;
+					end
+
+					`FUNCT3_SH:
+					begin
+						aluop_o			<=	`EX_SH_OP;
+						alusel_o		<=	`EX_RES_LD_ST;
+						r1_enable_o		<=	1'b1;
+						r2_enable_o		<=	1'b1;
+						r1_addr_o		<=	rs1;
+						r2_addr_o		<=	rs2;
+						imm				<=	{{20{imm_S[11]}}, imm_S[11: 0]};
+						w_enable_o		<=	`WriteDisable;
+						w_addr_o		<=	rd;
+						instvalid		<=	`InstValid;
+
+						pre_ld		<=	1'b0;
+					end
+
+					`FUNCT3_SW:
+					begin
+						aluop_o			<=	`EX_SW_OP;
+						alusel_o		<=	`EX_RES_LD_ST;
+						r1_enable_o		<=	1'b1;
+						r2_enable_o		<=	1'b1;
+						r1_addr_o		<=	rs1;
+						r2_addr_o		<=	rs2;
+						imm				<=	{{20{imm_S[11]}}, imm_S[11: 0]};
+						w_enable_o		<=	`WriteDisable;
+						w_addr_o		<=	rd;
+						instvalid		<=	`InstValid;
+
+						pre_ld		<=	1'b0;
+					end
+
+				  	default:
+					begin
+						aluop_o			<=	`EX_NOP_OP;
+						alusel_o		<=	`EX_RES_NOP;
+						r1_enable_o		<=	1'b0;
+						r2_enable_o		<=	1'b0;
+						r1_addr_o		<=	`NOPRegAddr;
+						r2_addr_o		<=	`NOPRegAddr;
+						w_enable_o		<= 	`WriteDisable;
+						w_addr_o		<= 	`NOPRegAddr;
+						instvalid		<=	`InstValid;
+						imm 			<=	`ZeroWord;
+
+						pre_ld		<=	1'b0;
 					end
 				endcase
 			end
@@ -359,7 +551,7 @@ begin
 						w_enable_o		<=	`WriteEnable;
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
-						stall_req_o		<=	1'b0;
+						pre_ld		<=	1'b0;
 					end
 
 					`FUNCT3_SLTI:
@@ -374,7 +566,7 @@ begin
 						w_enable_o		<=	`WriteEnable;
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
-						stall_req_o		<=	1'b0;
+						pre_ld		<=	1'b0;
 					end
 
 					`FUNCT3_SLTIU:
@@ -389,7 +581,7 @@ begin
 						w_enable_o		<=	`WriteEnable;
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
-						stall_req_o		<=	1'b0;
+						pre_ld		<=	1'b0;
 					end
 					
 					`FUNCT3_XORI:
@@ -404,7 +596,7 @@ begin
 						w_enable_o		<=	`WriteEnable;
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
-						stall_req_o		<=	1'b0;
+						pre_ld		<=	1'b0;
 					end
 
 					`FUNCT3_ORI: // ORI
@@ -419,7 +611,7 @@ begin
 						w_enable_o		<=	`WriteEnable;
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
-						stall_req_o		<=	1'b0;
+						pre_ld		<=	1'b0;
 					end
 
 					`FUNCT3_ANDI:
@@ -434,7 +626,7 @@ begin
 						w_enable_o		<=	`WriteEnable;
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
-						stall_req_o		<=	1'b0;
+						pre_ld		<=	1'b0;
 					end
 					
 					`FUNCT3_SLLI:
@@ -449,7 +641,7 @@ begin
 						w_enable_o		<=	`WriteEnable;
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
-						stall_req_o		<=	1'b0;
+						pre_ld		<=	1'b0;
 					end
 
 					`FUNCT3_SRLI_SRAI:
@@ -467,7 +659,7 @@ begin
 								w_enable_o	<=	`WriteEnable;
 								w_addr_o	<=	rd;
 								instvalid	<=	`InstValid;
-								stall_req_o	<=	1'b0;
+								pre_ld	<=	1'b0;
 							end
 
 							`FUNCT7_SRAI:
@@ -482,16 +674,41 @@ begin
 								w_enable_o	<=	`WriteEnable;
 								w_addr_o	<=	rd;
 								instvalid	<=	`InstValid;
-								stall_req_o	<=	1'b0;
+								pre_ld	<=	1'b0;
 							end
-						  default:
-						  begin
-						  end
+
+						 	default:
+							begin
+								aluop_o			<=	`EX_NOP_OP;
+								alusel_o		<=	`EX_RES_NOP;
+								r1_enable_o		<=	1'b0;
+								r2_enable_o		<=	1'b0;
+								r1_addr_o		<=	`NOPRegAddr;
+								r2_addr_o		<=	`NOPRegAddr;
+								w_enable_o		<= 	`WriteDisable;
+								w_addr_o		<= 	`NOPRegAddr;
+								instvalid		<=	`InstValid;
+								imm 			<=	`ZeroWord;
+
+								pre_ld		<=	1'b0;
+							end
 						endcase
 					end
 
 					default:
 					begin
+						aluop_o			<=	`EX_NOP_OP;
+						alusel_o		<=	`EX_RES_NOP;
+						r1_enable_o		<=	1'b0;
+						r2_enable_o		<=	1'b0;
+						r1_addr_o		<=	`NOPRegAddr;
+						r2_addr_o		<=	`NOPRegAddr;
+						w_enable_o		<= 	`WriteDisable;
+						w_addr_o		<= 	`NOPRegAddr;
+						instvalid		<=	`InstValid;
+						imm 			<=	`ZeroWord;
+
+						pre_ld		<=	1'b0;
 					end
 				endcase
 			end
@@ -514,7 +731,7 @@ begin
 								w_enable_o	<=	`WriteEnable;
 								w_addr_o	<=	rd;
 								instvalid	<=	`InstValid;
-								stall_req_o	<=	1'b0;
+								pre_ld	<=	1'b0;
 							end
 
 							`FUNCT7_SUB:
@@ -529,7 +746,22 @@ begin
 								w_enable_o	<=	`WriteEnable;
 								w_addr_o	<=	rd;
 								instvalid	<=	`InstValid;
-								stall_req_o	<=	1'b0;
+								pre_ld	<=	1'b0;
+							end
+							default:
+							begin
+								aluop_o			<=	`EX_NOP_OP;
+								alusel_o		<=	`EX_RES_NOP;
+								r1_enable_o		<=	1'b0;
+								r2_enable_o		<=	1'b0;
+								r1_addr_o		<=	`NOPRegAddr;
+								r2_addr_o		<=	`NOPRegAddr;
+								w_enable_o		<= 	`WriteDisable;
+								w_addr_o		<= 	`NOPRegAddr;
+								instvalid		<=	`InstValid;
+								imm 			<=	`ZeroWord;
+
+								pre_ld		<=	1'b0;
 							end
 						endcase
 					end
@@ -546,7 +778,7 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
-						stall_req_o	<=	1'b0;
+						pre_ld	<=	1'b0;
 					end
 
 					`FUNCT3_SLT:
@@ -561,7 +793,7 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
-						stall_req_o	<=	1'b0;
+						pre_ld	<=	1'b0;
 					end
 
 					`FUNCT3_SLTU:
@@ -576,7 +808,7 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
-						stall_req_o	<=	1'b0;
+						pre_ld	<=	1'b0;
 					end
 
 					`FUNCT3_XOR:
@@ -591,7 +823,7 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
-						stall_req_o	<=	1'b0;
+						pre_ld	<=	1'b0;
 					end
 					`FUNCT3_SRL_SRA:
 					begin
@@ -608,7 +840,7 @@ begin
                                 w_enable_o	<=	`WriteEnable;
                                 w_addr_o	<=	rd;
                                 instvalid	<=	`InstValid;
-                                stall_req_o	<=	1'b0;
+                                pre_ld	<=	1'b0;
                                 
                                 
                             end
@@ -625,10 +857,24 @@ begin
                                 w_enable_o	<=	`WriteEnable;
                                 w_addr_o	<=	rd;
                                 instvalid	<=	`InstValid;
-                                stall_req_o	<=	1'b0;
-                                
-                                
+                                pre_ld	<=	1'b0;
                             end
+
+							default:
+							begin
+								aluop_o			<=	`EX_NOP_OP;
+								alusel_o		<=	`EX_RES_NOP;
+								r1_enable_o		<=	1'b0;
+								r2_enable_o		<=	1'b0;
+								r1_addr_o		<=	`NOPRegAddr;
+								r2_addr_o		<=	`NOPRegAddr;
+								w_enable_o		<= 	`WriteDisable;
+								w_addr_o		<= 	`NOPRegAddr;
+								instvalid		<=	`InstValid;
+								imm 			<=	`ZeroWord;
+
+								pre_ld		<=	1'b0;
+							end
                         endcase
 					end
 					
@@ -644,7 +890,7 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
-						stall_req_o	<=	1'b0;
+						pre_ld	<=	1'b0;
 					end
 
 					`FUNCT3_AND:
@@ -659,9 +905,23 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
-						stall_req_o	<=	1'b0;
+						pre_ld	<=	1'b0;
 					end
+					default:
+					begin
+						aluop_o			<=	`EX_NOP_OP;
+						alusel_o		<=	`EX_RES_NOP;
+						r1_enable_o		<=	1'b0;
+						r2_enable_o		<=	1'b0;
+						r1_addr_o		<=	`NOPRegAddr;
+						r2_addr_o		<=	`NOPRegAddr;
+						w_enable_o		<= 	`WriteDisable;
+						w_addr_o		<= 	`NOPRegAddr;
+						instvalid		<=	`InstValid;
+						imm 			<=	`ZeroWord;
 
+						pre_ld		<=	1'b0;
+					end
 				endcase
 			end
 			
@@ -673,11 +933,11 @@ begin
 				r2_enable_o	<=	1'b0;
 				r1_addr_o	<=	rs1;
 				r2_addr_o	<=	rs2;
-				imm			<= `ZeroWord;
+				imm			<=	`ZeroWord;
 				w_enable_o	<= 	`WriteDisable;
 				w_addr_o	<= 	rd;
 				instvalid	<=	`InstInvalid;
-				stall_req_o	<=	1'b0;
+				pre_ld	<=	1'b0;
 				
 			end
 		endcase
@@ -687,44 +947,86 @@ end
 always @ (*)
 begin
 	if (rst)
-		r1_data_o	<=	`ZeroWord;
+	begin
+		r1_data_o		<=	`ZeroWord;
+		r1_stall_req	<= 1'b0;
+	end		
+	else if (r1_enable_o && ex_pre_ld && ex_w_addr_i == r1_addr_o)
+		r1_stall_req	<= 1'b1;
 	else if (r1_enable_o && ex_w_enable_i && ex_w_addr_i == r1_addr_o)
-		r1_data_o 	<=	ex_w_data_i;
-	else if (r1_enable_o && mem_w_enable_i && mem_w_addr_i == r1_addr_o)
-		r1_data_o	<=	mem_w_data_i;
+	begin
+		r1_data_o		<=	ex_w_data_i;
+		r1_stall_req	<= 1'b0;
+	end		
+	else if (r1_enable_o && me_w_enable_i && me_w_addr_i == r1_addr_o)
+	begin
+		r1_data_o		<=	me_w_data_i;
+		r1_stall_req	<= 1'b0;
+	end	
 	else if (r1_enable_o)
-		r1_data_o	<=	r1_data_i;
+	begin
+		r1_data_o		<=	r1_data_i;
+		r1_stall_req	<= 1'b0;
+	end		
 	else if (!r1_enable_o)
-		r1_data_o	<=	imm;
+	begin
+		r1_data_o		<=	imm;
+		r1_stall_req	<= 1'b0;
+	end		
 	else
+	begin
 		r1_data_o	<=	`ZeroWord;
+		r1_stall_req	<= 1'b0;
+	end		
 end
 
 always @ (*)
 begin
 	if (rst)
-		r2_data_o	<=	`ZeroWord;
+	begin
+		r2_data_o		<=	`ZeroWord;
+		r2_stall_req	<=	1'b0;
+	end
+	else if (r2_enable_o && ex_pre_ld && ex_w_addr_i == r2_addr_o)
+	begin
+		r2_stall_req	<=	1'b1;
+	end		
 	else if (r2_enable_o && ex_w_enable_i && ex_w_addr_i == r2_addr_o)
-		r2_data_o 	<=	ex_w_data_i;
-	else if (r2_enable_o && mem_w_enable_i && mem_w_addr_i == r2_addr_o)
-		r2_data_o	<=	mem_w_data_i;
+	begin
+		r2_data_o 		<=	ex_w_data_i;
+		r2_stall_req	<=	1'b0;
+	end		
+	else if (r2_enable_o && me_w_enable_i && me_w_addr_i == r2_addr_o)
+	begin
+		r2_data_o		<=	me_w_data_i;
+		r2_stall_req	<=	1'b0;
+	end		
 	else if (r2_enable_o)
-		r2_data_o	<=	r2_data_i;
+	begin
+		r2_data_o		<=	r2_data_i;
+		r2_stall_req	<=	1'b0;
+	end		
 	else if (!r2_enable_o)
-		r2_data_o	<=	imm;
+	begin
+		r2_data_o		<=	imm;
+		r2_stall_req	<=	1'b0;
+	end
 	else
-		r2_data_o	<=	`ZeroWord;
+	begin
+		r2_data_o		<=	`ZeroWord;
+		r2_stall_req	<=	1'b0;
+	end		
 end
 
 always @(*)
 begin
 	if (rst)
 	begin
-		b_offset_o	<=	`ZeroWord;
+		offset_o	<=	`ZeroWord;
 	end
 	else
 	begin
-		b_offset_o	<=	imm;
+		offset_o	<=	imm;
 	end
 end
 

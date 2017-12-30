@@ -30,10 +30,6 @@ module ME(
 	input wire				ram_done
 );
 
-reg send2mem;
-initial send2mem = 0;
-
-
 always @(*)
 begin
 	if (ram_done)
@@ -219,10 +215,12 @@ begin
 			end
 		endcase
 	end
-	else if (!ram_busy && stall_req_o)
-		stall_req_o		=	1'b0;
+	else if (ram_busy && !stall_req_o)
+		stall_req_o		=	1'b1;
 	else if (ram_busy && stall_req_o)
 		stall_req_o		=	1'b1;
+	else if (!ram_busy && stall_req_o)
+		stall_req_o		=	1'b0;
 
 
 end

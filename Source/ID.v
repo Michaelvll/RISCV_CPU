@@ -52,7 +52,6 @@ module ID (
 
 reg instvalid;
 reg[`RegBus] imm;
-reg pre_ld;
 reg r1_stall_req;
 reg r2_stall_req;
 
@@ -187,8 +186,7 @@ begin
 		instvalid		<=	`InstValid;
 		imm 			<=	`ZeroWord;
 
-		pre_ld		<=	1'b0;
-		
+				
 	end
 
 	else
@@ -208,8 +206,7 @@ begin
 				w_addr_o		<=	rd;
 				instvalid		<=	`InstValid;
 
-				pre_ld		<=	1'b0;
-				
+								
 			end
 
 			`OP_AUIPC:
@@ -225,8 +222,7 @@ begin
 				w_addr_o		<=	rd;
 				instvalid		<=	`InstValid;
 
-				pre_ld		<=	1'b0;
-			end
+							end
 
 			`OP_JAL:
 			begin
@@ -241,8 +237,7 @@ begin
 				w_addr_o		<=	rd;
 				instvalid		<=	`InstValid;
 
-				pre_ld		<=	1'b0;
-				
+								
 			end
 
 			`OP_JALR:
@@ -258,7 +253,6 @@ begin
 				w_addr_o		<=	rd;
 				instvalid		<=	`InstValid;
 
-				pre_ld		<=	1'b0;
 			end
 
 			`OP_BRANCH:
@@ -276,7 +270,6 @@ begin
 						w_enable_o		<=	`WriteDisable;
 						w_addr_o		<=	`ZeroWord;
 						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
 					end
 					`FUNCT3_BNE:
 					begin
@@ -290,7 +283,6 @@ begin
 						w_enable_o		<=	`WriteDisable;
 						w_addr_o		<=	`ZeroWord;
 						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
 					end
 					`FUNCT3_BLT:
 					begin
@@ -304,7 +296,6 @@ begin
 						w_enable_o		<=	`WriteDisable;
 						w_addr_o		<=	`ZeroWord;
 						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
 					end
 					`FUNCT3_BGE:
 					begin
@@ -318,7 +309,6 @@ begin
 						w_enable_o		<=	`WriteDisable;
 						w_addr_o		<=	`ZeroWord;
 						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
 					end
 					`FUNCT3_BLTU:
 					begin
@@ -332,7 +322,6 @@ begin
 						w_enable_o		<=	`WriteDisable;
 						w_addr_o		<=	`ZeroWord;
 						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
 					end
 					`FUNCT3_BGEU:
 					begin
@@ -346,7 +335,6 @@ begin
 						w_enable_o		<=	`WriteDisable;
 						w_addr_o		<=	`ZeroWord;
 						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
 					end
 					default:
 					begin
@@ -361,7 +349,6 @@ begin
 						instvalid		<=	`InstValid;
 						imm 			<=	`ZeroWord;
 
-						pre_ld		<=	1'b0;
 					end
 				endcase
 			end
@@ -382,7 +369,6 @@ begin
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
 
-						pre_ld		<=	1'b1;
 					end 
 					
 					`FUNCT3_LH:
@@ -398,7 +384,6 @@ begin
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
 
-						pre_ld		<=	1'b1;
 					end
 
 					`FUNCT3_LW:
@@ -414,7 +399,6 @@ begin
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
 
-						pre_ld		<=	1'b1;
 					end
 
 					`FUNCT3_LBU:
@@ -430,7 +414,6 @@ begin
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
 
-						pre_ld		<=	1'b1;
 					end
 
 					`FUNCT3_LHU:
@@ -446,7 +429,6 @@ begin
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
 
-						pre_ld		<=	1'b1;
 					end
 
 					default:
@@ -462,7 +444,6 @@ begin
 						instvalid		<=	`InstValid;
 						imm 			<=	`ZeroWord;
 
-						pre_ld		<=	1'b0;
 					end 
 				endcase
 			end
@@ -483,7 +464,6 @@ begin
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
 
-						pre_ld		<=	1'b0;
 					end
 
 					`FUNCT3_SH:
@@ -499,7 +479,6 @@ begin
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
 
-						pre_ld		<=	1'b0;
 					end
 
 					`FUNCT3_SW:
@@ -515,7 +494,6 @@ begin
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
 
-						pre_ld		<=	1'b0;
 					end
 
 				  	default:
@@ -531,7 +509,6 @@ begin
 						instvalid		<=	`InstValid;
 						imm 			<=	`ZeroWord;
 
-						pre_ld		<=	1'b0;
 					end
 				endcase
 			end
@@ -551,7 +528,6 @@ begin
 						w_enable_o		<=	`WriteEnable;
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
 					end
 
 					`FUNCT3_SLTI:
@@ -566,7 +542,6 @@ begin
 						w_enable_o		<=	`WriteEnable;
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
 					end
 
 					`FUNCT3_SLTIU:
@@ -581,7 +556,6 @@ begin
 						w_enable_o		<=	`WriteEnable;
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
 					end
 					
 					`FUNCT3_XORI:
@@ -596,7 +570,6 @@ begin
 						w_enable_o		<=	`WriteEnable;
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
 					end
 
 					`FUNCT3_ORI: // ORI
@@ -611,7 +584,6 @@ begin
 						w_enable_o		<=	`WriteEnable;
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
 					end
 
 					`FUNCT3_ANDI:
@@ -626,7 +598,6 @@ begin
 						w_enable_o		<=	`WriteEnable;
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
 					end
 					
 					`FUNCT3_SLLI:
@@ -641,7 +612,6 @@ begin
 						w_enable_o		<=	`WriteEnable;
 						w_addr_o		<=	rd;
 						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
 					end
 
 					`FUNCT3_SRLI_SRAI:
@@ -659,7 +629,6 @@ begin
 								w_enable_o	<=	`WriteEnable;
 								w_addr_o	<=	rd;
 								instvalid	<=	`InstValid;
-								pre_ld	<=	1'b0;
 							end
 
 							`FUNCT7_SRAI:
@@ -674,7 +643,6 @@ begin
 								w_enable_o	<=	`WriteEnable;
 								w_addr_o	<=	rd;
 								instvalid	<=	`InstValid;
-								pre_ld	<=	1'b0;
 							end
 
 						 	default:
@@ -690,7 +658,6 @@ begin
 								instvalid		<=	`InstValid;
 								imm 			<=	`ZeroWord;
 
-								pre_ld		<=	1'b0;
 							end
 						endcase
 					end
@@ -708,7 +675,6 @@ begin
 						instvalid		<=	`InstValid;
 						imm 			<=	`ZeroWord;
 
-						pre_ld		<=	1'b0;
 					end
 				endcase
 			end
@@ -731,7 +697,6 @@ begin
 								w_enable_o	<=	`WriteEnable;
 								w_addr_o	<=	rd;
 								instvalid	<=	`InstValid;
-								pre_ld	<=	1'b0;
 							end
 
 							`FUNCT7_SUB:
@@ -746,7 +711,6 @@ begin
 								w_enable_o	<=	`WriteEnable;
 								w_addr_o	<=	rd;
 								instvalid	<=	`InstValid;
-								pre_ld	<=	1'b0;
 							end
 							default:
 							begin
@@ -761,7 +725,6 @@ begin
 								instvalid		<=	`InstValid;
 								imm 			<=	`ZeroWord;
 
-								pre_ld		<=	1'b0;
 							end
 						endcase
 					end
@@ -778,7 +741,6 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
-						pre_ld	<=	1'b0;
 					end
 
 					`FUNCT3_SLT:
@@ -793,7 +755,6 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
-						pre_ld	<=	1'b0;
 					end
 
 					`FUNCT3_SLTU:
@@ -808,7 +769,6 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
-						pre_ld	<=	1'b0;
 					end
 
 					`FUNCT3_XOR:
@@ -823,7 +783,6 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
-						pre_ld	<=	1'b0;
 					end
 					`FUNCT3_SRL_SRA:
 					begin
@@ -840,9 +799,6 @@ begin
                                 w_enable_o	<=	`WriteEnable;
                                 w_addr_o	<=	rd;
                                 instvalid	<=	`InstValid;
-                                pre_ld	<=	1'b0;
-                                
-                                
                             end
     
                             `FUNCT7_SRA:
@@ -857,7 +813,6 @@ begin
                                 w_enable_o	<=	`WriteEnable;
                                 w_addr_o	<=	rd;
                                 instvalid	<=	`InstValid;
-                                pre_ld	<=	1'b0;
                             end
 
 							default:
@@ -873,7 +828,6 @@ begin
 								instvalid		<=	`InstValid;
 								imm 			<=	`ZeroWord;
 
-								pre_ld		<=	1'b0;
 							end
                         endcase
 					end
@@ -890,7 +844,6 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
-						pre_ld	<=	1'b0;
 					end
 
 					`FUNCT3_AND:
@@ -905,7 +858,6 @@ begin
 						w_enable_o	<=	`WriteEnable;
 						w_addr_o	<=	rd;
 						instvalid	<=	`InstValid;
-						pre_ld	<=	1'b0;
 					end
 					default:
 					begin
@@ -920,7 +872,6 @@ begin
 						instvalid		<=	`InstValid;
 						imm 			<=	`ZeroWord;
 
-						pre_ld		<=	1'b0;
 					end
 				endcase
 			end
@@ -937,7 +888,6 @@ begin
 				w_enable_o	<= 	`WriteDisable;
 				w_addr_o	<= 	rd;
 				instvalid	<=	`InstInvalid;
-				pre_ld	<=	1'b0;
 				
 			end
 		endcase

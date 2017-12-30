@@ -27,7 +27,7 @@ module EX(
 	output reg[`InstAddrBus]	b_target_addr_o,
 
 	// For load and store
-	output wire[`AluOpBus]		aluop_o,
+	output reg[`AluOpBus]		aluop_o,
 	output wire[`RegBus]		mem_addr_o,
 	// The data for store will be in w_data_o
 
@@ -68,7 +68,14 @@ assign pc_plus_offset = pc_i + offset_i;
 
 // ============ ALU LOAD_STORE part ================
 
-assign aluop_o = aluop_i;
+assign aluop_o = ((aluop_i == `EX_LB_OP) || 
+				(aluop_i == `EX_LH_OP) ||
+				(aluop_i == `EX_LW_OP) ||
+				(aluop_i == `EX_LBU_OP)||
+				(aluop_i == `EX_LHU_OP)||
+				(aluop_i == `EX_SB_OP) ||
+				(aluop_i == `EX_SH_OP) ||
+				(aluop_i == `EX_SW_OP) ) ? aluop_i : `ME_NOP_OP;
 
 assign mem_addr_o = r1_data_i + offset_i;
 

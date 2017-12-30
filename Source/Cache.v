@@ -82,7 +82,7 @@ module Cache
 	//from cpu core
 	input wire[1:0]			rw_flag_i,	//[0] for read, [1] for write
 	input wire[31:0]		addr_i,
-	output reg[31:0]		r_data_o,
+	output wire[31:0]		r_data_o,
 	input wire[31:0]		w_data_i,
 	input wire[3:0]			w_mask_i,
 	output reg	 			busy,

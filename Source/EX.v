@@ -27,13 +27,14 @@ module EX(
 	output reg[`InstAddrBus]	b_target_addr_o,
 
 	// For load and store
-	output reg[`AluOpBus]		aluop_o,
+	output wire[`AluOpBus]		aluop_o,
 	output wire[`RegBus]		mem_addr_o,
 	// The data for store will be in w_data_o
 
 	output wire					is_ld
 );
-
+always@(*)
+	stall_req_o		<=		1'b0;
 
 
 reg[`RegBus]		logic_res;

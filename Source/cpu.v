@@ -10,12 +10,12 @@ module cpu(
     input wire 							clk,
 	input wire							rst,
 
-	output reg[2*2-1:0] 				mem_rw_flag_o,
-	output reg[2*`DataAddrWidth-1:0]	mem_addr_o,
+	output wire[2*2-1:0] 				mem_rw_flag_o,
+	output wire[2*`DataAddrWidth-1:0]	mem_addr_o,
 	input wire[2*`DataWidth-1:0]		mem_r_data_i,
 
-	output reg[2*`DataAddrWidth-1:0]	mem_w_data_o,
-	output reg[2*4-1:0]					mem_w_mask_o,
+	output wire[2*`DataAddrWidth-1:0]	mem_w_data_o,
+	output wire[2*4-1:0]					mem_w_mask_o,
 	input wire[1:0]						mem_busy_i,
 	input wire[1:0]						mem_done_i
 );

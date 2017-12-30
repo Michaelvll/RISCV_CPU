@@ -142,7 +142,6 @@ module uart_comm
 	reg [3:0] send_status;
 	reg [2:0] send_bit;
 	reg send_parity;
-	reg tosend;
 	
 	always @(posedge CLK or posedge RST) begin
 		if(RST) begin
@@ -151,7 +150,6 @@ module uart_comm
 			send_status <= STATUS_IDLE;
 			send_bit <= 0;
 			send_parity <= 0;
-			tosend <= 0;
 			Tx <= 1;
 		end else begin
 			send_read_flag <= 0;
@@ -185,7 +183,6 @@ module uart_comm
 				STATUS_END:begin
 					Tx <= 1;
 					send_status <= STATUS_IDLE;
-					tosend = 0;
 				end
 				endcase
 			end

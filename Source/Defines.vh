@@ -32,10 +32,12 @@
 
 // ============= Data ram related ===============
 `define DataAddrBus 31:0
+`define DataAddrWidth 32
 `define DataBus 31:0
+`define DataWidth 32
 `define DataMemNum 131071
 `define DataMemNumLog2 17
-`define ByteWidth 7:0
+`define ByteBus 7:0
 
 
 

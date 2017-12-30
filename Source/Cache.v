@@ -19,7 +19,7 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-`include "common.h"
+`include "common.vh"
 
 module Cacheram
 #(
@@ -30,13 +30,14 @@ module Cacheram
 	input wire								clk,
 	input wire								rst,
 	
-	output reg [8*DATA_BYTE_WIDTH-1:0]		r_data,
-	input wire [ADDR_WIDTH-1:0]				r_addr,
 	input wire 								r_flag,
-	input wire [8*DATA_BYTE_WIDTH-1:0]		w_data,
+	input wire [ADDR_WIDTH-1:0]				r_addr,
+	output reg [8*DATA_BYTE_WIDTH-1:0]		r_data_o,
+
+	input wire 								w_flag,
 	input wire [ADDR_WIDTH-1:0]				w_addr,
-	input wire [DATA_BYTE_WIDTH-1:0]		w_mask,
-	input wire 								w_flag
+	input wire [8*DATA_BYTE_WIDTH-1:0]		w_data,
+	input wire [DATA_BYTE_WIDTH-1:0]		w_mask
 );
 	
 	reg [8*DATA_BYTE_WIDTH-1:0]	data[(1<<ADDR_WIDTH)-1:0];
@@ -45,12 +46,12 @@ module Cacheram
 	begin
 		if(rst)
 		begin
-			r_data <= 0;
+			r_data_o <= 0;
 		end
 		else
 		begin
 			if(r_flag)
-				r_data <= data[r_addr];
+				r_data_o <= data[r_addr];
 			if(w_flag)
 			begin
 				if(w_mask[0])
@@ -75,27 +76,27 @@ module Cache
 	parameter WAY_NUM			= 4
 )
 (
-	input clk,
-	input rst,
+	input 					clk,
+	input 					rst,
 	
 	//from cpu core
-	input wire[1:0]			rw_flag_,	//[0] for read, [1] for write
-	input wire[31:0]		addr_,
-	output reg[31:0]		r_data,
-	input wire[31:0]		w_data_,
-	input wire[3:0]			w_mask_,
+	input wire[1:0]			rw_flag_i,	//[0] for read, [1] for write
+	input wire[31:0]		addr_i,
+	output reg[31:0]		r_data_o,
+	input wire[31:0]		w_data_i,
+	input wire[3:0]			w_mask_i,
 	output reg	 			busy,
 	output reg				done,
 	
-	input wire 				flush_flag,
-	input wire[31:0]		flush_addr,
+	input wire 				flush_flag_i,
+	input wire[31:0]		flush_addr_i,
 	
 	//to memory
-	output reg [1:0]		mem_rw_flag,
-	output reg [31:0]		mem_addr,
-	input wire[31:0]		mem_r_data,
-	output reg [31:0]		mem_w_data,
-	output reg [3:0]		mem_w_mask,
+	output reg [1:0]		mem_rw_flag_o,
+	output reg [31:0]		mem_addr_o,
+	input wire[31:0]		mem_r_data_i,
+	output reg [31:0]		mem_w_data_o,
+	output reg [3:0]		mem_w_mask_o,
 	input wire				mem_busy,
 	input wire				mem_done
 );
@@ -114,10 +115,10 @@ module Cache
 	reg [31:0]	pending_w_data;
 	reg [3:0]	pending_w_mask;
 	
-	wire [1:0]	rw_flag			= busy ? pending_rw_flag	: rw_flag_;
-	wire [31:0]	addr			= busy ? pending_addr		: addr_;
-	wire [31:0]	w_data_in		= busy ? pending_w_data : w_data_;
-	wire [3:0]	w_mask_in		= busy ? pending_w_mask : w_mask_;
+	wire [1:0]	rw_flag			= busy ? pending_rw_flag	: rw_flag_i;
+	wire [31:0]	addr			= busy ? pending_addr		: addr_i;
+	wire [31:0]	w_data_in		= busy ? pending_w_data : w_data_i;
+	wire [3:0]	w_mask_in		= busy ? pending_w_mask : w_mask_i;
 	
 	
 	
@@ -125,8 +126,8 @@ module Cache
 	wire [INDEX_BIT-1:0]		addr_index	= addr[BYTE_SELECT_BIT+INDEX_BIT-1:BYTE_SELECT_BIT];
 	wire [WORD_SELECT_BIT-1:0]	addr_ws		= addr[WORD_SELECT_BIT+2-1:2];
 	
-	wire [TAG_BIT-1:0]			addr_flush_tag		= flush_addr[31:31-TAG_BIT+1];
-	wire [INDEX_BIT-1:0]		addr_flush_index	= flush_addr[BYTE_SELECT_BIT+INDEX_BIT-1:BYTE_SELECT_BIT];
+	wire [TAG_BIT-1:0]			addr_flush_tag		= flush_addr_i[31:31-TAG_BIT+1];
+	wire [INDEX_BIT-1:0]		addr_flush_index	= flush_addr_i[BYTE_SELECT_BIT+INDEX_BIT-1:BYTE_SELECT_BIT];
 	
 	//reg [7:0]					data[3:0][WAY_NUM-1:0][SET_NUM-1:0][WORD_NUM-1:0];
 	//(*ramstyle = "block"*) reg [31:0]	data[WAY_NUM-1:0][SET_NUM*WORD_NUM-1:0];
@@ -235,16 +236,25 @@ module Cache
 	wire [31:0]						RAM_r_data[WAY_NUM-1:0];
 	reg [WAY_SELECT_BIT-1:0]		RAM_r_select;
 	
-	assign r_data = RAM_r_data[RAM_r_select];
+	assign r_data_o = RAM_r_data[RAM_r_select];
 	
 	generate
 		for(i=0; i<WAY_NUM; i=i+1)
 		begin
 			wire RAM_r_flag = r_cache == i;
 			wire RAM_w_flag = w_cache == i;
-			Cacheram #(.ADDR_WIDTH(INDEX_BIT+WORD_SELECT_BIT), .DATA_BYTE_WIDTH(4)) RAM(
-				clk, rst, RAM_r_data[i], {r_block, r_word}, RAM_r_flag,
-				w_data, {w_block, w_word}, w_mask, RAM_w_flag); 
+			Cacheram #(.ADDR_WIDTH(INDEX_BIT+WORD_SELECT_BIT), .DATA_BYTE_WIDTH(4)) 
+				RAM(
+					.clk(clk),
+					.rst(rst),
+					.r_flag(RAM_r_flag),
+					.r_addr({r_block, r_word}),
+					.r_data_o(RAM_r_data[i]),
+					.w_flag(RAM_w_flag),
+					.w_addr({w_block, w_word}),
+					.w_data(w_data),
+					.w_mask(w_mask)
+				); 
 		end
 	endgenerate
 	
@@ -260,13 +270,13 @@ module Cache
 		end
 		else if(!busy)
 		begin
-			if(!next_done && rw_flag_ != 0)
+			if(!next_done && rw_flag_i != 0)
 			begin
 				busy <= 1;
-				pending_rw_flag		<= rw_flag_;
-				pending_addr		<= addr_;
-				pending_w_data		<= w_data_;
-				pending_w_mask		<= w_mask_;
+				pending_rw_flag		<= rw_flag_i;
+				pending_addr		<= addr_i;
+				pending_w_data		<= w_data_i;
+				pending_w_mask		<= w_mask_i;
 			end
 		end else if(next_done)
 			busy <= 0;
@@ -310,7 +320,7 @@ module Cache
 				valid[valid_cache][valid_block] <= 1;
 				tag[valid_cache][valid_block] <= valid_tag;
 			end
-			if(flush_flag)
+			if(flush_flag_i)
 				valid[one_hot_lookup[found_in_cache_flush]][addr_flush_index] <= 0;
 			state				<= next_state;
 			done				<= next_done;
@@ -347,10 +357,10 @@ module Cache
 		valid_flag 	= 0;
 		valid_tag 	= 0;
 		
-		mem_rw_flag	= 0;
-		mem_addr	= 0;
-		mem_w_data	= 0;
-		mem_w_mask	= 0;
+		mem_rw_flag_o	= 0;
+		mem_addr_o	= 0;
+		mem_w_data_o	= 0;
+		mem_w_mask_o	= 0;
 		
 		case(state)
 		STATE_IDLE:
@@ -368,8 +378,8 @@ module Cache
 				end
 				else
 				begin
-					mem_rw_flag 		= 1;
-					mem_addr 			= {addr_tag, addr_index, addr_ws, 2'b00};
+					mem_rw_flag_o 		= 1;
+					mem_addr_o 			= {addr_tag, addr_index, addr_ws, 2'b00};
 					next_current_cache 	= lru_id;
 					next_current_tag 	= addr_tag;
 					next_current_block 	= addr_index;
@@ -393,10 +403,10 @@ module Cache
 					w_data				= w_data_in;
 					w_mask				= w_mask_in;
 				end
-				mem_rw_flag 			= 2;
-				mem_addr 				= {addr_tag, addr_index, addr_ws, 2'b00};
-				mem_w_data 				= w_data_in;
-				mem_w_mask 				= w_mask_in;
+				mem_rw_flag_o 			= 2;
+				mem_addr_o 				= {addr_tag, addr_index, addr_ws, 2'b00};
+				mem_w_data_o 				= w_data_in;
+				mem_w_mask_o 				= w_mask_in;
 				next_state 				= STATE_WAIT_FOR_WRITE;
 				next_done 				= 1;
 			end
@@ -410,15 +420,15 @@ module Cache
 				w_cache 			= current_cache;
 				w_block 			= current_block;
 				w_word 				= current_word;
-				w_data 				= mem_r_data;
+				w_data 				= mem_r_data_i;
 				w_mask 				= 4'b1111;
 				//w_flag = 1;
 				
 				//next_done = 1;
 				
 				next_current_word	= critical_word == 0 ? 1 : 0;
-				mem_rw_flag			= 1;
-				mem_addr			= {current_tag, current_block, next_current_word, 2'b00};
+				mem_rw_flag_o			= 1;
+				mem_addr_o			= {current_tag, current_block, next_current_word, 2'b00};
 				next_state			= STATE_WAIT_FOR_r_PHASE_2;
 			end
 		end
@@ -430,15 +440,15 @@ module Cache
 				w_cache 			= current_cache;
 				w_block 			= current_block;
 				w_word 				= current_word;
-				w_data 				= mem_r_data;
+				w_data 				= mem_r_data_i;
 				w_mask 				= 4'b1111;
 				//w_flag = 1;
 				
 				next_current_word 	= critical_word == current_word + 1 ? current_word + 2 : current_word + 1;
 				if(next_current_word != 0)
 				begin
-					mem_rw_flag		= 1;
-					mem_addr 		= {current_tag, current_block, next_current_word, 2'b00};
+					mem_rw_flag_o		= 1;
+					mem_addr_o 		= {current_tag, current_block, next_current_word, 2'b00};
 				end else 
 					next_state = STATE_IDLE;
 			end

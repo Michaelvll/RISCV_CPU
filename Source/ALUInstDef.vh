@@ -38,6 +38,7 @@
 `define EX_SW_OP		6'h1b
 
 `define EX_NOP_OP		6'h0
+`define ME_NOP_OP		6'h0
 
 // AluSel
 `define EX_RES_LOGIC	3'b001

@@ -32,7 +32,17 @@ module ME(
 
 always @(*)
 begin
-	if (ram_done)
+	if (rst)
+	begin
+		w_addr_o		=	`NOPRegAddr;
+		w_data_o		=	`ZeroWord;
+	end
+	else if (aluop_i == `ME_NOP_OP)
+	begin
+		w_addr_o		=	w_addr_i;
+		w_data_o		=	w_data_i;
+	end
+	else if (ram_done)
 	begin
 		case (aluop_i)
 			`EX_LB_OP:
@@ -109,18 +119,21 @@ begin
 					end
 				endcase				
 			end
+		default:
+		begin
+			w_data_o        =   w_data_i;
+		end
 		endcase
 	end
 end
 
-always @(aluop_i, rst, ram_busy)
+always @(aluop_i, rst, ram_busy, w_enable_i)
 begin
 	if (rst)
 	begin
 		stall_req_o 	=	1'b0;
 		w_enable_o		=	`WriteDisable;
-		w_addr_o		=	`NOPRegAddr;
-		w_data_o		=	`ZeroWord;
+		
 		ram_r_enable_o	=	1'b0;
 		ram_w_enable_o	=	`WriteDisable;
 		ram_w_mask_o	=	4'b0000;
@@ -131,8 +144,6 @@ begin
 	begin
 		stall_req_o 	=	1'b0;
 		w_enable_o		=	w_enable_i;
-		w_addr_o		=	w_addr_i;
-		w_data_o		=	w_data_i;
 		ram_r_enable_o	=	1'b0;
 		ram_w_enable_o	=	`WriteDisable;
 		ram_w_mask_o	=	4'b0000;

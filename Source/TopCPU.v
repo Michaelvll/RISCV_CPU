@@ -9,8 +9,8 @@
 module TopCPU(
 	input wire EXclk,
 	input wire button,
-	output reg Tx,
-	input wire rstx
+	output wire Tx,
+	input wire Rx
 );
 
 // ================== rst & clk =========================
@@ -19,7 +19,7 @@ reg rst;
 reg rst_delay;
 
 wire clk;
-clk_wiz_0 clk0(clk, 1'b0, EXclk);
+clk_wiz_0 clk0(EXclk, clk);
 
 always @(posedge clk or posedge button)
 begin
@@ -36,10 +36,23 @@ begin
 end
 
 // ================== uart =============================
+wire 		UART_send_flag;
+wire [7:0]	UART_send_data;
+wire 		UART_recv_flag;
+wire [7:0]	UART_recv_data;
+wire		UART_sendable;
+wire		UART_receivable;
+uart_comm #(.BAUDRATE(5000000/*115200*/), .CLOCKRATE(66667000)) UART(
+		clk, rst,
+		UART_send_flag, UART_send_data,
+		UART_recv_flag, UART_recv_data,
+		UART_sendable, UART_receivable,
+		Tx, Rx);
 
 localparam CHANNEL_BIT = 1;
 localparam MESSAGE_BIT = 72;
 localparam CHANNEL = 1 << CHANNEL_BIT;
+
 
 wire 					COMM_read_flag[CHANNEL-1:0];
 wire [MESSAGE_BIT-1:0]	COMM_read_data[CHANNEL-1:0];
@@ -50,12 +63,6 @@ wire [4:0]				COMM_write_length[CHANNEL-1:0];
 wire					COMM_readable[CHANNEL-1:0];
 wire					COMM_writable[CHANNEL-1:0];
 
-uart_comm #(.BAUDRATE(5000000/*115200*/), .CLOCKRATE(66667000)) UART(
-		uart, rst,
-		UART_send_flag, UART_send_data,
-		UART_recv_flag, UART_recv_data,
-		UART_sendable, UART_receivable,
-		Tx, rstx);
 
 multchan_comm #(.MESSAGE_BIT(MESSAGE_BIT), .CHANNEL_BIT(CHANNEL_BIT)) COMM(
 	clk, rst,
@@ -90,17 +97,6 @@ memory_controller MEM_CTRL(
 		mem_busy, mem_done);
 
 // ================== cpu =======================================
-
-wire[`InstAddrBus]	inst_addr;
-wire[`InstBus]		inst;
-wire				rom_ce;
-wire				ram_w_enable;
-wire[`RegBus]		ram_r_data;
-wire[`RegBus]		ram_addr;
-wire[`RegBus]		ram_w_data;
-wire[3:0] 			ram_sel;   
-wire 				ram_ce; 
-
 
 
 cpu cpu0(

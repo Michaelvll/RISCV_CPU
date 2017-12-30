@@ -3,134 +3,29 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="riscv_min_sopc_tb_behav.wdb" id="1">
+      <db_ref path="SimCPU_behav.wdb" id="1">
          <top_modules>
+            <top_module name="SimCPU" />
             <top_module name="glbl" />
-            <top_module name="riscv_min_sopc_tb" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="678860000fs"></ZoomStartTime>
-      <ZoomEndTime time="779460001fs"></ZoomEndTime>
+      <ZoomStartTime time="1900416160fs"></ZoomStartTime>
+      <ZoomEndTime time="2019916768fs"></ZoomEndTime>
       <Cursor1Time time="2000000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="122"></NameColumnWidth>
-      <ValueColumnWidth column_width="73"></ValueColumnWidth>
+      <ValueColumnWidth column_width="69"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="26" />
-   <wvobject fp_name="/riscv_min_sopc_tb/CLOCK_50" type="logic">
+   <WVObjectSize size="2" />
+   <wvobject fp_name="/SimCPU/CLOCK_50" type="logic">
       <obj_property name="ElementShortName">CLOCK_50</obj_property>
       <obj_property name="ObjectShortName">CLOCK_50</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/rst" type="logic">
+   <wvobject fp_name="/SimCPU/rst" type="logic">
       <obj_property name="ElementShortName">rst</obj_property>
       <obj_property name="ObjectShortName">rst</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/pc_reg0/pc" type="array">
-      <obj_property name="ElementShortName">pc[31:0]</obj_property>
-      <obj_property name="ObjectShortName">pc[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/id0/opcode" type="array">
-      <obj_property name="ElementShortName">opcode[6:0]</obj_property>
-      <obj_property name="ObjectShortName">opcode[6:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/id0/inst_i" type="array">
-      <obj_property name="ElementShortName">inst_i[31:0]</obj_property>
-      <obj_property name="ObjectShortName">inst_i[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/rom_addr_o" type="array">
-      <obj_property name="ElementShortName">rom_addr_o[31:0]</obj_property>
-      <obj_property name="ObjectShortName">rom_addr_o[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/regfile0/regs[0]" type="array">
-      <obj_property name="ElementShortName">[0][31:0]</obj_property>
-      <obj_property name="ObjectShortName">[0][31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/regfile0/regs[1]" type="array">
-      <obj_property name="ElementShortName">[1][31:0]</obj_property>
-      <obj_property name="ObjectShortName">[1][31:0]</obj_property>
-      <obj_property name="CustomSignalColor">#00FF00</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/regfile0/regs[2]" type="array">
-      <obj_property name="ElementShortName">[2][31:0]</obj_property>
-      <obj_property name="ObjectShortName">[2][31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/me0/aluop_i" type="array">
-      <obj_property name="ElementShortName">aluop_i[10:0]</obj_property>
-      <obj_property name="ObjectShortName">aluop_i[10:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/regfile0/regs[10]" type="array">
-      <obj_property name="ElementShortName">[10][31:0]</obj_property>
-      <obj_property name="ObjectShortName">[10][31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/regfile0/regs[11]" type="array">
-      <obj_property name="ElementShortName">[11][31:0]</obj_property>
-      <obj_property name="ObjectShortName">[11][31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/regfile0/regs[10]" type="array">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">[10][31:0]</obj_property>
-      <obj_property name="ObjectShortName">[10][31:0]</obj_property>
-      <obj_property name="label">a0</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/regfile0/regs[14]" type="array">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">[14][31:0]</obj_property>
-      <obj_property name="ObjectShortName">[14][31:0]</obj_property>
-      <obj_property name="label">a4</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/regfile0/regs[15]" type="array">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">[15][31:0]</obj_property>
-      <obj_property name="ObjectShortName">[15][31:0]</obj_property>
-      <obj_property name="label">a5</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/ex0/mem_addr_o" type="array">
-      <obj_property name="ElementShortName">mem_addr_o[31:0]</obj_property>
-      <obj_property name="ObjectShortName">mem_addr_o[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/data_ram0/we" type="logic">
-      <obj_property name="ElementShortName">we</obj_property>
-      <obj_property name="ObjectShortName">we</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/data_ram0/ce" type="logic">
-      <obj_property name="ElementShortName">ce</obj_property>
-      <obj_property name="ObjectShortName">ce</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/data_ram0/addr" type="array">
-      <obj_property name="ElementShortName">addr[31:0]</obj_property>
-      <obj_property name="ObjectShortName">addr[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/data_ram0/data_i" type="array">
-      <obj_property name="ElementShortName">data_i[31:0]</obj_property>
-      <obj_property name="ObjectShortName">data_i[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/data_ram0/data_o" type="array">
-      <obj_property name="ElementShortName">data_o[31:0]</obj_property>
-      <obj_property name="ObjectShortName">data_o[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/me0/mem_addr_i" type="array">
-      <obj_property name="ElementShortName">mem_addr_i[31:0]</obj_property>
-      <obj_property name="ObjectShortName">mem_addr_i[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/me0/mem_addr_o" type="array">
-      <obj_property name="ElementShortName">mem_addr_o[31:0]</obj_property>
-      <obj_property name="ObjectShortName">mem_addr_o[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/data_ram0/data_o" type="array">
-      <obj_property name="ElementShortName">data_o[31:0]</obj_property>
-      <obj_property name="ObjectShortName">data_o[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/id0/r1_data_i" type="array">
-      <obj_property name="ElementShortName">r1_data_i[31:0]</obj_property>
-      <obj_property name="ObjectShortName">r1_data_i[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/id0/r2_data_i" type="array">
-      <obj_property name="ElementShortName">r2_data_i[31:0]</obj_property>
-      <obj_property name="ObjectShortName">r2_data_i[31:0]</obj_property>
    </wvobject>
 </wave_config>

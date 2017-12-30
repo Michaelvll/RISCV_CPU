@@ -5,7 +5,6 @@
 `include "IDInstDef.vh"
 
 module IF (
-    input wire  clk,
     input wire  rst,
 
 	input wire[`InstAddrBus]	pc_i,

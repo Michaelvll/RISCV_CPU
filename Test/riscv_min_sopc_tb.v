@@ -1,5 +1,3 @@
-`include "Riscv_min_sopc.v"
-
 `timescale 1ns/1ps
 
 module riscv_min_sopc_tb();

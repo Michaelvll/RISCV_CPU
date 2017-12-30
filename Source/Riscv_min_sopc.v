@@ -5,9 +5,6 @@
 
 `include "Defines.vh"
 `include "IDInstDef.vh"
-`include "cpu.v"
-`include "Inst_rom.v"
-`include "Data_ram.v"
 
 module Riscv_min_sopc(
 	input wire clk,

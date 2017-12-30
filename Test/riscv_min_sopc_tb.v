@@ -19,7 +19,7 @@ begin
 	#2000 	$stop;
 end
 
-Riscv_min_sopc riscv_min_sopc0(
+TopCPU top0(
 	.clk(CLOCK_50),
 	.rst(rst)
 );

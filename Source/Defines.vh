@@ -39,7 +39,9 @@
 `define DataMemNumLog2 17
 `define ByteBus 7:0
 
+// ============= Uart ============================
 
+`define SampleInterval 3
 
 
 `endif

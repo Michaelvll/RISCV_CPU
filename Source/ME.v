@@ -127,7 +127,7 @@ begin
 	end
 end
 
-always @(*)
+always @(rst, w_enable_i, ram_busy, aluop_i, ram_addr_i, w_data_i)
 begin
 	if (rst)
 	begin

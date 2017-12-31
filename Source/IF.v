@@ -22,29 +22,36 @@ module IF (
 
 assign rom_addr_o = pc_i;
 
-always @ (*)
+always @ (rom_busy_i, pc_i, rom_data_i, rst)
 begin
     if (rst) 
     begin
-		pc_o		<=	`ZeroWord;
-        inst_o 		<=	`ZeroWord;
-		r_enable_o	<=	1'b0;
-		stall_req_o	<=	1'b0;
+		pc_o		=	`ZeroWord;
+		r_enable_o	=	1'b0;
+		stall_req_o	=	1'b0;
     end
-    else if (!rom_busy_i)
+    else if (!rom_busy_i && !stall_req_o)
     begin
-        pc_o		<=	pc_i;
-		r_enable_o	<=	1'b1;
-		inst_o		<=	rom_data_i;
-		stall_req_o	<=	1'b0;
+        pc_o		=	pc_i;
+		r_enable_o	=	1'b1;
+		stall_req_o	=	1'b1;
     end
-	else
+	else if (rom_busy_i && stall_req_o)
 	begin
-		pc_o		<=	`ZeroWord;
-		r_enable_o	<=	1'b0;
-		inst_o		<=	`ZeroWord;
-		stall_req_o	<=	1'b1;
+		stall_req_o	=	1'b1;
 	end
+	else if (!rom_busy_i && stall_req_o)
+	begin
+		stall_req_o	=	1'b0;
+	end
+end
+
+always@(*)
+begin
+    if (rst)
+        inst_o      =  `ZeroWord;
+    else if (rom_done_i)
+        inst_o      =  rom_data_i;
 end
 
 endmodule

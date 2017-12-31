@@ -19,7 +19,7 @@ reg rst;
 reg rst_delay;
 
 wire clk;
-clk_wiz_0 clk0(EXclk, clk);
+clk_wiz_0 clk0(clk, 1'b0, EXclk);
 
 always @(posedge clk or posedge button)
 begin
@@ -42,12 +42,14 @@ wire 		UART_recv_flag;
 wire [7:0]	UART_recv_data;
 wire		UART_sendable;
 wire		UART_receivable;
-uart_comm #(.BAUDRATE(5000000/*115200*/), .CLOCKRATE(66667000)) UART(
+// uart_comm #(.BAUDRATE(300000000/*115200*/), .CLOCKRATE(1000000000)) UART(
+uart_comm #(.SAMPLE_INTERVAL(`SampleInterval)) UART(	
 		clk, rst,
 		UART_send_flag, UART_send_data,
 		UART_recv_flag, UART_recv_data,
 		UART_sendable, UART_receivable,
 		Tx, Rx);
+
 
 localparam CHANNEL_BIT = 1;
 localparam MESSAGE_BIT = 72;

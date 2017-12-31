@@ -9,7 +9,6 @@ module PC_reg (
     input wire					rst,
 
     output reg [`InstAddrBus]	pc,
-    output reg 					ce,
 	
 	input wire[5:0]				stall,
 
@@ -25,22 +24,10 @@ begin
 	pc	<=	`ZeroWord;
 end
 
-
 always @(posedge clk) 
 begin
-	if (rst) 
-	begin
-		ce <= `ChipDisable;
-	end
-	else
-	begin
-		ce <= `ChipEnable;
-	end
-end
-
-always @(posedge clk) 
-begin
-	if (ce == `ChipDisable)
+// $display("hello, world!");
+	if (rst)
 		pc <= `ZeroWord;
 	else if (!stall[0])
 	begin

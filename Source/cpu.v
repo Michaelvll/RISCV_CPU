@@ -137,7 +137,6 @@ PC_reg pc_reg0(
 	.clk(clk),
 	.rst(rst),
 	.pc(pc),
-	.ce(rom_ce_o),
 	.stall(stall),
 
 	.ex_b_flag_i(ex_b_flag_o),

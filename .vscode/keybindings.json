@@ -1,0 +1,91 @@
+// 将键绑定放入此文件中以覆盖默认值
+[
+	{
+		"key": "ctrl+shift+o",
+		"command": "workbench.action.files.openFolder"
+	},
+	{
+		"key": "ctrl+shift+l b",
+		"command": "latex-workshop.build",
+		"when": "editorFocus && !findWidgetVisible && !replaceActive && !searchViewletVisible"
+	},
+	{
+		"key": "ctrl+l ctrl+b",
+		"command": "-latex-workshop.build",
+		"when": "editorFocus && !findWidgetVisible && !replaceActive && !searchViewletVisible"
+	},
+	{
+		"key": "ctrl+shift+l c",
+		"command": "latex-workshop.clean",
+		"when": "editorFocus && !findWidgetVisible && !replaceActive && !searchViewletVisible"
+	},
+	{
+		"key": "ctrl+l ctrl+c",
+		"command": "-latex-workshop.clean",
+		"when": "editorFocus && !findWidgetVisible && !replaceActive && !searchViewletVisible"
+	},
+	{
+		"key": "ctrl+shift+l a",
+		"command": "latex-workshop.actions",
+		"when": "editorFocus && !findWidgetVisible && !replaceActive && !searchViewletVisible"
+	},
+	{
+		"key": "ctrl+l ctrl+a",
+		"command": "-latex-workshop.actions",
+		"when": "editorFocus && !findWidgetVisible && !replaceActive && !searchViewletVisible"
+	},
+	{
+		"key": "ctrl+shift+l i",
+		"command": "latex-workshop.citation",
+		"when": "editorFocus && !findWidgetVisible && !replaceActive && !searchViewletVisible"
+	},
+	{
+		"key": "ctrl+l ctrl+i",
+		"command": "-latex-workshop.citation",
+		"when": "editorFocus && !findWidgetVisible && !replaceActive && !searchViewletVisible"
+	},
+	{
+		"key": "ctrl+shift+l l",
+		"command": "latex-workshop.log",
+		"when": "editorFocus && !findWidgetVisible && !replaceActive && !searchViewletVisible"
+	},
+	{
+		"key": "ctrl+l ctrl+l",
+		"command": "-latex-workshop.log",
+		"when": "editorFocus && !findWidgetVisible && !replaceActive && !searchViewletVisible"
+	},
+	{
+		"key": "ctrl+shift+l s",
+		"command": "latex-workshop.synctex",
+		"when": "editorFocus && !findWidgetVisible && !replaceActive && !searchViewletVisible"
+	},
+	{
+		"key": "ctrl+l ctrl+s",
+		"command": "-latex-workshop.synctex",
+		"when": "editorFocus && !findWidgetVisible && !replaceActive && !searchViewletVisible"
+	},
+	{
+		"key": "ctrl+shift+l t",
+		"command": "latex-workshop.tab",
+		"when": "editorFocus && !findWidgetVisible && !replaceActive && !searchViewletVisible"
+	},
+	{
+		"key": "ctrl+l ctrl+t",
+		"command": "-latex-workshop.tab",
+		"when": "editorFocus && !findWidgetVisible && !replaceActive && !searchViewletVisible"
+	},
+	{
+		"key": "ctrl+shift+l w",
+		"command": "latex-workshop.view",
+		"when": "editorFocus && !findWidgetVisible && !replaceActive && !searchViewletVisible"
+	},
+	{
+		"key": "ctrl+l ctrl+v",
+		"command": "-latex-workshop.view",
+		"when": "editorFocus && !findWidgetVisible && !replaceActive && !searchViewletVisible"
+	},
+	{
+		"key": "ctrl+f5",
+		"command": "python.execInTerminal"
+	}
+]

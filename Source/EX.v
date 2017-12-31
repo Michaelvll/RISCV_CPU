@@ -34,7 +34,9 @@ module EX(
 	output wire					is_ld
 );
 always@(*)
+begin
 	stall_req_o		<=		1'b0;
+end
 
 
 reg[`RegBus]		logic_res;

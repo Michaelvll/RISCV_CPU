@@ -5,35 +5,106 @@
 `include "Defines.vh"
 `include "IDInstDef.vh"
 `include "ALUInstDef.vh"
-`include "PC_reg.v"
-`include "IF.v"
-`include "IF_ID.v"
-`include "ID.v"
-`include "ID_EX.v"
-`include "EX.v"
-`include "EX_ME.v"
-`include "ME.v"
-`include "ME_WB.v"
-`include "WB.v"
-`include "Regfile.v"
-`include "Ctrl.v"
 
 module cpu(
-    input wire 		clk,
-	input wire		rst,
+    input wire 							clk,
+	input wire							rst,
 
-	input wire[`RegBus]			rom_data_i,
+	output wire[2*2-1:0] 				mem_rw_flag_o,
+	output wire[2*`DataAddrWidth-1:0]	mem_addr_o,
+	input wire[2*`DataWidth-1:0]		mem_r_data_i,
 
-	output wire					rom_ce_o,
-	output wire[`InstAddrBus]	rom_addr_o,
-
-	input wire[`RegBus]			ram_r_data_i,
-	output wire[`RegBus]		ram_addr_o,
-	output wire[`RegBus]		ram_w_data_o,
-	output wire					ram_w_enable_o,
-	output wire[3:0]			ram_sel_o,
-	output wire					ram_ce_o
+	output wire[2*`DataAddrWidth-1:0]	mem_w_data_o,
+	output wire[2*4-1:0]				mem_w_mask_o,
+	input wire[1:0]						mem_busy_i,
+	input wire[1:0]						mem_done_i
 );
+
+// ================== Caches ========================
+wire [1:0]			icache_rw_flag;
+wire [`DataAddrBus]	icache_addr;
+wire [`DataBus]		icache_r_data;
+wire [`DataBus]		icache_w_data;
+wire [3:0]			icache_w_mask;
+wire 				icache_busy;
+wire				icache_done;
+
+wire				icache_flush_flag;
+wire [`DataAddrBus]	icache_flush_addr;
+
+assign icache_w_data 		= 0;
+assign icache_w_mask		= 0;
+assign icache_rw_flag[1]	= 0;
+
+// tmp
+assign icache_flush_flag	=	1'b0;
+assign icache_flush_addr	=	`ZeroWord;
+
+
+Cache#(.INDEX_BIT(4), .WAY_NUM(2))
+	icache0(
+	.clk(clk),
+	.rst(rst),
+
+	.rw_flag_i(icache_rw_flag),
+	.addr_i(icache_addr),
+	.r_data_o(icache_r_data),
+	.w_data_i(icache_w_data),
+	.w_mask_i(icache_w_mask),
+	.busy(icache_busy),
+	.done(icache_done),
+	
+	.flush_flag_i(icache_flush_flag),
+	.flush_addr_i(icache_flush_addr),
+	
+	.mem_rw_flag_o(mem_rw_flag_o[3:2]),
+	.mem_addr_o(mem_addr_o[63:32]),
+	.mem_r_data_i(mem_r_data_i[63:32]),
+	.mem_w_data_o(mem_w_data_o[63:32]),
+	.mem_w_mask_o(mem_w_mask_o[7:4]),
+	.mem_busy(mem_busy_i[1]),
+	.mem_done(mem_done_i[1])
+);
+
+wire [1:0]			dcache_rw_flag;
+wire [`DataAddrBus]	dcache_addr;
+wire [`DataBus]		dcache_r_data;
+wire [`DataBus]		dcache_w_data;
+wire [3:0]			dcache_w_mask;
+wire 				dcache_busy;
+wire				dcache_done;
+
+wire				dcache_flush_flag;
+wire [`DataAddrBus]	dcache_flush_addr;
+
+assign dcache_flush_flag = 0;
+assign dcache_flush_addr = `DataAddrWidth'b0;
+
+Cache dcache0(
+	.clk(clk),
+	.rst(rst),
+
+	.rw_flag_i(dcache_rw_flag),
+	.addr_i(dcache_addr),
+	.r_data_o(dcache_r_data),
+	.w_data_i(dcache_w_data),
+	.w_mask_i(dcache_w_mask),
+	.busy(dcache_busy),
+	.done(dcache_done),
+	
+	.flush_flag_i(dcache_flush_flag),
+	.flush_addr_i(dcache_flush_addr),
+	
+	.mem_rw_flag_o(mem_rw_flag_o[1:0]),
+	.mem_addr_o(mem_addr_o[31:0]),
+	.mem_r_data_i(mem_r_data_i[31:0]),
+	.mem_w_data_o(mem_w_data_o[31:0]),
+	.mem_w_mask_o(mem_w_mask_o[3:0]),
+	.mem_busy(mem_busy_i[0]),
+	.mem_done(mem_done_i[0])
+);
+
+
 
 // ================== STALL Control =================
 wire 				if_stall_req;
@@ -67,7 +138,6 @@ PC_reg pc_reg0(
 	.clk(clk),
 	.rst(rst),
 	.pc(pc),
-	.ce(rom_ce_o),
 	.stall(stall),
 
 	.ex_b_flag_i(ex_b_flag_o),
@@ -78,14 +148,18 @@ PC_reg pc_reg0(
 );
 
 IF if0 (
-	.clk(clk),
 	.rst(rst),
 
 	.pc_i(pc),
-	.rom_data_i(rom_data_i),
+	.rom_data_i(icache_r_data),
 	.pc_o(if_pc_o),
 	.inst_o(if_inst_o),
-	.rom_addr_o(rom_addr_o),
+	.rom_addr_o(icache_addr),
+
+	.r_enable_o(icache_rw_flag[0]),
+	.rom_busy_i(icache_busy),
+	.rom_done_i(icache_done),
+
 	.stall_req_o(if_stall_req)
 );
 
@@ -292,14 +366,16 @@ ME me0 (
 	.stall_req_o(me_stall_req),
 
 	.aluop_i(me_aluop_i),
-	.mem_addr_i(me_mem_addr_i),
+	.ram_addr_i(me_mem_addr_i),
 
-	.mem_r_data_i(ram_r_data_i),
-	.mem_w_enable_o(ram_w_enable_o),
-	.mem_sel_o(ram_sel_o),
-	.mem_w_data_o(ram_w_data_o),
-	.mem_addr_o(ram_addr_o),
-	.mem_ce_o(ram_ce_o)
+	.ram_r_enable_o(dcache_rw_flag[0]),
+	.ram_r_data_i(dcache_r_data),
+	.ram_w_enable_o(dcache_rw_flag[1]),
+	.ram_w_mask_o(dcache_w_mask),
+	.ram_w_data_o(dcache_w_data),
+	.ram_addr_o(dcache_addr),
+	.ram_busy(dcache_busy),
+	.ram_done(dcache_done)
 );
 
 // Forwarding wire

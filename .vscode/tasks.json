@@ -1,0 +1,120 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "CppBuild",
+			"command": "g++",
+			"args": [
+				"${file}",
+				"-o",
+				"${fileBasenameNoExtension}.exe",
+				"-O2",
+				"-Wall",
+				"-std=c++14"
+			], // 编译命令参数
+			"type": "shell",
+			"presentation": {
+				"reveal": "always",
+				"focus": true
+			},
+			"problemMatcher": {
+				"owner": "cpp",
+				"fileLocation": [
+					"absolute"
+				],
+				"pattern": {
+					"regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+					"file": 1,
+					"line": 2,
+					"column": 3,
+					"severity": 4,
+					"message": 5
+				}
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"label": "CppRun",
+			"command": "./${fileBasenameNoExtension}",
+			"args": [], // 编译命令参数
+			"type": "shell",
+			"presentation": {
+				"reveal": "always",
+				"focus": true
+			},
+			"group": "none"
+		},
+		{
+			"label": "CppDebugBuild",
+			"command": "g++",
+			"args": [
+				"-g",
+				"${file}",
+				"-o",
+				"${fileBasenameNoExtension}.exe",
+				"-std=c++14"
+			], // 编译命令参数
+			"type": "shell",
+			"presentation": {
+				"reveal": "silent"
+			},
+			"problemMatcher": {
+				"owner": "cpp",
+				"fileLocation": [
+					"absolute"
+				],
+				"pattern": {
+					"regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+					"file": 1,
+					"line": 2,
+					"column": 3,
+					"severity": 4,
+					"message": 5
+				}
+			},
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			}
+		},
+		{
+			"label": "CppMemCheck",
+			"command": "x86_64-w64-mingw32-g++",
+			"args": [
+				"-static-libgcc",
+				"-static-libstdc++",
+				"-ggdb",
+				"${file}",
+				"-o",
+				"${fileBasenameNoExtension}.exe",
+				"-Wall",
+				"-std=c++11;",
+				"drmemory",
+				"--",
+				"${fileBasenameNoExtension}.exe"
+			], // 编译命令参数
+			"type": "shell",
+			"presentation": {
+				"reveal": "always"
+			},
+			"problemMatcher": {
+				"owner": "cpp",
+				"fileLocation": [
+					"absolute"
+				],
+				"pattern": {
+					"regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+					"file": 1,
+					"line": 2,
+					"column": 3,
+					"severity": 4,
+					"message": 5
+				}
+			},
+			"group": "test"
+		}
+	]
+}

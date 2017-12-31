@@ -33,7 +33,10 @@ module EX(
 
 	output wire					is_ld
 );
-
+always@(*)
+begin
+	stall_req_o		<=		1'b0;
+end
 
 
 reg[`RegBus]		logic_res;
@@ -68,7 +71,14 @@ assign pc_plus_offset = pc_i + offset_i;
 
 // ============ ALU LOAD_STORE part ================
 
-assign aluop_o = aluop_i;
+assign aluop_o = ((aluop_i == `EX_LB_OP) || 
+				(aluop_i == `EX_LH_OP) ||
+				(aluop_i == `EX_LW_OP) ||
+				(aluop_i == `EX_LBU_OP)||
+				(aluop_i == `EX_LHU_OP)||
+				(aluop_i == `EX_SB_OP) ||
+				(aluop_i == `EX_SH_OP) ||
+				(aluop_i == `EX_SW_OP) ) ? aluop_i : `ME_NOP_OP;
 
 assign mem_addr_o = r1_data_i + offset_i;
 

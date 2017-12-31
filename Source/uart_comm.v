@@ -21,8 +21,9 @@
 
 module uart_comm 
 	#(
-	parameter BAUDRATE = 9600,
-	parameter CLOCKRATE = 100000000
+	// parameter BAUDRATE = 9600,
+	// parameter CLOCKRATE = 100000000
+	parameter SAMPLE_INTERVAL = 20
 	)(
 	input CLK,
 	input RST,
@@ -53,7 +54,7 @@ module uart_comm
 	assign receivable = !recv_empty;
 	assign sendable = !send_full;
 	
-	localparam SAMPLE_INTERVAL = CLOCKRATE / BAUDRATE;
+	// localparam SAMPLE_INTERVAL = CLOCKRATE / BAUDRATE;
 	
 	localparam STATUS_IDLE = 0;
 	localparam STATUS_BEGIN = 1;
@@ -142,7 +143,6 @@ module uart_comm
 	reg [3:0] send_status;
 	reg [2:0] send_bit;
 	reg send_parity;
-	reg tosend;
 	
 	always @(posedge CLK or posedge RST) begin
 		if(RST) begin
@@ -151,7 +151,6 @@ module uart_comm
 			send_status <= STATUS_IDLE;
 			send_bit <= 0;
 			send_parity <= 0;
-			tosend <= 0;
 			Tx <= 1;
 		end else begin
 			send_read_flag <= 0;
@@ -185,7 +184,6 @@ module uart_comm
 				STATUS_END:begin
 					Tx <= 1;
 					send_status <= STATUS_IDLE;
-					tosend = 0;
 				end
 				endcase
 			end

@@ -9,7 +9,6 @@ module PC_reg (
     input wire					rst,
 
     output reg [`InstAddrBus]	pc,
-    output reg 					ce,
 	
 	input wire[5:0]				stall,
 
@@ -19,28 +18,22 @@ module PC_reg (
 	input wire					id_b_flag_i,
 	input wire[`InstAddrBus]	id_b_target_addr_i
 );
-
+reg[`InstAddrBus] next_pc;
 initial
 begin
-	pc	<=	`ZeroWord;
+	pc	    <=	`ZeroWord;
+    next_pc <=  32'd4;
 end
 
-
-always @(posedge clk) 
+always@(*)
 begin
-	if (rst) 
-	begin
-		ce <= `ChipDisable;
-	end
-	else
-	begin
-		ce <= `ChipEnable;
-	end
+    next_pc <=  pc + 32'd4;
 end
 
 always @(posedge clk) 
 begin
-	if (ce == `ChipDisable)
+// $display("hello, world!");
+	if (rst)
 		pc <= `ZeroWord;
 	else if (!stall[0])
 	begin
@@ -49,7 +42,8 @@ begin
 		else if (id_b_flag_i)
 			pc	<=	id_b_target_addr_i;
 		else 
-			pc <= pc + 32'h4;
+			// pc  <=  next_pc;
+            pc  <=  next_pc;
 	end
 end
 

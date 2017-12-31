@@ -10,12 +10,12 @@ module cpu(
     input wire 							clk,
 	input wire							rst,
 
-	output reg[2*2-1:0] 				mem_rw_flag_o,
-	output reg[2*`DataAddrWidth-1:0]	mem_addr_o,
+	output wire[2*2-1:0] 				mem_rw_flag_o,
+	output wire[2*`DataAddrWidth-1:0]	mem_addr_o,
 	input wire[2*`DataWidth-1:0]		mem_r_data_i,
 
-	output reg[2*`DataAddrWidth-1:0]	mem_w_data_o,
-	output reg[2*4-1:0]					mem_w_mask_o,
+	output wire[2*`DataAddrWidth-1:0]	mem_w_data_o,
+	output wire[2*4-1:0]				mem_w_mask_o,
 	input wire[1:0]						mem_busy_i,
 	input wire[1:0]						mem_done_i
 );
@@ -36,8 +36,13 @@ assign icache_w_data 		= 0;
 assign icache_w_mask		= 0;
 assign icache_rw_flag[1]	= 0;
 
+// tmp
+assign icache_flush_flag	=	1'b0;
+assign icache_flush_addr	=	`ZeroWord;
 
-Cache icache0(
+
+Cache#(.INDEX_BIT(4), .WAY_NUM(2))
+	icache0(
 	.clk(clk),
 	.rst(rst),
 
@@ -133,7 +138,6 @@ PC_reg pc_reg0(
 	.clk(clk),
 	.rst(rst),
 	.pc(pc),
-	.ce(rom_ce_o),
 	.stall(stall),
 
 	.ex_b_flag_i(ex_b_flag_o),
@@ -144,7 +148,6 @@ PC_reg pc_reg0(
 );
 
 IF if0 (
-	.clk(clk),
 	.rst(rst),
 
 	.pc_i(pc),

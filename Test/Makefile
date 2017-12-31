@@ -18,8 +18,7 @@ STDNAME = inst_rom.mem
 PROGRAM = $(if $(CPP_FILES),$(basename $(CPP_FILES)),$(basename $(S_FILES)))
 
 %.mem: %.bin
-	python3 ./bin2mem.py $< $@
-	cp $@ ./$(STDNAME) -f
+	python3 ./bin2mem.py $< $@ $(STDNAME)
 
 %.dump: %.om
 	$(DUMP) $< $(DUMP_FLAGS)

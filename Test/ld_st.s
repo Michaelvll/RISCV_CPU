@@ -43,4 +43,3 @@ _start:
 	 
 _loop:
 	j _loop
-	nop

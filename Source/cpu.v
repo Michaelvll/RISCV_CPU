@@ -41,7 +41,8 @@ assign icache_flush_flag	=	1'b0;
 assign icache_flush_addr	=	`ZeroWord;
 
 
-Cache icache0(
+Cache#(.INDEX_BIT(4), .WAY_NUM(2))
+	icache0(
 	.clk(clk),
 	.rst(rst),
 

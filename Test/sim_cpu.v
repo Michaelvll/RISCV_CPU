@@ -16,8 +16,8 @@ initial
 begin
 	rst = 1'b1;
 	#10	rst		= 	1'b0;
-	#90000 	rst		= 	1'b1;
-	#10000 	$stop;
+	#900000 	rst		= 	1'b1;
+	#100000 	$stop;
 end
 
 TopCPU top0(

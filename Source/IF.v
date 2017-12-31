@@ -21,37 +21,40 @@ module IF (
 );
 
 assign rom_addr_o = pc_i;
+reg my_rom_turn;
+initial
+begin
+    my_rom_turn     =   1'b0;
+end
 
-always @ (rom_busy_i, pc_i, rom_data_i, rst)
+
+always @ (*)
 begin
     if (rst) 
     begin
 		pc_o		=	`ZeroWord;
 		r_enable_o	=	1'b0;
 		stall_req_o	=	1'b0;
+        inst_o      =  `ZeroWord;
+        my_rom_turn =   1'b0;
     end
-    else if (!rom_busy_i && !stall_req_o)
+    else if (!rom_busy_i && !my_rom_turn)
     begin
         pc_o		=	pc_i;
-		r_enable_o	=	1'b1;
-		stall_req_o	=	1'b1;
+        r_enable_o	=	1'b1;
+        my_rom_turn =   1'b1;
+        stall_req_o	=	1'b1;
     end
-	else if (rom_busy_i && stall_req_o)
+    else if (rom_done_i && my_rom_turn)
+    begin
+        my_rom_turn =   1'b0;
+        stall_req_o	=	1'b0;
+        inst_o      =  rom_data_i;          
+    end
+	else if (rom_busy_i)
 	begin
-		stall_req_o	=	1'b1;
+	    stall_req_o	=	1'b1;
 	end
-	else if (!rom_busy_i && stall_req_o)
-	begin
-		stall_req_o	=	1'b0;
-	end
-end
-
-always@(*)
-begin
-    if (rst)
-        inst_o      =  `ZeroWord;
-    else if (rom_done_i)
-        inst_o      =  {rom_data_i[7:0],rom_data_i[15:8],rom_data_i[23:16],rom_data_i[31:24]};
 end
 
 endmodule

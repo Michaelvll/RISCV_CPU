@@ -1,3 +1,4 @@
+#pragma comment(lib,"serial.lib")
 #include "environment.h"
 #include <fstream>
 #include <boost/program_options.hpp>

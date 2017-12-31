@@ -51,7 +51,7 @@ begin
     if (rst)
         inst_o      =  `ZeroWord;
     else if (rom_done_i)
-        inst_o      =  rom_data_i;
+        inst_o      =  {rom_data_i[7:0],rom_data_i[15:8],rom_data_i[23:16],rom_data_i[31:24]};
 end
 
 endmodule

@@ -2,9 +2,24 @@
 #define CPU_JUDGE_ADAPTER_H
 
 #include "env_iface.h"
+#include <bitset>
+#include <queue>
 
 class Adapter
 {
+private:
+	using byte = std::bitset<8>;
+	static enum States {
+		IDLE,
+		CHANNEL,
+		LENGTH,
+		DATA,
+		END
+	};
+	const uint8_t pakcet_size = 8;
+	States recv_state = IDLE;
+	byte recv_bit = 0, recv_packet_id = 0, recv_length = 0;
+	std::queue<byte> read_buffer;
 public:
 	Adapter() : env(nullptr) {}
 

@@ -45,7 +45,7 @@ begin
         my_rom_turn =   1'b1;
         stall_req_o	=	1'b1;
     end
-    else if (rom_done_i && my_rom_turn)
+    else if (my_rom_turn)
     begin
         my_rom_turn =   1'b0;
         stall_req_o	=	1'b0;
@@ -55,6 +55,11 @@ begin
 	begin
 	    stall_req_o	=	1'b1;
 	end
+end
+
+always@(*)
+begin
+
 end
 
 endmodule

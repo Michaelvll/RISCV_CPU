@@ -1,5 +1,6 @@
 #include "adapter.h"
 
+
 void Adapter::onRecv(std::uint8_t data) {
   // TODO: Do something when you receive a byte from your CPU
   //
@@ -18,4 +19,19 @@ void Adapter::onRecv(std::uint8_t data) {
   // You can also send data to your CPU by using:
   //    env->UARTSend(data)
   // where <data> can be a string or vector of bytes (uint8_t)
+	byte bdata(data);
+	switch (recv_state) {
+	case IDLE:
+		if ((bdata >> (pakcet_size - 3)) == byte(0x4)) {
+			recv_packet_id = bdata & byte(0x1f);
+			recv_bit = 0;
+			recv_length = 0;
+			recv_state = CHANNEL;
+		}
+		break;
+	case CHANNEL:
+		if ((bdata >> (pakcet_size - 3)) == byte(0x5)) {
+
+		}
+	}
 }

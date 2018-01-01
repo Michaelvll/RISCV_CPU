@@ -8,6 +8,7 @@
 
 module cpu(
     input wire 							clk,
+    // input wire                          clk_mem,
 	input wire							rst,
 
 	output wire[2*2-1:0] 				mem_rw_flag_o,

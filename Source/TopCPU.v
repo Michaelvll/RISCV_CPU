@@ -19,7 +19,10 @@ reg rst;
 reg rst_delay;
 
 wire clk;
-clk_wiz_0 clk0(clk, 1'b0, EXclk);
+wire clk_uart;
+// clk_wiz_0 clk0(.clk_out1(clk), .clk_out2(clk_uart), .reset(1'b0), .clk_in1(EXclk));
+clk_wiz_0 clk0(.clk_out1(clk), .reset(1'b0), .clk_in1(EXclk));
+
 
 always @(posedge clk or posedge button)
 begin

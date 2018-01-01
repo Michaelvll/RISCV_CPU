@@ -21,7 +21,7 @@
 
 
 module sim_memory(
-	input clk,
+	input clk_i,
 	input rst,
 	output Tx,
 	input Rx
@@ -31,8 +31,12 @@ module sim_memory(
 	wire [7:0] send_data;
 	wire recv_flag;
 	wire [7:0] recv_data;
-	
 	wire recvable, sendable;
+
+    wire clk;
+    wire clk_uart;
+	// clk_wiz_0 CLK(.clk_out1(clk), .clk_out2(clk_uart), .reset(1'b0), .clk_in1(clk_i));
+	clk_wiz_0 CLK(.clk_out1(clk), .reset(1'b0), .clk_in1(clk_i));    
 	uart_comm #(.SAMPLE_INTERVAL(`SampleInterval)) uart(
         clk, rst, send_flag, send_data, recv_flag, recv_data, sendable, recvable, Tx, Rx);
 

@@ -358,7 +358,7 @@ module Cache
 		valid_tag 	= 0;
 		
 		mem_rw_flag_o	= 0;
-		mem_addr_o	= 0;
+		mem_addr_o  	= 0;
 		mem_w_data_o	= 0;
 		mem_w_mask_o	= 0;
 		

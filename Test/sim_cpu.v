@@ -28,7 +28,7 @@ TopCPU top0(
 );
 
 sim_memory sm(
-	.clk(clk),
+	.clk_i(clk),
 	.rst(rst),
 	.Tx(Rx),
 	.Rx(Tx)

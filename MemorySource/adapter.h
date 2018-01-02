@@ -3,23 +3,26 @@
 
 #include "env_iface.h"
 #include <bitset>
-#include <queue>
 
 class Adapter
 {
 private:
 	using byte = std::bitset<8>;
-	static enum States {
+	enum States {
 		IDLE,
 		CHANNEL,
 		LENGTH,
 		DATA,
 		END
 	};
-	const uint8_t pakcet_size = 8;
+	static const uint8_t packet_size = 8;
+	static const uint32_t message_bit = 72;
+	
 	States recv_state = IDLE;
-	byte recv_bit = 0, recv_packet_id = 0, recv_length = 0;
-	std::queue<byte> read_buffer;
+	size_t recv_bit = 0, recv_packet_id = 0, send_packet_id = 1, recv_length = 0;
+	std::bitset<message_bit> get_data, send_data;
+
+	void data_handler(const std::vector<uint8_t> datas);
 public:
 	Adapter() : env(nullptr) {}
 
@@ -28,9 +31,9 @@ public:
 	void onRecv(std::uint8_t data);
 
 	//TODO: You may the following settings according to the UART implementation in your CPU
-	std::uint32_t getBaudrate() { return 9600; }
+	std::uint32_t getBaudrate() { return 230400; }
 	serial::bytesize_t getBytesize() { return serial::eightbits; }
-	serial::parity_t getParity() { return serial::parity_none; }
+	serial::parity_t getParity() { return serial::parity_even; }
 	serial::stopbits_t getStopBits() { return serial::stopbits_one; }
 
 protected:

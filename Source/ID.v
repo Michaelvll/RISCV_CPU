@@ -155,8 +155,8 @@ begin
 				  
 				default:
 				begin
-					b_flag_o		<=	1'b0;
-					b_target_addr_o	<=	`ZeroWord;
+                    b_flag_o		<=	1'b0;
+                    b_target_addr_o	<=	`ZeroWord;
 				end
 			endcase
 		end
@@ -164,8 +164,11 @@ begin
 `endif //ID_BRANCHES
 		default:
 		begin
-			b_flag_o		<=	1'b0;
-			b_target_addr_o	<=	`ZeroWord;
+            if (!inst_i)
+            begin
+                b_flag_o		<=	1'b0;
+                b_target_addr_o	<=	`ZeroWord;
+            end
 		end
 	endcase
 end

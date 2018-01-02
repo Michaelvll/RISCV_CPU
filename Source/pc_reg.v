@@ -25,9 +25,9 @@ begin
     next_pc <=  32'd4;
 end
 
-always@(*)
+always @(*)
 begin
-    next_pc <=  pc + 32'd4;
+    next_pc <= pc + 32'd4;
 end
 
 always @(posedge clk) 
@@ -35,13 +35,17 @@ begin
 // $display("hello, world!");
 	if (rst)
 		pc <= `ZeroWord;
-	else if (!stall[0])
+	else 
 	begin
 		if (ex_b_flag_i)
+        begin
 			pc	<=	ex_b_target_addr_i;
+        end
 		else if (id_b_flag_i)
+        begin
 			pc	<=	id_b_target_addr_i;
-		else 
+        end
+		else if (!stall[0])
 			// pc  <=  next_pc;
             pc  <=  next_pc;
 	end

@@ -5,15 +5,19 @@
 
 `include "Defines.vh"
 `include "IDInstDef.vh"
+`define DEBG
 
 module TopCPU(
 	input wire EXclk,
 	input wire button,
+    output wire led,
 	output wire Tx,
 	input wire Rx
 );
 
 // ================== rst & clk =========================
+
+assign led = button;
 
 reg rst;
 reg rst_delay;
@@ -24,9 +28,9 @@ wire clk_uart;
 clk_wiz_0 clk0(.clk_out1(clk), .reset(1'b0), .clk_in1(EXclk));
 
 
-always @(posedge clk or posedge button)
+always @(posedge clk or negedge button)
 begin
-	if (button)
+	if (!button)
 	begin
 		rst			<=	1'b1;
 		rst_delay	<=	1'b1;
@@ -46,7 +50,12 @@ wire [7:0]	UART_recv_data;
 wire		UART_sendable;
 wire		UART_receivable;
 // uart_comm #(.BAUDRATE(300000000/*115200*/), .CLOCKRATE(1000000000)) UART(
+`ifndef DEBG
+uart_comm UART(	
+`else
 uart_comm #(.SAMPLE_INTERVAL(`SampleInterval)) UART(	
+`endif
+
 		clk, rst,
 		UART_send_flag, UART_send_data,
 		UART_recv_flag, UART_recv_data,

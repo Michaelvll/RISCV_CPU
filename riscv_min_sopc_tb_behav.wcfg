@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="38300000001fs"></ZoomEndTime>
-      <Cursor1Time time="397380000000fs"></Cursor1Time>
+      <ZoomStartTime time="38896000000fs"></ZoomStartTime>
+      <ZoomEndTime time="41674000001fs"></ZoomEndTime>
+      <Cursor1Time time="39920000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="134"></NameColumnWidth>
-      <ValueColumnWidth column_width="75"></ValueColumnWidth>
+      <ValueColumnWidth column_width="71"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="39" />
+   <WVObjectSize size="41" />
    <wave_markers>
       <marker time="150050000" label="" />
       <marker time="611000000" label="" />
@@ -39,6 +39,22 @@
    <wvobject fp_name="/SimCPU/top0/cpu0/if0/inst_o" type="array">
       <obj_property name="ElementShortName">inst_o[31:0]</obj_property>
       <obj_property name="ObjectShortName">inst_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/if0/pc_i" type="array">
+      <obj_property name="ElementShortName">pc_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/if0/pc_o" type="array">
+      <obj_property name="ElementShortName">pc_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/if_id0/id_pc" type="array">
+      <obj_property name="ElementShortName">id_pc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">id_pc[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/if_id0/id_inst" type="array">
+      <obj_property name="ElementShortName">id_inst[31:0]</obj_property>
+      <obj_property name="ObjectShortName">id_inst[31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/SimCPU/top0/cpu0/if0/rom_busy_i" type="logic">
       <obj_property name="ElementShortName">rom_busy_i</obj_property>
@@ -171,13 +187,5 @@
    <wvobject fp_name="/SimCPU/top0/clk0/clk_out1" type="logic">
       <obj_property name="ElementShortName">clk_out1</obj_property>
       <obj_property name="ObjectShortName">clk_out1</obj_property>
-   </wvobject>
-   <wvobject fp_name="/SimCPU/top0/clk0/clk_out2" type="logic">
-      <obj_property name="ElementShortName">clk_out2</obj_property>
-      <obj_property name="ObjectShortName">clk_out2</obj_property>
-   </wvobject>
-   <wvobject fp_name="/SimCPU/sm/CLK/clk_out2" type="logic">
-      <obj_property name="ElementShortName">clk_out2</obj_property>
-      <obj_property name="ObjectShortName">clk_out2</obj_property>
    </wvobject>
 </wave_config>

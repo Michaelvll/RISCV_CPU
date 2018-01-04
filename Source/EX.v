@@ -142,7 +142,7 @@ begin
 			begin
 				b_flag_o			<=	1'b0;
 				b_target_addr_o		<=	`ZeroWord;
-				J_B_res				<=	`ZeroWord;
+                J_B_res				<=	`ZeroWord;
 			end	
 		endcase
 	end

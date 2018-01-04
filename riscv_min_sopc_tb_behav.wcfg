@@ -11,18 +11,18 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="400000001fs"></ZoomEndTime>
-      <Cursor1Time time="212000000fs"></Cursor1Time>
+      <ZoomStartTime time="520333333666fs"></ZoomStartTime>
+      <ZoomEndTime time="676133333667fs"></ZoomEndTime>
+      <Cursor1Time time="650166667000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="117"></NameColumnWidth>
-      <ValueColumnWidth column_width="58"></ValueColumnWidth>
+      <NameColumnWidth column_width="134"></NameColumnWidth>
+      <ValueColumnWidth column_width="63"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="25" />
+   <WVObjectSize size="45" />
    <wave_markers>
-      <marker time="611000000" label="" />
       <marker time="150050000" label="" />
+      <marker time="611000000" label="" />
    </wave_markers>
    <wvobject fp_name="/SimCPU/top0/cpu0/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
@@ -36,17 +36,45 @@
       <obj_property name="ElementShortName">pc[31:0]</obj_property>
       <obj_property name="ObjectShortName">pc[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/SimCPU/top0/cpu0/if0/inst_o" type="array">
-      <obj_property name="ElementShortName">inst_o[31:0]</obj_property>
-      <obj_property name="ObjectShortName">inst_o[31:0]</obj_property>
-   </wvobject>
    <wvobject fp_name="/SimCPU/top0/cpu0/if0/rom_busy_i" type="logic">
       <obj_property name="ElementShortName">rom_busy_i</obj_property>
       <obj_property name="ObjectShortName">rom_busy_i</obj_property>
    </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/pc_reg0/id_b_flag_i" type="logic">
+      <obj_property name="ElementShortName">id_b_flag_i</obj_property>
+      <obj_property name="ObjectShortName">id_b_flag_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/pc_reg0/ex_b_flag_i" type="logic">
+      <obj_property name="ElementShortName">ex_b_flag_i</obj_property>
+      <obj_property name="ObjectShortName">ex_b_flag_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/pc_reg0/next_pc" type="array">
+      <obj_property name="ElementShortName">next_pc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">next_pc[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/if0/pc_o" type="array">
+      <obj_property name="ElementShortName">pc_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/if0/inst_o" type="array">
+      <obj_property name="ElementShortName">inst_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/if_id0/id_pc" type="array">
+      <obj_property name="ElementShortName">id_pc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">id_pc[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/if_id0/id_inst" type="array">
+      <obj_property name="ElementShortName">id_inst[31:0]</obj_property>
+      <obj_property name="ObjectShortName">id_inst[31:0]</obj_property>
+   </wvobject>
    <wvobject fp_name="/SimCPU/top0/cpu0/icache0/busy" type="logic">
       <obj_property name="ElementShortName">busy</obj_property>
       <obj_property name="ObjectShortName">busy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/icache0/done" type="logic">
+      <obj_property name="ElementShortName">done</obj_property>
+      <obj_property name="ObjectShortName">done</obj_property>
    </wvobject>
    <wvobject fp_name="/SimCPU/top0/MEM_CTRL/busy" type="array">
       <obj_property name="ElementShortName">busy[1:0]</obj_property>
@@ -55,6 +83,30 @@
    <wvobject fp_name="/SimCPU/top0/cpu0/mem_busy_i" type="array">
       <obj_property name="ElementShortName">mem_busy_i[1:0]</obj_property>
       <obj_property name="ObjectShortName">mem_busy_i[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/regfile0/regs[1]" type="array">
+      <obj_property name="ElementShortName">[1][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[1][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/regfile0/regs[2]" type="array">
+      <obj_property name="ElementShortName">[2][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[2][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/regfile0/regs[3]" type="array">
+      <obj_property name="ElementShortName">[3][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[3][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/regfile0/regs[4]" type="array">
+      <obj_property name="ElementShortName">[4][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[4][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/regfile0/regs[8]" type="array">
+      <obj_property name="ElementShortName">[8][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[8][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/regfile0/regs[15]" type="array">
+      <obj_property name="ElementShortName">[15][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[15][31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/SimCPU/top0/MEM_CTRL/rw_flag_[2]" type="logic">
       <obj_property name="ElementShortName">[2]</obj_property>
@@ -72,14 +124,6 @@
       <obj_property name="ElementShortName">COMM_w_flag[1:0]</obj_property>
       <obj_property name="ObjectShortName">COMM_w_flag[1:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/SimCPU/top0/UART_send_flag" type="logic">
-      <obj_property name="ElementShortName">UART_send_flag</obj_property>
-      <obj_property name="ObjectShortName">UART_send_flag</obj_property>
-   </wvobject>
-   <wvobject fp_name="/SimCPU/top0/UART_send_data" type="array">
-      <obj_property name="ElementShortName">UART_send_data[7:0]</obj_property>
-      <obj_property name="ObjectShortName">UART_send_data[7:0]</obj_property>
-   </wvobject>
    <wvobject fp_name="/SimCPU/top0/UART_recv_flag" type="logic">
       <obj_property name="ElementShortName">UART_recv_flag</obj_property>
       <obj_property name="ObjectShortName">UART_recv_flag</obj_property>
@@ -96,6 +140,34 @@
       <obj_property name="ElementShortName">Rx</obj_property>
       <obj_property name="ObjectShortName">Rx</obj_property>
    </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/mem_rw_flag_o" type="array">
+      <obj_property name="ElementShortName">mem_rw_flag_o[3:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_rw_flag_o[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/mem_addr_o" type="array">
+      <obj_property name="ElementShortName">mem_addr_o[63:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_addr_o[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/mem_r_data_i" type="array">
+      <obj_property name="ElementShortName">mem_r_data_i[63:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_r_data_i[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/UART_send_flag" type="logic">
+      <obj_property name="ElementShortName">UART_send_flag</obj_property>
+      <obj_property name="ObjectShortName">UART_send_flag</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/UART_send_data" type="array">
+      <obj_property name="ElementShortName">UART_send_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">UART_send_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/UART_recv_flag" type="logic">
+      <obj_property name="ElementShortName">UART_recv_flag</obj_property>
+      <obj_property name="ObjectShortName">UART_recv_flag</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/UART_recv_data" type="array">
+      <obj_property name="ElementShortName">UART_recv_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">UART_recv_data[7:0]</obj_property>
+   </wvobject>
    <wvobject fp_name="/SimCPU/sm/recv_flag" type="logic">
       <obj_property name="ElementShortName">recv_flag</obj_property>
       <obj_property name="ObjectShortName">recv_flag</obj_property>
@@ -107,6 +179,10 @@
    <wvobject fp_name="/SimCPU/sm/send_flag" type="logic">
       <obj_property name="ElementShortName">send_flag</obj_property>
       <obj_property name="ObjectShortName">send_flag</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/sm/uart/send_data" type="array">
+      <obj_property name="ElementShortName">send_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">send_data[7:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/SimCPU/sm/read_flag" type="logic">
       <obj_property name="ElementShortName">read_flag</obj_property>
@@ -123,5 +199,9 @@
    <wvobject fp_name="/SimCPU/sm/writable" type="logic">
       <obj_property name="ElementShortName">writable</obj_property>
       <obj_property name="ObjectShortName">writable</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/clk0/clk_out1" type="logic">
+      <obj_property name="ElementShortName">clk_out1</obj_property>
+      <obj_property name="ObjectShortName">clk_out1</obj_property>
    </wvobject>
 </wave_config>

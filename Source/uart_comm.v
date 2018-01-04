@@ -21,9 +21,12 @@
 
 module uart_comm 
 	#(
-	// parameter BAUDRATE = 9600,
-	// parameter CLOCKRATE = 100000000
+`ifndef DEBG
+	parameter BAUDRATE = 230400,
+	parameter CLOCKRATE = 100000000
+`else
 	parameter SAMPLE_INTERVAL = 20
+`endif
 	)(
 	input CLK,
 	input RST,
@@ -53,8 +56,9 @@ module uart_comm
 
 	assign receivable = !recv_empty;
 	assign sendable = !send_full;
-	
-	// localparam SAMPLE_INTERVAL = CLOCKRATE / BAUDRATE;
+`ifndef DEBG
+	localparam SAMPLE_INTERVAL = CLOCKRATE / BAUDRATE;
+`endif
 	
 	localparam STATUS_IDLE = 0;
 	localparam STATUS_BEGIN = 1;

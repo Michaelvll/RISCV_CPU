@@ -19,31 +19,40 @@ module PC_reg (
 	input wire[`InstAddrBus]	id_b_target_addr_i
 );
 reg[`InstAddrBus] next_pc;
+reg               next_jump;
 initial
 begin
-	pc	    <=	`ZeroWord;
-    next_pc <=  32'd4;
-end
-
-always@(*)
-begin
-    next_pc <=  pc + 32'd4;
+	pc	    	<=	`ZeroWord;
+    next_pc 	<=  32'd4;
+    next_jump   <=	1'b0;
 end
 
 always @(posedge clk) 
 begin
 // $display("hello, world!");
 	if (rst)
-		pc <= `ZeroWord;
-	else if (!stall[0])
+		pc 				<= `ZeroWord;
+	else 
 	begin
-		if (ex_b_flag_i)
-			pc	<=	ex_b_target_addr_i;
-		else if (id_b_flag_i)
-			pc	<=	id_b_target_addr_i;
-		else 
+        if (ex_b_flag_i)
+        begin
+            next_jump   <=  1'b1;
+			next_pc	    <=	ex_b_target_addr_i;
+        end
+        else if (id_b_flag_i)
+        begin
+            next_jump   <=  1'b1;
+			next_pc	    <=	id_b_target_addr_i;
+        end
+		else if (!next_jump)
+        	next_pc     <= pc + 32'd4;
+
+		if (!stall[0])
+		begin
 			// pc  <=  next_pc;
-            pc  <=  next_pc;
+            pc  		<=  next_pc;
+            next_jump	<=  1'b0;
+		end
 	end
 end
 

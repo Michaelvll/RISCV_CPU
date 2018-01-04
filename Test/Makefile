@@ -14,11 +14,11 @@ ELF = riscv32-unknown-elf
 CPP_FILES = $(wildcard *.cpp)
 S_FILES = $(wildcard *.[s|S])
 
-STDNAME = inst_rom.mem
+STDNAME = inst_rom
 PROGRAM = $(if $(CPP_FILES),$(basename $(CPP_FILES)),$(basename $(S_FILES)))
 
 %.mem: %.bin
-	python3 ./bin2mem.py $< $@ $(STDNAME)
+	python3 ./bin2mem.py $< $@ $(STDNAME).mem
 
 %.dump: %.om
 	$(DUMP) $< $(DUMP_FLAGS)
@@ -28,6 +28,7 @@ PROGRAM = $(if $(CPP_FILES),$(basename $(CPP_FILES)),$(basename $(S_FILES)))
 
 %.bin: %.om
 	$(BIN) $< -O binary $@
+	cp $@ $(STDNAME).bin
 
 %.om: %.o rom.o %.cpp
 	$(LD) $< rom.o -o $@ $(LD_FLAGS)

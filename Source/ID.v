@@ -155,8 +155,8 @@ begin
 				  
 				default:
 				begin
-					b_flag_o		<=	1'b0;
-					b_target_addr_o	<=	`ZeroWord;
+                    b_flag_o		<=	1'b0;
+                    b_target_addr_o	<=	`ZeroWord;
 				end
 			endcase
 		end
@@ -222,7 +222,7 @@ begin
 				w_addr_o		<=	rd;
 				instvalid		<=	`InstValid;
 
-							end
+			end
 
 			`OP_JAL:
 			begin

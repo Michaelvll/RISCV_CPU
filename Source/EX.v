@@ -140,11 +140,8 @@ begin
 `endif //ID_BRANCHES
 			default:
 			begin
-                if (aluop_i != `EX_NOP_OP)
-                begin
-                    b_flag_o			<=	1'b0;
-                    b_target_addr_o		<=	`ZeroWord;
-                end
+				b_flag_o			<=	1'b0;
+				b_target_addr_o		<=	`ZeroWord;
                 J_B_res				<=	`ZeroWord;
 			end	
 		endcase

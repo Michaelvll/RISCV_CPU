@@ -20,7 +20,9 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module sim_memory(
+module sim_memory
+#(parameter MEM_SIZE = 65536)
+(
 	input clk_i,
 	input rst,
 	output Tx,
@@ -51,13 +53,13 @@ module sim_memory(
 	wire writable;
 	
 	wire _trash, _trash2;
-	
-	reg [7:0] memory[2047:0];
-	reg [7:0] memory_stack[2047:0];
+
+	reg [7:0] memory[MEM_SIZE - 1:0];
+	reg [7:0] memory_stack[MEM_SIZE - 1:0];
 	
 	integer i;
 	initial begin
-		for(i=0;i<2048;i=i+1) begin
+		for(i=0;i<MEM_SIZE;i=i+1) begin
 			memory[i] = 0;
 			memory_stack[i] = 0;
 		end

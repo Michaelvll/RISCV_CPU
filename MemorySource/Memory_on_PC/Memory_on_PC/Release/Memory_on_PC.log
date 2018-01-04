@@ -1,8 +1,8 @@
 ﻿  adapter.cpp
   Generating code
-  2 of 1527 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
+  2 of 1526 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    8 functions had inline decision re-evaluated but remain unchanged
+    1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
 serial.lib(serial.obj) : warning LNK4099: PDB 'serial.pdb' was not found with 'serial.lib(serial.obj)' or at 'C:\AResource\ComputerSystem\task2\Riscv_CPU\MemorySource\Memory_on_PC\Release\serial.pdb'; linking object as if no debug info
 serial.lib(win.obj) : warning LNK4099: PDB 'serial.pdb' was not found with 'serial.lib(win.obj)' or at 'C:\AResource\ComputerSystem\task2\Riscv_CPU\MemorySource\Memory_on_PC\Release\serial.pdb'; linking object as if no debug info

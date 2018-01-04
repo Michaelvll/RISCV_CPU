@@ -33,6 +33,12 @@ module ID_EX(
 	input wire					ex_b_flag
 );
 
+reg		next_jump;
+initial
+begin
+	next_jump	<=	1'b0;
+end
+
 always @ (posedge clk)
 begin
 	if (rst)
@@ -57,6 +63,7 @@ begin
 		ex_w_addr		<=	`NOPRegAddr;
 		ex_pc			<=	`ZeroWord;
 		ex_offset		<=	`ZeroWord;
+		next_jump		<=	1'b1;
 	end
 	
 	else if (stall[2] && !stall[3])
@@ -73,14 +80,29 @@ begin
 
 	else if (!stall[2])
 	begin
-		ex_aluop		<=	id_aluop;
-		ex_alusel		<=	id_alusel;
-		ex_r1_data		<=	id_r1_data;
-		ex_r2_data		<=	id_r2_data;
-		ex_w_enable		<=	id_w_enable;
-		ex_w_addr		<=	id_w_addr;
-		ex_pc			<=	id_pc;
-		ex_offset		<=	id_offset;
+		if (next_jump)
+		begin
+			ex_aluop		<=	`EX_NOP_OP;
+			ex_alusel		<=	`EX_RES_NOP;
+			ex_r1_data		<=	`ZeroWord;	
+			ex_r2_data		<=	`ZeroWord;
+			ex_w_enable		<=	`WriteDisable;
+			ex_w_addr		<=	`NOPRegAddr;
+			ex_offset		<=	`ZeroWord;
+			ex_pc			<=	`ZeroWord;
+		end
+		else
+		begin
+			ex_aluop		<=	id_aluop;
+			ex_alusel		<=	id_alusel;
+			ex_r1_data		<=	id_r1_data;
+			ex_r2_data		<=	id_r2_data;
+			ex_w_enable		<=	id_w_enable;
+			ex_w_addr		<=	id_w_addr;
+			ex_pc			<=	id_pc;
+			ex_offset		<=	id_offset;
+		end
+		next_jump			<=	1'b0;
 	end
 end
 

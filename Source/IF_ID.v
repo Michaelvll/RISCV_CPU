@@ -19,6 +19,15 @@ module IF_ID(
 	input wire					id_b_flag
 );
 
+reg					next_jump;
+reg[`InstAddrBus]	next_pc;
+reg[`InstBus]		next_inst;
+
+initial
+begin
+	next_jump	<=	1'b0;
+end
+
 always @ (posedge clk)
 begin
 	if (rst)
@@ -28,6 +37,7 @@ begin
 	end
 	else if (id_b_flag || ex_b_flag)
 	begin
+		next_jump	<=	1'b1;
 		id_pc 	<=	`ZeroWord;
 		id_inst	<=	`ZeroWord;
 	end
@@ -38,8 +48,17 @@ begin
 	end
 	else if (!stall[1])
 	begin
-		id_pc	<=	if_pc;
-		id_inst	<=	if_inst;
+		if (next_jump)
+		begin
+			id_pc 	<=	`ZeroWord;
+			id_inst	<=	`ZeroWord;
+		end
+		else
+		begin
+			id_pc	<=	if_pc;
+			id_inst	<=	if_inst;
+		end
+		next_jump	<=	1'b0;
 	end
 end
 

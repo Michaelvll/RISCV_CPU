@@ -20,7 +20,7 @@ private:
 	
 	States recv_state = IDLE;
 	size_t recv_bit = 0, recv_packet_id = 0, send_packet_id = 1, recv_length = 0;
-	std::bitset<message_bit> get_data, send_data;
+	std::bitset<message_bit> get_data;
 
 	void data_handler(const std::vector<uint8_t> datas);
 public:

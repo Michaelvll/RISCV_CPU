@@ -45,9 +45,15 @@ module multchan_comm
 	input [(1<<CHANNEL_BIT)*(MESSAGE_BIT+5)-1:0] write_datas,
 	
 	output [(1<<CHANNEL_BIT)-1:0] readable,
-	output [(1<<CHANNEL_BIT)-1:0] writable
+	output [(1<<CHANNEL_BIT)-1:0] writable,
+	output reg get_data_led
 	);
 	
+	initial
+	begin
+		get_data_led = 1'b0;
+	end
+
 	localparam WIDTH = MESSAGE_BIT + 5;
 	localparam CHANNEL = 1 << CHANNEL_BIT;
 	
@@ -286,6 +292,7 @@ module multchan_comm
 						if(recv_packet_id == recv_data[4:0] && !read_buffer_full) begin
 							read_buffer_write_data[WIDTH-1:WIDTH-5] <= recv_length;
 							read_buffer_write_flag <= 1;
+							get_data_led	<=	1'b1;
 						end
 					recv_status <= STATUS_IDLE;
 				end

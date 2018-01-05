@@ -41,8 +41,8 @@ begin
     else if (!rom_busy_i && !my_rom_turn)
     begin
         r_enable_o	=	1'b1;
-        my_rom_turn =   1'b1;
         stall_req_o	=	1'b1;
+        my_rom_turn =   1'b1;
     end
 	else if (rom_busy_i)
 	begin
@@ -50,10 +50,11 @@ begin
 	end
     else if (my_rom_turn)
     begin
+        r_enable_o	=	1'b0;	
         pc_o		=	pc_i;
-        my_rom_turn =   1'b0;
+        inst_o      =  rom_data_i;        
         stall_req_o	=	1'b0;
-        inst_o      =  rom_data_i;          
+        my_rom_turn =   1'b0;
     end
 end
 

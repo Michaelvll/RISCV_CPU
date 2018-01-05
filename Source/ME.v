@@ -33,7 +33,7 @@ module ME(
 reg my_ram_turn;
 initial
 begin
-    my_ram_turn     =   1'b0;
+    my_ram_turn     <=   1'b0;
 end
 
 always @(*)

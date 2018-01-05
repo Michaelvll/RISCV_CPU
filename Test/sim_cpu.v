@@ -1,5 +1,6 @@
 `timescale 1ns/1ps
 
+
 module SimCPU();
 
 reg clk;
@@ -16,7 +17,7 @@ end
 initial
 begin
 	rst = 1'b1;
-	#2000	rst		= 	1'b0;
+	#5000	rst		= 	1'b0;
 	#90000000 	rst		= 	1'b1;
 	#10000000	$stop;
 end

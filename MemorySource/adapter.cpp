@@ -9,25 +9,11 @@ void Adapter::data_handler(const std::vector<uint8_t> datas)
 	if (datas.size() == 5 && datas[4] == 0) {
 		uint32_t addr = datas[0] | datas[1] << 8 | datas[2] << 16 | datas[3] << 24;
 		uint32_t word = env->ReadMemory(addr);
-
 		std::cout << "Get read request: ADDR:0x"
 			<< std::hex << std::setw(8) << std::setfill('0')
 			<< addr << ", Get Data: 0x" << word << std::endl;
-		std::vector<uint8_t> send_data;
-		send_data.push_back(uint8_t((0x4 << (packet_size - 3)) | (send_packet_id & 0x1f)));
-		send_data.push_back(uint8_t((0x5 << (packet_size - 3)) | (0)));
-		for (int i = 0; i < 5; ++i) {
-			send_data.push_back(uint8_t(word >> (i * 7) & 0x7f));
-		}
-		send_data.push_back(uint8_t((0x7 << (packet_size - 3)) | (send_packet_id & 0x1f)));
-		++send_packet_id;
 
-		std::cout << "Send Data: ";
-		for (auto x : send_data) {
-			std::cout << std::hex << std::setw(2) << std::setfill('0') << uint32_t(x) << ' ';
-		}
-		std::cout << std::endl;
-		env->UARTSend(send_data);
+		send(word);
 	}
 	else if (datas.size() == 9) {
 		uint32_t wdata = datas[0] | datas[1] << 8 | datas[2] << 16 | datas[3] << 24;
@@ -39,6 +25,26 @@ void Adapter::data_handler(const std::vector<uint8_t> datas)
 		std::cout << ", MASK: " << std::bitset<4>(datas[8]) << std::endl;
 		env->WriteMemory(addr, wdata, datas[8]);
 	}
+}
+
+void Adapter::send(const uint32_t datas)
+{
+	std::vector<uint8_t> send_data;
+	send_data.push_back(uint8_t((0x4 << (packet_size - 3)) | (send_packet_id & 0x1f)));
+	send_data.push_back(uint8_t((0x5 << (packet_size - 3)) | 0));
+	send_data.push_back(uint8_t((0x6 << (packet_size - 3)) | 4));
+	for (int i = 0; i < 5; ++i) {
+		send_data.push_back(uint8_t(datas >> (i * 7) & 0x7f));
+	}
+	send_data.push_back(uint8_t((0x7 << (packet_size - 3)) | (send_packet_id & 0x1f)));
+	++send_packet_id;
+
+	std::cout << "Send Data: ";
+	for (auto x : send_data) {
+		std::cout << std::hex << std::setw(2) << std::setfill('0') << uint32_t(x) << ' ';
+	}
+	std::cout << std::endl;
+	env->UARTSend(send_data);
 }
 
 void Adapter::onRecv(std::uint8_t data) {

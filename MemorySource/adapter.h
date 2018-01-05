@@ -23,6 +23,7 @@ private:
 	std::bitset<message_bit> get_data;
 
 	void data_handler(const std::vector<uint8_t> datas);
+	void send(const uint32_t datas);
 public:
 	Adapter() : env(nullptr) {}
 

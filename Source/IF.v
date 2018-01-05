@@ -21,10 +21,10 @@ module IF (
 );
 
 assign rom_addr_o = pc_i;
-reg my_rom_turn;
+reg 	my_rom_turn;
 initial
 begin
-    my_rom_turn     =   1'b0;
+    my_rom_turn     <=   1'b0;
 end
 
 
@@ -48,19 +48,13 @@ begin
 	begin
 	    stall_req_o	=	1'b1;
 	end
-    else if (my_rom_turn)
+    else if (!rom_busy_i && my_rom_turn)
     begin
-        r_enable_o	=	1'b0;	
         pc_o		=	pc_i;
-        inst_o      =  rom_data_i;        
+        inst_o      =	rom_data_i;        
         stall_req_o	=	1'b0;
         my_rom_turn =   1'b0;
     end
-end
-
-always@(*)
-begin
-
 end
 
 endmodule

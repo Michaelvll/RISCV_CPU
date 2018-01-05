@@ -11,7 +11,6 @@ module TopCPU(
 	input wire EXclk,
 	input wire button,
     output wire led,
-	output wire get_data_fordebug,
 	output wire Tx,
 	input wire Rx
 );
@@ -90,8 +89,7 @@ multchan_comm #(.MESSAGE_BIT(MESSAGE_BIT), .CHANNEL_BIT(CHANNEL_BIT)) COMM(
 	{COMM_w_flag[1], COMM_w_flag[0]},
 	{COMM_w_length[1], COMM_w_data[1], COMM_w_length[0], COMM_w_data[0]},
 	{COMM_readable[1], COMM_readable[0]},
-	{COMM_writable[1], COMM_writable[0]},
-	get_data_fordebug
+	{COMM_writable[1], COMM_writable[0]}
 );
 
 

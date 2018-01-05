@@ -32,35 +32,49 @@ always @ (posedge clk)
 begin
 	if (rst)
 	begin
-		id_pc				=  `ZeroWord;
-		id_inst 			=  `ZeroWord;
-		next_jump			=	1'b0;
+		id_pc				<=  `ZeroWord;
+		id_inst 			<=  `ZeroWord;
+		next_jump			<=	1'b0;
 	end
 	else 
 	begin
 		if (id_b_flag || ex_b_flag)
 		begin
-			next_jump		=	1'b1;
+			if (stall[1] && !stall[2])
+			begin
+				id_pc 			<=	`ZeroWord;
+				id_inst			<=	`ZeroWord;
+				next_jump		<=	1'b1;
+			end
+			else if (stall[1] && stall[2])
+			begin
+				next_jump 		<=	1'b1;
+			end
+			else
+			begin
+				id_pc 		<=	`ZeroWord;
+				id_inst		<=	`ZeroWord;
+				next_jump	<=	1'b0;
+			end
 		end
-		
-		if(stall[1] && !stall[2])
+		else if(stall[1] && !stall[2])
 		begin
-			id_pc 			=	`ZeroWord;
-			id_inst			=	`ZeroWord;
+			id_pc 			<=	`ZeroWord;
+			id_inst			<=	`ZeroWord;
 		end
 		else if (!stall[1])
 		begin
 			if (next_jump)
 			begin
-				id_pc 		=	`ZeroWord;
-				id_inst		=	`ZeroWord;
-				next_jump	=	1'b0;
+				id_pc 			<=	`ZeroWord;
+				id_inst			<=	`ZeroWord;
+				next_jump		<=	1'b0;
 			end
 			else
 			begin
-				id_pc		=	if_pc;
-				id_inst		=	if_inst;
-				next_jump	=	1'b0;
+				id_pc		<=	if_pc;
+				id_inst		<=	if_inst;
+				next_jump	<=	1'b0;
 			end
 		end
 	end

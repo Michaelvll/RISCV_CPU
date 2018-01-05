@@ -71,13 +71,13 @@ void Adapter::onRecv(std::uint8_t data) {
 	byte recv_data(data);
 	switch (recv_state) {
 	case IDLE:
-		std::cout << "AT IDLE:" << std::endl;
+		get_data = 0;
 		if ((data >> (packet_size - 3)) == 0x4) {
 			packet_id = data & 0x1f;
 			if (packet_id != ((recv_packet_id + 1) & 0x1f)) {
 				std::cerr << "Lose Packet from "
 					<< ((recv_packet_id + 1) & 0x1f)
-					<< "-" << packet_id << std::endl;
+					<< "-" << uint32_t(packet_id) << std::endl;
 			}
 			recv_bit = 0;
 			recv_length = 0;
@@ -85,9 +85,9 @@ void Adapter::onRecv(std::uint8_t data) {
 		}
 		else
 			std::cerr << "Corrupted Packet at IDLE" << std::endl;
+		std::cout << "AT IDLE\n" << std::endl;
 		break;
 	case CHANNEL:
-		std::cout << "AT CHANNEL:" << std::endl;
 		if ((data >> (packet_size - 3)) == 0x5) {
 			recv_state = LENGTH;
 		}
@@ -95,9 +95,9 @@ void Adapter::onRecv(std::uint8_t data) {
 			recv_state = IDLE; 
 			std::cerr << "Corrupted Packet at CHANNEL" << std::endl;
 		}
+		std::cout << "AT CHANNEL\n" << std::endl;
 		break;
 	case LENGTH:
-		std::cout << "AT LENGTH:" << std::endl;
 		if ((data >> (packet_size - 3)) == 0x6) {
 			recv_length = (data & 0x1f)*8;
 			recv_state = DATA;
@@ -107,12 +107,12 @@ void Adapter::onRecv(std::uint8_t data) {
 			recv_state = IDLE;
 			std::cerr << "Corrupted Packet at LENGTH" << std::endl;
 		}
+		std::cout << "AT LENGTH\n" << std::endl;
 		break;
 	case DATA:
-		std::cout << "AT DATA:" << std::endl;
 		if ((data >> (packet_size - 1)) == 0x0) {
 			for (size_t i = 0; i < 7 && recv_bit < recv_length; i++, recv_bit++) {
-				get_data[recv_bit] = data & (1 << i) ? 1 : 0;
+				get_data[recv_bit] = (data & (1 << i)) ? 1 : 0;
 			}
 			std::cout << "Recv_bit: " << std::dec << recv_bit << std::endl;
 			if (recv_bit == recv_length)
@@ -122,18 +122,18 @@ void Adapter::onRecv(std::uint8_t data) {
 			recv_state = IDLE;
 			std::cerr << "Corrupted Packet at DATA" << std::endl;
 		}
+		std::cout << "AT DATA\n" << std::endl;
 		break;
 	case END:
-		std::cout << "AT END:" << std::endl;
 		if ((data >> (packet_size - 3)) == 0x7) {
-			if (recv_packet_id + 1 == (data & 0x1f)) {
+			packet_id = (data & 0x1f);
+			if (recv_packet_id + 1 == packet_id) {
 				recv_packet_id = packet_id;
 				std::vector<uint8_t> result;
 				for (size_t i = 0; i < recv_bit; i += 8) {
-					get_data >>= 8;
 					uint8_t tmp = 0;
 					for (size_t j = 0; j < 8; ++j) {
-						tmp |= get_data[j] << j;
+						tmp |= get_data[i + j] << j;
 					}
 					std::cout << "Get tmp: 0x" << std::hex << std::setw(2) << std::setfill('0') << uint32_t(tmp) << std::endl;
 					result.push_back(tmp);
@@ -148,6 +148,7 @@ void Adapter::onRecv(std::uint8_t data) {
 			std::cerr << "Corrupted Packet at END" << std::endl;
 		}
 		recv_state = IDLE;
+		std::cout << "AT END\n=====================\n" << std::endl;
 		break;
 	}
 }

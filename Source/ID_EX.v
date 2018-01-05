@@ -43,67 +43,85 @@ always @ (posedge clk)
 begin
 	if (rst)
 	begin
-		ex_aluop			=	`EX_NOP_OP;
-		ex_alusel			=	`EX_RES_NOP;
-		ex_r1_data			=	`ZeroWord;	
-		ex_r2_data			=	`ZeroWord;
-		ex_w_enable			=	`WriteDisable;
-		ex_w_addr			=	`NOPRegAddr;
-		ex_pc				=	`ZeroWord;
-		ex_offset			=	`ZeroWord;
-		next_jump			=	1'b0;
+		ex_aluop			<=	`EX_NOP_OP;
+		ex_alusel			<=	`EX_RES_NOP;
+		ex_r1_data			<=	`ZeroWord;	
+		ex_r2_data			<=	`ZeroWord;
+		ex_w_enable			<=	`WriteDisable;
+		ex_w_addr			<=	`NOPRegAddr;
+		ex_pc				<=	`ZeroWord;
+		ex_offset			<=	`ZeroWord;
+		next_jump			<=	1'b0;
 	end
 	else
 	begin
 		if (ex_b_flag)
 		begin
-			ex_aluop		=	`EX_NOP_OP;
-			ex_alusel		=	`EX_RES_NOP;
-			ex_r1_data		=	`ZeroWord;	
-			ex_r2_data		=	`ZeroWord;
-			ex_w_enable		=	`WriteDisable;
-			ex_w_addr		=	`NOPRegAddr;
-			ex_pc			=	`ZeroWord;
-			ex_offset		=	`ZeroWord;
-			next_jump		=	1'b1;
+			if (stall[2] && !stall[3])
+			begin
+				ex_aluop		<=	`EX_NOP_OP;
+				ex_alusel		<=	`EX_RES_NOP;
+				ex_r1_data		<=	`ZeroWord;	
+				ex_r2_data		<=	`ZeroWord;
+				ex_w_enable		<=	`WriteDisable;
+				ex_w_addr		<=	`NOPRegAddr;
+				ex_offset		<=	`ZeroWord;
+				ex_pc			<=	`ZeroWord;
+				next_jump		<=	1'b1;
+			end
+			else if (stall[2] && stall[3])
+			begin
+				next_jump		<=	1'b1;
+			end
+			else
+			begin
+				ex_aluop		<=	`EX_NOP_OP;
+				ex_alusel		<=	`EX_RES_NOP;
+				ex_r1_data		<=	`ZeroWord;	
+				ex_r2_data		<=	`ZeroWord;
+				ex_w_enable		<=	`WriteDisable;
+				ex_w_addr		<=	`NOPRegAddr;
+				ex_pc			<=	`ZeroWord;
+				ex_offset		<=	`ZeroWord;
+				next_jump		<=	1'b0;
+			end
 		end
-	
-		if (stall[2] && !stall[3])
+		else if (stall[2] && !stall[3])
 		begin
-			ex_aluop		=	`EX_NOP_OP;
-			ex_alusel		=	`EX_RES_NOP;
-			ex_r1_data		=	`ZeroWord;	
-			ex_r2_data		=	`ZeroWord;
-			ex_w_enable		=	`WriteDisable;
-			ex_w_addr		=	`NOPRegAddr;
-			ex_offset		=	`ZeroWord;
-			ex_pc			=	`ZeroWord;
+			ex_aluop		<=	`EX_NOP_OP;
+			ex_alusel		<=	`EX_RES_NOP;
+			ex_r1_data		<=	`ZeroWord;	
+			ex_r2_data		<=	`ZeroWord;
+			ex_w_enable		<=	`WriteDisable;
+			ex_w_addr		<=	`NOPRegAddr;
+			ex_offset		<=	`ZeroWord;
+			ex_pc			<=	`ZeroWord;
 		end
 		else if (!stall[2])
 		begin
 			if (next_jump)
 			begin
-				ex_aluop	=	`EX_NOP_OP;
-				ex_alusel	=	`EX_RES_NOP;
-				ex_r1_data	=	`ZeroWord;	
-				ex_r2_data	=	`ZeroWord;
-				ex_w_enable	=	`WriteDisable;
-				ex_w_addr	=	`NOPRegAddr;
-				ex_offset	=	`ZeroWord;
-				ex_pc		=	`ZeroWord;
-				next_jump	=	1'b0;
+				ex_aluop	<=	`EX_NOP_OP;
+				ex_alusel	<=	`EX_RES_NOP;
+				ex_r1_data	<=	`ZeroWord;	
+				ex_r2_data	<=	`ZeroWord;
+				ex_w_enable	<=	`WriteDisable;
+				ex_w_addr	<=	`NOPRegAddr;
+				ex_offset	<=	`ZeroWord;
+				ex_pc		<=	`ZeroWord;
+				next_jump	<=	1'b0;
 			end
 			else
 			begin
-				ex_aluop	=	id_aluop;
-				ex_alusel	=	id_alusel;
-				ex_r1_data	=	id_r1_data;
-				ex_r2_data	=	id_r2_data;
-				ex_w_enable	=	id_w_enable;
-				ex_w_addr	=	id_w_addr;
-				ex_pc		=	id_pc;
-				ex_offset	=	id_offset;
-				next_jump	=	1'b0;
+				ex_aluop	<=	id_aluop;
+				ex_alusel	<=	id_alusel;
+				ex_r1_data	<=	id_r1_data;
+				ex_r2_data	<=	id_r2_data;
+				ex_w_enable	<=	id_w_enable;
+				ex_w_addr	<=	id_w_addr;
+				ex_pc		<=	id_pc;
+				ex_offset	<=	id_offset;
+				next_jump	<=	1'b0;
 			end
 		end
 	end

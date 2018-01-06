@@ -127,7 +127,7 @@ void Adapter::onRecv(std::uint8_t data) {
 	case END:
 		if ((data >> (packet_size - 3)) == 0x7) {
 			packet_id = (data & 0x1f);
-			if (recv_packet_id + 1 == packet_id) {
+			if (((recv_packet_id + 1)&0x1f) == packet_id) {
 				recv_packet_id = packet_id;
 				std::vector<uint8_t> result;
 				for (size_t i = 0; i < recv_bit; i += 8) {

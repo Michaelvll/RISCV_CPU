@@ -29,7 +29,8 @@
 	"matlab.mlintpath": "C:/Program Files/MATLAB/R2017a/bin/win64",
 	"matlab.linterEncoding": "GB2312",
 	"files.associations": {
-		"*.m": "matlab"
+		"*.m": "matlab",
+		"ostream": "c"
 	},
 	"workbench.iconTheme": "material-icon-theme",
 	"window.zoomLevel": 0,

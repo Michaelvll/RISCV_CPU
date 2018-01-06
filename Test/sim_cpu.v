@@ -1,4 +1,5 @@
 `timescale 1ns/1ps
+`include "Defines.vh"
 
 
 module SimCPU();

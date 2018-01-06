@@ -1,33 +1,34 @@
-MEMORY
-{
-	rom : ORIGIN = 0x00000000, LENGTH = 0x00001000
-	ram : ORIGIN = 0x00001000, LENGTH = /*0x0000F000*/0x0FFFF000
-}
-
 SECTIONS
 {
+	. = 0x00000000;
 	.rom :
 	{
 		*(.rom)
-	} > rom
+	}
 	
+	. = 0x00001000;
 	.text :
 	{
 		*(.text)
-	} > ram
+	}
 	
-	.rodata :
+	.rodata ALIGN(4) :
 	{
 		*(.rodata)
-	} > ram
+	}
 	
-	.data :
+	.data ALIGN(4) :
 	{
 		*(.data)
-	} > ram
+	}
 	
-	.bss :
+	__bss_start = .;
+	
+	.bss ALIGN(4) :
 	{
 		*(.bss)
-	} > ram
+	}
+	
+	__bss_end = .;
+	__heap_start = (__bss_end + 0xfff) & 0xfffff000;
 }

@@ -23,7 +23,7 @@ module uart_comm
 	#(
 `ifndef DEBG
 	parameter BAUDRATE = 9600,
-	parameter CLOCKRATE = 80000000
+	parameter CLOCKRATE = 90000000
 `else
 	parameter SAMPLE_INTERVAL = 20
 `endif

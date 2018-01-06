@@ -7,8 +7,8 @@ CFLAGS = -march=rv32i -mabi=ilp32 -c -O2
 AS = $(CROSS_COMPILE)as
 AS_FLAGS = -march=rv32i -mabi=ilp32
 LD = $(CROSS_COMPILE)ld
-LD_FLAGS =  -T memory.ld
-DLD_FLAGS =  -T dmemory.ld
+LD_FLAGS =  -T memory.ld -L /opt/riscv/riscv32-unknown-elf/lib/ -L /opt/riscv/lib/gcc/riscv32-unknown-elf/7.2.0/ -lc -lgcc -lm -lnosys
+DLD_FLAGS =  -T dmemory.ld -L /opt/riscv/riscv32-unknown-elf/lib/ -L /opt/riscv/lib/gcc/riscv32-unknown-elf/7.2.0/ -lc -lgcc -lm -lnosys
 BIN = $(CROSS_COMPILE)objcopy
 DUMP = $(CROSS_COMPILE)objdump
 DUMP_FLAGS = -d
@@ -35,10 +35,9 @@ PROGRAM = $(if $(CPP_FILES),$(basename $(CPP_FILES)),$(basename $(S_FILES)))
 	$(BIN) $< -O binary $@
 	cp $@ $(STDNAME).bin
 %.dom: %.o drom.o system.o %.cpp
-	$(LD) $< drom.o system.o -o $@ $(DLD_FLAGS) -L /opt/riscv/riscv32-unknown-elf/lib/ -L /opt/riscv/lib/gcc/riscv32-unknown-elf/7.2.0/ -lc -lgcc -lm -lnosys
+	$(LD) $< drom.o system.o -o $@ $(DLD_FLAGS) 
 %.dom: %.o drom.o system.o %.c
-	$(LD) $< drom.o system.o -o $@ $(DLD_FLAGS) -L /opt/riscv/riscv32-unknown-elf/lib/ -L /opt/riscv/lib/gcc/riscv32-unknown-elf/7.2.0/ -lc -lgcc -lm -lnosys
-
+	$(LD) $< drom.o system.o -o $@ $(DLD_FLAGS)
 
 drom.o:
 	$(AS) -o drom.o drom.s $(AS_FLAGS)
@@ -51,9 +50,9 @@ drom.o:
 	cp $@ $(STDNAME).bin
 
 %.om: %.o rom.o system.o %.cpp
-	$(LD) $< rom.o system.o -o $@ $(LD_FLAGS) -L /opt/riscv/riscv32-unknown-elf/lib/ -L /opt/riscv/lib/gcc/riscv32-unknown-elf/7.2.0/ -lc -lgcc -lm -lnosys
+	$(LD) $< rom.o system.o -o $@ $(LD_FLAGS)
 %.om: %.o rom.o system.o %.c
-	$(LD) $< rom.o system.o -o $@ $(LD_FLAGS) -L /opt/riscv/riscv32-unknown-elf/lib/ -L /opt/riscv/lib/gcc/riscv32-unknown-elf/7.2.0/ -lc -lgcc -lm -lnosys
+	$(LD) $< rom.o system.o -o $@ $(LD_FLAGS)
 
 %.om: %.o %.s
 	$(LD) $< -o $@

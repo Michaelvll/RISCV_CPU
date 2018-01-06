@@ -5,7 +5,7 @@
 
 `include "Defines.vh"
 `include "IDInstDef.vh"
-`define DEBG
+// `define DEBG
 
 module TopCPU(
 	input wire EXclk,

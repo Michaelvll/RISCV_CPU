@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="42751400000fs"></ZoomStartTime>
-      <ZoomEndTime time="42953800001fs"></ZoomEndTime>
-      <Cursor1Time time="42930800000fs"></Cursor1Time>
+      <ZoomStartTime time="763858950666fs"></ZoomStartTime>
+      <ZoomEndTime time="765952950667fs"></ZoomEndTime>
+      <Cursor1Time time="766207284000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="131"></NameColumnWidth>
+      <NameColumnWidth column_width="127"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="58" />
+   <WVObjectSize size="61" />
    <wave_markers>
       <marker time="150050000" label="" />
       <marker time="611000000" label="" />
@@ -36,6 +36,18 @@
    <wvobject fp_name="/SimCPU/top0/cpu0/pc_reg0/pc" type="array">
       <obj_property name="ElementShortName">pc[31:0]</obj_property>
       <obj_property name="ObjectShortName">pc[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/me0/stall_req_o" type="logic">
+      <obj_property name="ElementShortName">stall_req_o</obj_property>
+      <obj_property name="ObjectShortName">stall_req_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_done" type="logic">
+      <obj_property name="ElementShortName">ram_done</obj_property>
+      <obj_property name="ObjectShortName">ram_done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_busy" type="logic">
+      <obj_property name="ElementShortName">ram_busy</obj_property>
+      <obj_property name="ObjectShortName">ram_busy</obj_property>
    </wvobject>
    <wvobject fp_name="/SimCPU/top0/cpu0/if0/rom_busy_i" type="logic">
       <obj_property name="ElementShortName">rom_busy_i</obj_property>

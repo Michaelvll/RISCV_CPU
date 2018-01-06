@@ -23,6 +23,7 @@ private:
 	std::bitset<message_bit> get_data;
 
 	void data_handler(const std::vector<uint8_t> datas);
+	void send(const uint32_t datas);
 public:
 	Adapter() : env(nullptr) {}
 
@@ -31,7 +32,7 @@ public:
 	void onRecv(std::uint8_t data);
 
 	//TODO: You may the following settings according to the UART implementation in your CPU
-	std::uint32_t getBaudrate() { return 230400; }
+	std::uint32_t getBaudrate() { return 9600; }
 	serial::bytesize_t getBytesize() { return serial::eightbits; }
 	serial::parity_t getParity() { return serial::parity_even; }
 	serial::stopbits_t getStopBits() { return serial::stopbits_one; }

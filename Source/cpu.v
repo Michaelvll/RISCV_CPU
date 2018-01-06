@@ -33,9 +33,9 @@ wire				icache_done;
 wire				icache_flush_flag;
 wire [`DataAddrBus]	icache_flush_addr;
 
-assign icache_w_data 		= 0;
-assign icache_w_mask		= 0;
-assign icache_rw_flag[1]	= 0;
+assign icache_w_data 		= `DataWidth'b0;
+assign icache_w_mask		= 4'b0;
+assign icache_rw_flag[1]	= 1'b0;
 
 // tmp
 assign icache_flush_flag	=	1'b0;
@@ -78,7 +78,7 @@ wire				dcache_done;
 wire				dcache_flush_flag;
 wire [`DataAddrBus]	dcache_flush_addr;
 
-assign dcache_flush_flag = 0;
+assign dcache_flush_flag = 1'b0;
 assign dcache_flush_addr = `DataAddrWidth'b0;
 
 Cache dcache0(

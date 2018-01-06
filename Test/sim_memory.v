@@ -18,10 +18,13 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
+`define DEBG
+`include "Defines.vh"
 
-
-module sim_memory(
-	input clk,
+module sim_memory
+#(parameter MEM_SIZE = 1048576)
+(
+	input clk_i,
 	input rst,
 	output Tx,
 	input Rx
@@ -31,9 +34,17 @@ module sim_memory(
 	wire [7:0] send_data;
 	wire recv_flag;
 	wire [7:0] recv_data;
-	
 	wire recvable, sendable;
+
+    wire clk;
+    wire clk_uart;
+	// clk_wiz_0 CLK(.clk_out1(clk), .clk_out2(clk_uart), .reset(1'b0), .clk_in1(clk_i));
+	clk_wiz_0 CLK(.clk_out1(clk), .reset(1'b0), .clk_in1(clk_i));    
+`ifdef DEBG
 	uart_comm #(.SAMPLE_INTERVAL(`SampleInterval)) uart(
+`else
+	uart_comm uart(
+`endif // DEBG
         clk, rst, send_flag, send_data, recv_flag, recv_data, sendable, recvable, Tx, Rx);
 
 	
@@ -47,13 +58,13 @@ module sim_memory(
 	wire writable;
 	
 	wire _trash, _trash2;
-	
-	reg [7:0] memory[2047:0];
-	reg [7:0] memory_stack[2047:0];
+
+	reg [7:0] memory[MEM_SIZE - 1:0];
+	reg [7:0] memory_stack[MEM_SIZE - 1:0];
 	
 	integer i;
 	initial begin
-		for(i=0;i<2048;i=i+1) begin
+		for(i=0;i<MEM_SIZE;i=i+1) begin
 			memory[i] = 0;
 			memory_stack[i] = 0;
 		end
@@ -85,12 +96,14 @@ module sim_memory(
 			if(readable) begin
 				read_flag <= 1;
 				if(read_data_length == 5 && read_data[32] == 0) begin	//read
-					$display("GET READ REQUEST, ADDR = 0x%x DATA = %x", read_data[31:0], getDWORD(read_data[31:0]));
+					// $display("GET READ REQUEST, ADDR = 0x%x DATA = %x", read_data[31:0], getDWORD(read_data[31:0]));
 					write_flag <= 1;
 					write_data <= getDWORD(read_data[31:0]);
 					write_data_length <= 4;
 				end else begin	//write
-					$display("GET WRITE REQUEST, ADDR = 0x%x DATA = %x MASK = %d", read_data[63:32], read_data[31:0], read_data[67:64]);
+					// $display("GET WRITE REQUEST, ADDR = 0x%x DATA = %x MASK = %d", read_data[63:32], read_data[31:0], read_data[67:64]);
+					if (read_data[63:32] == 32'h00000104)
+						$display("%c", read_data[7:0]);
 					if(read_data[64])
 						memory[read_data[63:32]] <= read_data[7:0];
 					if(read_data[65])

@@ -5,7 +5,7 @@
 	"python.linting.pylintArgs": [
 		"--disable=C0103,C0111"
 	],
-	"editor.insertSpaces": true,
+	"editor.insertSpaces": false,
 	"editor.detectIndentation": false,
 	"editor.formatOnSave": true,
 	"pandoc.pdfOptString": "--standalone --self-contained --latex-engine=xelatex --template=C:/Users/wuzha/Desktop/my_program/setting_files/markdown_setting/template.tex",
@@ -29,7 +29,8 @@
 	"matlab.mlintpath": "C:/Program Files/MATLAB/R2017a/bin/win64",
 	"matlab.linterEncoding": "GB2312",
 	"files.associations": {
-		"*.m": "matlab"
+		"*.m": "matlab",
+		"ostream": "c"
 	},
 	"workbench.iconTheme": "material-icon-theme",
 	"window.zoomLevel": 0,

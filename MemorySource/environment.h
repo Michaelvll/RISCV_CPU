@@ -6,6 +6,7 @@
 #include <chrono>
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 
 class Environment : public IEnvironment
 {
@@ -19,7 +20,7 @@ public:
 public:
 	Environment(const std::string &port, size_t memSize, bool verbose);
 
-	int Run(const std::string &memFilePath, std::istream &in, std::ostream &out, double &time);
+	int Run(const std::string &memFilePath, std::istream &in, std::ostream &out, double &time, bool simulate);
 
 public:
 	class AddressUnalignedException : public std::exception
@@ -75,7 +76,7 @@ protected:
 			std::chrono::duration<double> duration =
 				std::chrono::duration_cast<std::chrono::duration<double>>(
 					std::chrono::high_resolution_clock::now() - startTime);
-			std::cerr << "[" << duration.count() << "] ";
+			std::cerr << "[" << std::setiosflags(std::ios::fixed) << std::setprecision(3) << duration.count() << "] ";
 		}
 		else
 			std::cerr << "[---] ";

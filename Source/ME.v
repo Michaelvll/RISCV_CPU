@@ -30,10 +30,8 @@ module ME(
 	input wire				ram_done
 );
 
-reg my_ram_turn;
 initial
 begin
-    my_ram_turn     =   1'b0;
 end
 
 always @(*)
@@ -49,7 +47,6 @@ begin
 		ram_w_mask_o	=	4'b0000;
 		ram_w_data_o	=	`ZeroWord;
 		ram_addr_o		=	`ZeroWord;
-        my_ram_turn     =   1'b0;
 	end
 	else if (aluop_i == `ME_NOP_OP)
 	begin
@@ -62,97 +59,20 @@ begin
 		ram_w_mask_o	=	4'b0000;
 		ram_w_data_o	=	`ZeroWord;
 		ram_addr_o		=	`ZeroWord;
-        my_ram_turn     =   1'b0;
 	end
     else
     begin
 		w_enable_o		=	w_enable_i;
 		w_addr_o		=	w_addr_i;
-        if (!ram_busy && !my_ram_turn)
+		w_data_o		=	w_data_i;
+		ram_r_enable_o	=	1'b0;
+		ram_w_enable_o	=	`WriteDisable;
+		ram_w_mask_o	=	4'b0000;
+		ram_w_data_o	=	`ZeroWord;
+		ram_addr_o		=	`ZeroWord;
+		
+		if (ram_done)
         begin
-            case(aluop_i)
-                `EX_LB_OP,`EX_LH_OP,`EX_LW_OP,`EX_LBU_OP,`EX_LHU_OP:
-                begin
-                    stall_req_o		=	1'b1;
-                    ram_r_enable_o	=	1'b1;
-                    ram_w_enable_o	=	`WriteDisable;
-                    ram_addr_o		=	{ram_addr_i[31:2], 2'h0};
-                    ram_w_data_o	=	`ZeroWord;
-                    my_ram_turn     =   1'b1;
-                end
-                
-                `EX_SB_OP:
-                begin
-					w_data_o		=	w_data_i;
-                    ram_r_enable_o	=	1'b0;
-                    ram_w_enable_o	=	`WriteEnable;
-                    ram_addr_o		=	ram_addr_i;
-                    ram_w_data_o	=	{w_data_i[7:0],w_data_i[7:0],w_data_i[7:0],w_data_i[7:0]};
-                    case (ram_addr_i[1:0])
-                        2'b00:	begin
-                            ram_w_mask_o	=	4'b0001;
-                        end
-                        2'b01:	begin
-                            ram_w_mask_o	=	4'b0010;
-                        end
-                        2'b10:	begin
-                            ram_w_mask_o	=	4'b0100;
-                        end
-                        2'b11:	begin
-                            ram_w_mask_o	=	4'b1000;	
-                        end
-                        default:	begin
-                            ram_w_mask_o	=	4'b0000;
-                        end
-                    endcase				
-                end
-                
-                `EX_SH_OP:
-                begin
-					w_data_o		=	w_data_i;
-                    ram_r_enable_o	=	1'b0;
-                    ram_w_enable_o	=	`WriteEnable ;
-                    ram_addr_o		=	ram_addr_i;
-                    ram_w_data_o	=	{w_data_i[15:0],w_data_i[15:0]};
-                    case (ram_addr_i[1:0])
-                        2'b00:	begin
-                            ram_w_mask_o	=	4'b0011;
-                        end
-                        2'b10:	begin
-                            ram_w_mask_o	=	4'b1100;
-                        end
-                        default:	begin
-                            ram_w_mask_o	=	4'b0000;
-                        end
-                    endcase		
-                end
-
-                `EX_SW_OP:
-                begin
-					w_data_o		=	w_data_i;
-                    ram_r_enable_o	=	1'b0;
-                    ram_w_enable_o	=	`WriteEnable;
-                    ram_addr_o		=	ram_addr_i;
-                    ram_w_data_o		=	w_data_i;
-                    ram_w_mask_o		=	4'b1111;	
-                end
-                default:
-                begin
-                    w_enable_o		=	`WriteDisable;
-					w_data_o		=	w_data_i;
-                    ram_r_enable_o	=	1'b0;
-                    ram_w_enable_o	=	`WriteDisable;
-                    ram_w_mask_o	=	4'b0000;
-                    ram_w_data_o	=	`ZeroWord;
-                    ram_addr_o		=	`ZeroWord;
-                    stall_req_o 	=	1'b0;
-                    my_ram_turn     =   1'b0;
-                end
-            endcase
-        end
-        else if (ram_done && my_ram_turn)
-        begin
-            my_ram_turn     =   1'b0;
             stall_req_o		=	1'b0;
             case (aluop_i)
                 `EX_LB_OP:
@@ -235,6 +155,88 @@ begin
             end
             endcase
         end
+        else if (!ram_busy)
+        begin
+            case(aluop_i)
+                `EX_LB_OP,`EX_LH_OP,`EX_LW_OP,`EX_LBU_OP,`EX_LHU_OP:
+                begin
+					stall_req_o		=	1'b1;
+                    ram_r_enable_o	=	1'b1;
+                    ram_w_enable_o	=	`WriteDisable;
+                    ram_addr_o		=	{ram_addr_i[31:2], 2'h0};
+                    ram_w_data_o	=	`ZeroWord;
+                end
+                
+                `EX_SB_OP:
+                begin
+					stall_req_o		=	1'b0;
+                    ram_r_enable_o	=	1'b0;
+                    ram_addr_o		=	ram_addr_i;
+                    ram_w_data_o	=	{w_data_i[7:0],w_data_i[7:0],w_data_i[7:0],w_data_i[7:0]};
+                    ram_w_enable_o	=	`WriteEnable;
+                    case (ram_addr_i[1:0])
+                        2'b00:	begin
+                            ram_w_mask_o	=	4'b0001;
+                        end
+                        2'b01:	begin
+                            ram_w_mask_o	=	4'b0010;
+                        end
+                        2'b10:	begin
+                            ram_w_mask_o	=	4'b0100;
+                        end
+                        2'b11:	begin
+                            ram_w_mask_o	=	4'b1000;	
+                        end
+                        default:	begin
+                            ram_w_mask_o	=	4'b0000;
+                        end
+                    endcase				
+                end
+                
+                `EX_SH_OP:
+                begin
+					stall_req_o		=	1'b0;
+					w_data_o		=	w_data_i;
+                    ram_r_enable_o	=	1'b0;
+                    ram_addr_o		=	ram_addr_i;
+                    ram_w_data_o	=	{w_data_i[15:0],w_data_i[15:0]};
+                    ram_w_enable_o	=	`WriteEnable ;
+                    case (ram_addr_i[1:0])
+                        2'b00:	begin
+                            ram_w_mask_o	=	4'b0011;
+                        end
+                        2'b10:	begin
+                            ram_w_mask_o	=	4'b1100;
+                        end
+                        default:	begin
+                            ram_w_mask_o	=	4'b0000;
+                        end
+                    endcase		
+                end
+
+                `EX_SW_OP:
+                begin
+					stall_req_o		=	1'b0;
+					w_data_o		=	w_data_i;
+                    ram_r_enable_o	=	1'b0;
+                    ram_addr_o		=	ram_addr_i;
+                    ram_w_data_o	=	w_data_i;
+                    ram_w_mask_o	=	4'b1111;	
+                    ram_w_enable_o	=	`WriteEnable;
+                end
+                default:
+                begin
+                    w_enable_o		=	`WriteDisable;
+					w_data_o		=	w_data_i;
+                    ram_r_enable_o	=	1'b0;
+                    ram_w_enable_o	=	`WriteDisable;
+                    ram_w_mask_o	=	4'b0000;
+                    ram_w_data_o	=	`ZeroWord;
+                    ram_addr_o		=	`ZeroWord;
+                    stall_req_o 	=	1'b0;
+                end
+            endcase
+        end     
         else if (ram_busy)
         begin
             stall_req_o     =   1'b1;

@@ -1,10 +1,13 @@
 `timescale 1ns/1ps
+`include "Defines.vh"
+
 
 module SimCPU();
 
 reg clk;
 reg rst;
 wire Rx,Tx;
+wire button = ~rst;
 
 initial
 begin
@@ -15,20 +18,20 @@ end
 initial
 begin
 	rst = 1'b1;
-	#10	rst		= 	1'b0;
-	#900000 	rst		= 	1'b1;
-	#100000 	$stop;
+	#5000	rst		= 	1'b0;
+	#90000000 	rst		= 	1'b1;
+	#10000000	$stop;
 end
 
 TopCPU top0(
 	.EXclk(clk),
-	.button(rst),
+	.button(button),
 	.Tx(Tx),
 	.Rx(Rx)
 );
 
 sim_memory sm(
-	.clk(clk),
+	.clk_i(clk),
 	.rst(rst),
 	.Tx(Rx),
 	.Rx(Tx)

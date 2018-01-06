@@ -5,25 +5,33 @@
 
 `include "Defines.vh"
 `include "IDInstDef.vh"
+// `define DEBG
 
 module TopCPU(
 	input wire EXclk,
 	input wire button,
+    output wire led,
 	output wire Tx,
 	input wire Rx
 );
 
+
 // ================== rst & clk =========================
+
+assign led = button;
 
 reg rst;
 reg rst_delay;
 
 wire clk;
-clk_wiz_0 clk0(clk, 1'b0, EXclk);
+wire clk_uart;
+// clk_wiz_0 clk0(.clk_out1(clk), .clk_out2(clk_uart), .reset(1'b0), .clk_in1(EXclk));
+clk_wiz_0 clk0(.clk_out1(clk), .reset(1'b0), .clk_in1(EXclk));
 
-always @(posedge clk or posedge button)
+
+always @(posedge clk or negedge button)
 begin
-	if (button)
+	if (!button)
 	begin
 		rst			<=	1'b1;
 		rst_delay	<=	1'b1;
@@ -43,7 +51,12 @@ wire [7:0]	UART_recv_data;
 wire		UART_sendable;
 wire		UART_receivable;
 // uart_comm #(.BAUDRATE(300000000/*115200*/), .CLOCKRATE(1000000000)) UART(
+`ifndef DEBG
+uart_comm UART(	
+`else
 uart_comm #(.SAMPLE_INTERVAL(`SampleInterval)) UART(	
+`endif
+
 		clk, rst,
 		UART_send_flag, UART_send_data,
 		UART_recv_flag, UART_recv_data,
@@ -76,7 +89,8 @@ multchan_comm #(.MESSAGE_BIT(MESSAGE_BIT), .CHANNEL_BIT(CHANNEL_BIT)) COMM(
 	{COMM_w_flag[1], COMM_w_flag[0]},
 	{COMM_w_length[1], COMM_w_data[1], COMM_w_length[0], COMM_w_data[0]},
 	{COMM_readable[1], COMM_readable[0]},
-	{COMM_writable[1], COMM_writable[0]});
+	{COMM_writable[1], COMM_writable[0]}
+);
 
 
 // ================== memory controller ========================

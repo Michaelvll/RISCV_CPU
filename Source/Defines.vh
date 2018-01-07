@@ -1,7 +1,7 @@
 `ifndef _Def
 `define _Def
 // Attention: this may cause the speed of ID too slow to finish in a cycle
-`define ID_BRANCHES
+// `define ID_BRANCHES
 // Attention: this may be slowwer then the former one!!!
 // `define ID_JALR
 

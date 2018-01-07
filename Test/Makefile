@@ -5,10 +5,10 @@ C = $(CROSS_COMPILE)gcc
 CXXFLAGS = -march=rv32i -mabi=ilp32 -c -O2
 CFLAGS = -march=rv32i -mabi=ilp32 -c -O2
 AS = $(CROSS_COMPILE)as
-AS_FLAGS = -march=rv32i -mabi=ilp32
+AS_FLAGS = -march=rv32i
 LD = $(CROSS_COMPILE)ld
-LD_FLAGS =  -T memory.ld -L /opt/riscv/riscv32-unknown-elf/lib/ -L /opt/riscv/lib/gcc/riscv32-unknown-elf/7.2.0/ -lc -lgcc -lm -lnosys
-DLD_FLAGS =  -T dmemory.ld -L /opt/riscv/riscv32-unknown-elf/lib/ -L /opt/riscv/lib/gcc/riscv32-unknown-elf/7.2.0/ -lc -lgcc -lm -lnosys
+LD_FLAGS =  -T memory.ld -L /opt/riscv/lib/gcc/riscv32-unknown-elf/7.2.0 -L /opt/riscv/riscv32-unknown-elf/lib -lc -lgcc -lm -lnosys
+DLD_FLAGS =  -T dmemory.ld -L /opt/riscv/lib/gcc/riscv32-unknown-elf/7.2.0 -L /opt/riscv/riscv32-unknown-elf/lib -lc -lgcc -lm -lnosys
 BIN = $(CROSS_COMPILE)objcopy
 DUMP = $(CROSS_COMPILE)objdump
 DUMP_FLAGS = -d
@@ -61,7 +61,7 @@ rom.o:
 	$(AS) -o rom.o rom.s $(AS_FLAGS)
 
 system.o:
-	$(CXX) -o system.o system.c $(CXXFLAGS)
+	$(C) -o system.o system.c $(CFLAGS)
 
 %.o: %.c
 	$(C) $(CFLAGS) -o $@ $<
@@ -80,7 +80,7 @@ cleantmp:
 	@rm -f *.o *.om *.bin 
 
 clean:
-	@rm -f *.o *.om *.bin *.mem *.dmem *.dbin
+	@rm -f *.o *.om *.bin *.mem *.dmem *.dbin *.in *.out
 	
 
 

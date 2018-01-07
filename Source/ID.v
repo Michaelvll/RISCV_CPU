@@ -84,7 +84,6 @@ assign imm_U		=	{inst_i[31:12], 12'h0};
 assign imm_J		=	{{12{inst_i[31]}}, inst_i[19:12],
 							inst_i[20], inst_i[30:21],1'h0};
 
-wire				b_flag;
 wire[`InstAddrBus]	b_target_res;
 
 assign b_target_res = ((opcode == `OP_JAL)? imm_J + pc_i: imm_B + pc_i);
@@ -112,7 +111,6 @@ wire[`RegBus] sum_res;
 assign sum_res = r1_data_o + {{20{imm_I[11]}}, imm_I};
 //end
 `endif //ID_JALR
-
 
 always @(*)
 begin

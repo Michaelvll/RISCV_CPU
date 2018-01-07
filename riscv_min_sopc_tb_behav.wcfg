@@ -11,20 +11,21 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="1588000001fs"></ZoomEndTime>
-      <Cursor1Time time="0fs"></Cursor1Time>
+      <ZoomStartTime time="1533126944333fs"></ZoomStartTime>
+      <ZoomEndTime time="2213126944334fs"></ZoomEndTime>
+      <Cursor1Time time="2099793611000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="123"></NameColumnWidth>
-      <ValueColumnWidth column_width="58"></ValueColumnWidth>
+      <NameColumnWidth column_width="140"></NameColumnWidth>
+      <ValueColumnWidth column_width="94"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="71" />
+   <WVObjectSize size="74" />
    <wave_markers>
       <marker time="150050000" label="" />
       <marker time="611000000" label="" />
       <marker time="42920000000" label="" />
       <marker time="1460253945000" label="" />
+      <marker time="1486933334000" label="" />
    </wave_markers>
    <wvobject fp_name="/SimCPU/top0/cpu0/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
@@ -50,33 +51,13 @@
       <obj_property name="ObjectShortName">stall_req_o</obj_property>
       <obj_property name="label">id_stall_req_o</obj_property>
    </wvobject>
-   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_done" type="logic">
-      <obj_property name="ElementShortName">ram_done</obj_property>
-      <obj_property name="ObjectShortName">ram_done</obj_property>
-   </wvobject>
-   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_busy" type="logic">
-      <obj_property name="ElementShortName">ram_busy</obj_property>
-      <obj_property name="ObjectShortName">ram_busy</obj_property>
-   </wvobject>
-   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_r_enable_o" type="logic">
-      <obj_property name="ElementShortName">ram_r_enable_o</obj_property>
-      <obj_property name="ObjectShortName">ram_r_enable_o</obj_property>
-   </wvobject>
    <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_r_data_i" type="array">
       <obj_property name="ElementShortName">ram_r_data_i[31:0]</obj_property>
       <obj_property name="ObjectShortName">ram_r_data_i[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_w_enable_o" type="logic">
-      <obj_property name="ElementShortName">ram_w_enable_o</obj_property>
-      <obj_property name="ObjectShortName">ram_w_enable_o</obj_property>
-   </wvobject>
    <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_w_mask_o" type="array">
       <obj_property name="ElementShortName">ram_w_mask_o[3:0]</obj_property>
       <obj_property name="ObjectShortName">ram_w_mask_o[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_w_data_o" type="array">
-      <obj_property name="ElementShortName">ram_w_data_o[31:0]</obj_property>
-      <obj_property name="ObjectShortName">ram_w_data_o[31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/SimCPU/top0/cpu0/if0/rom_busy_i" type="logic">
       <obj_property name="ElementShortName">rom_busy_i</obj_property>
@@ -86,6 +67,30 @@
       <obj_property name="ElementShortName">rom_done_i</obj_property>
       <obj_property name="ObjectShortName">rom_done_i</obj_property>
    </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_busy" type="logic">
+      <obj_property name="ElementShortName">ram_busy</obj_property>
+      <obj_property name="ObjectShortName">ram_busy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_done" type="logic">
+      <obj_property name="ElementShortName">ram_done</obj_property>
+      <obj_property name="ObjectShortName">ram_done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_w_enable_o" type="logic">
+      <obj_property name="ElementShortName">ram_w_enable_o</obj_property>
+      <obj_property name="ObjectShortName">ram_w_enable_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_r_enable_o" type="logic">
+      <obj_property name="ElementShortName">ram_r_enable_o</obj_property>
+      <obj_property name="ObjectShortName">ram_r_enable_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_addr_i" type="array">
+      <obj_property name="ElementShortName">ram_addr_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ram_addr_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_r_data_i" type="array">
+      <obj_property name="ElementShortName">ram_r_data_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ram_r_data_i[31:0]</obj_property>
+   </wvobject>
    <wvobject fp_name="/SimCPU/top0/cpu0/pc_reg0/id_b_flag_i" type="logic">
       <obj_property name="ElementShortName">id_b_flag_i</obj_property>
       <obj_property name="ObjectShortName">id_b_flag_i</obj_property>
@@ -94,6 +99,12 @@
       <obj_property name="ElementShortName">ex_b_flag_i</obj_property>
       <obj_property name="ObjectShortName">ex_b_flag_i</obj_property>
    </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/id0/pc_i" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">pc_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_i[31:0]</obj_property>
+      <obj_property name="label">id_pc</obj_property>
+   </wvobject>
    <wvobject fp_name="/SimCPU/top0/cpu0/id0/r1_data_o" type="array">
       <obj_property name="ElementShortName">r1_data_o[31:0]</obj_property>
       <obj_property name="ObjectShortName">r1_data_o[31:0]</obj_property>
@@ -101,6 +112,12 @@
    <wvobject fp_name="/SimCPU/top0/cpu0/id0/r2_data_o" type="array">
       <obj_property name="ElementShortName">r2_data_o[31:0]</obj_property>
       <obj_property name="ObjectShortName">r2_data_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/regfile0/regs[8]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[8][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[8][31:0]</obj_property>
+      <obj_property name="label">s0</obj_property>
    </wvobject>
    <wvobject fp_name="/SimCPU/top0/cpu0/regfile0/regs[10]" type="array">
       <obj_property name="DisplayName">label</obj_property>
@@ -120,6 +137,10 @@
       <obj_property name="ObjectShortName">[15][31:0]</obj_property>
       <obj_property name="label">a5</obj_property>
    </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/pc_reg0/id_b_target_addr_i" type="array">
+      <obj_property name="ElementShortName">id_b_target_addr_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">id_b_target_addr_i[31:0]</obj_property>
+   </wvobject>
    <wvobject fp_name="/SimCPU/top0/cpu0/pc_reg0/next_jump" type="array">
       <obj_property name="ElementShortName">next_jump[1:0]</obj_property>
       <obj_property name="ObjectShortName">next_jump[1:0]</obj_property>
@@ -128,9 +149,9 @@
       <obj_property name="ElementShortName">[0]</obj_property>
       <obj_property name="ObjectShortName">[0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/SimCPU/top0/cpu0/pc_reg0/id_b_target_addr_i" type="array">
-      <obj_property name="ElementShortName">id_b_target_addr_i[31:0]</obj_property>
-      <obj_property name="ObjectShortName">id_b_target_addr_i[31:0]</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_w_data_o" type="array">
+      <obj_property name="ElementShortName">ram_w_data_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ram_w_data_o[31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/SimCPU/top0/cpu0/pc_reg0/target_addr" type="array">
       <obj_property name="ElementShortName">target_addr[31:0]</obj_property>
@@ -219,10 +240,6 @@
    <wvobject fp_name="/SimCPU/top0/cpu0/regfile0/regs[4]" type="array">
       <obj_property name="ElementShortName">[4][31:0]</obj_property>
       <obj_property name="ObjectShortName">[4][31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/SimCPU/top0/cpu0/regfile0/regs[8]" type="array">
-      <obj_property name="ElementShortName">[8][31:0]</obj_property>
-      <obj_property name="ObjectShortName">[8][31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/SimCPU/top0/MEM_CTRL/rw_flag_[2]" type="logic">
       <obj_property name="ElementShortName">[2]</obj_property>

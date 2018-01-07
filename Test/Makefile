@@ -2,8 +2,8 @@ CROSS_COMPILE = riscv32-unknown-elf-
 
 CXX = $(CROSS_COMPILE)g++
 C = $(CROSS_COMPILE)gcc
-CXXFLAGS = -march=rv32i -mabi=ilp32 -c
-CFLAGS = -march=rv32i -mabi=ilp32 -c
+CXXFLAGS = -march=rv32i -mabi=ilp32 -c -O2
+CFLAGS = -march=rv32i -mabi=ilp32 -c -O2
 AS = $(CROSS_COMPILE)as
 AS_FLAGS = -march=rv32i
 LD = $(CROSS_COMPILE)ld

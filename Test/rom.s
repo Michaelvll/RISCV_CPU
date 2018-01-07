@@ -3,7 +3,6 @@
 
 	li sp, 0x10000000
 	# li sp, 0x00010000
-	sw sp, -4(sp)
 
 	jal main
 	# sw sp, -8(sp)

@@ -169,7 +169,7 @@ begin
                 
                 `EX_SB_OP:
                 begin
-					stall_req_o		=	1'b0;
+					stall_req_o		=	1'b1;
                     ram_r_enable_o	=	1'b0;
                     ram_addr_o		=	ram_addr_i;
                     ram_w_data_o	=	{w_data_i[7:0],w_data_i[7:0],w_data_i[7:0],w_data_i[7:0]};
@@ -195,7 +195,7 @@ begin
                 
                 `EX_SH_OP:
                 begin
-					stall_req_o		=	1'b0;
+					stall_req_o		=	1'b1;
 					w_data_o		=	w_data_i;
                     ram_r_enable_o	=	1'b0;
                     ram_addr_o		=	ram_addr_i;
@@ -216,7 +216,7 @@ begin
 
                 `EX_SW_OP:
                 begin
-					stall_req_o		=	1'b0;
+					stall_req_o		=	1'b1;
 					w_data_o		=	w_data_i;
                     ram_r_enable_o	=	1'b0;
                     ram_addr_o		=	ram_addr_i;

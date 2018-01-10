@@ -87,19 +87,42 @@ module sim_memory
 		{1'b0, write_flag}, {write_data_length, write_data},
 		{_trash, readable}, {_trash2, writable});
 	
+	integer t;
 	always @(posedge clk or posedge rst) begin
 		read_flag <= 0;
 		write_flag <= 0;
 		if(rst) begin
 			write_data <= 0;
+			t		<=	1;
 		end else begin
 			if(readable) begin
 				read_flag <= 1;
 				if(read_data_length == 5 && read_data[32] == 0) begin	//read
-					$display("GET READ REQUEST, ADDR = 0x%x DATA = %x", read_data[31:0], getDWORD(read_data[31:0]));
-					write_flag <= 1;
-					write_data <= getDWORD(read_data[31:0]);
-					write_data_length <= 4;
+					if (read_data[31:0] == 32'h100)
+					begin
+						if (t < 3)
+						begin
+							$display("GET READ REQUEST, ADDR = 0x%x DATA = %x", read_data[31:0], {32'd48+t});	
+							write_flag 	<= 1;
+							write_data 	<= 32'd48+t;
+							write_data_length <= 4;
+							t <= t + 1;
+						end
+						else
+						begin
+							$display("GET READ REQUEST, ADDR = 0x%x DATA 	= %x", read_data[31:0], 32'hffffffff);	
+							write_flag 	<= 1;
+							write_data 	<= 32'hffffffff;
+							write_data_length <= 4;
+						end
+					end
+					else
+					begin
+						$display("GET READ REQUEST, ADDR = 0x%x DATA = %x", read_data[31:0], getDWORD(read_data[31:0]));
+						write_flag <= 1;
+						write_data <= getDWORD(read_data[31:0]);
+						write_data_length <= 4;
+					end
 				end else begin	//write
 					$display("GET WRITE REQUEST, ADDR = 0x%x DATA = %x MASK = %d", read_data[63:32], read_data[31:0], read_data[67:64]);
 					if (read_data[63:32] == 32'h00000104)

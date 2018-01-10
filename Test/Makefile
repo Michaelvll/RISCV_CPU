@@ -80,7 +80,7 @@ cleantmp:
 	@rm -f *.o *.om *.bin 
 
 clean:
-	@rm -f *.o *.om *.bin *.mem *.dmem *.dbin *.in *.out
+	@rm -f *.o *.om *.bin *.mem *.dmem *.dbin *.out
 	
 
 

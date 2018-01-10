@@ -5,28 +5,35 @@
 
 `include "Defines.vh"
 `include "IDInstDef.vh"
-`define DEBG
+// `define DEBG
 
 module TopCPU(
-	input wire EXclk,
-	input wire button,
-    output wire led,
-	output wire Tx,
-	input wire Rx
+	input wire 			EXclk,
+	input wire 			button,
+    // output wire 		led,
+	output wire 		Tx,
+	input wire 			Rx,
+	output wire[3:0]	sel,
+	output wire[6:0]	screen_disp,
+	output wire[15:0]	leds,
+	input wire			leds_switch
 );
 
 
 // ================== rst & clk =========================
 
-assign led = button;
+// assign led = button;
 
 reg rst;
 reg rst_delay;
 
 wire clk;
 wire clk_uart;
+wire disp_clk;
 // clk_wiz_0 clk0(.clk_out1(clk), .clk_out2(clk_uart), .reset(1'b0), .clk_in1(EXclk));
-clk_wiz_0 clk0(.clk_out1(clk), .reset(1'b0), .clk_in1(EXclk));
+clk_wiz_0 clk0(.clk_out1(clk), .clk_out2(disp_clk), .reset(1'b0), .clk_in1(EXclk));
+
+State_display disp0(.clk(disp_clk), .cpu_state(rst), .sel(sel), .light(screen_disp),.leds(leds),.leds_switch(leds_switch));
 
 
 always @(posedge clk or negedge button)

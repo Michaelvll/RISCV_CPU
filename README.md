@@ -20,6 +20,9 @@ It has features as follows:
 
 The design of this cpu is based on the standard mips five stage pipeline. And the cache and UART is based on the repo of Zhekai Zhang.
 
+The Data flow of the CPU is shown below:
+	![Data Flow](./Other/Data_Flow.png)
+
 ### Five stge pipline
 
 The pipeline is similar to the standard mips five stage pipeline with forwardings. For more information, you can read the [Reference [1]](#ref1).

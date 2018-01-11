@@ -1,9 +1,9 @@
 #include "io.h"
 
 int main() {
-  unsigned long a = inl();
-  unsigned long b = inl();
-  a += b;
-  outl(a);
+  char a = inb();
+  char b = inb();
+  a = a - '0' + b;
+  outb(a);
   return 0;
 }

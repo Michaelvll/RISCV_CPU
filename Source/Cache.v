@@ -37,7 +37,7 @@ module Cacheram
 	input wire 								w_flag,
 	input wire [ADDR_WIDTH-1:0]				w_addr,
 	input wire [8*DATA_BYTE_WIDTH-1:0]		w_data,
-	input wire [DATA_BYTE_WIDTH-1:0]		w_mask
+	input wire [DATA_BYTE_WIDTH-1:0]		w_mask	
 );
 	
 	reg [8*DATA_BYTE_WIDTH-1:0]	data[(1<<ADDR_WIDTH)-1:0];
@@ -119,7 +119,7 @@ module Cache
 	wire [31:0]	addr			= busy ? pending_addr		: addr_i;
 	wire [31:0]	w_data_in		= busy ? pending_w_data : w_data_i;
 	wire [3:0]	w_mask_in		= busy ? pending_w_mask : w_mask_i;
-	
+
 	
 	
 	wire [TAG_BIT-1:0] 			addr_tag 	= addr[31:31-TAG_BIT+1];
@@ -236,7 +236,13 @@ module Cache
 	wire [31:0]						RAM_r_data[WAY_NUM-1:0];
 	reg [WAY_SELECT_BIT-1:0]		RAM_r_select;
 	
-	assign r_data_o = RAM_r_data[RAM_r_select];
+	wire		non_cached = (addr == 32'h100)? 1'b1:1'b0;
+	reg			pre_non_cached;
+	reg[31:0]	non_cached_data;
+	reg[31:0]	next_non_cached_data;
+	
+
+	assign r_data_o = pre_non_cached? non_cached_data:RAM_r_data[RAM_r_select];
 	
 	generate
 		for(i=0; i<WAY_NUM; i=i+1)
@@ -265,8 +271,8 @@ module Cache
 			busy <= 0;
 			pending_rw_flag		<= 0;
 			pending_addr		<= 0;
-			pending_w_data	<= 0;
-			pending_w_mask 	<= 0;
+			pending_w_data		<= 0;
+			pending_w_mask 		<= 0;
 		end
 		else if(!busy)
 		begin
@@ -303,32 +309,47 @@ module Cache
 			current_word 	<= 0;
 			critical_word	<= 0;
 			RAM_r_select 	<= 0;
-					
+
+			non_cached_data	<= 0;	
+			pre_non_cached	<= 0;							
 			//TODO
 		end
 		else
 		begin
-			if(!r_cache[WAY_SELECT_BIT])
+			pre_non_cached		<=		non_cached;
+			case (non_cached)
+			default:
 			begin
-				if(r_block != addr_index)
-					$display("Assertion Failed: r_block == addr_index");
-				RAM_r_select <= r_cache[WAY_SELECT_BIT-1:0];
-				use_cache(r_cache);
+				if(!r_cache[WAY_SELECT_BIT])
+				begin
+					if(r_block != addr_index)
+						$display("Assertion Failed: r_block == addr_index");
+					RAM_r_select <= r_cache[WAY_SELECT_BIT-1:0];
+					use_cache(r_cache);
+				end
+				if(valid_flag)
+				begin
+					valid[valid_cache][valid_block] <= 1;
+					tag[valid_cache][valid_block] <= valid_tag;
+				end
+				if(flush_flag_i)
+					valid[one_hot_lookup[found_in_cache_flush]][addr_flush_index] <= 0;
+				state				<= next_state;
+				done				<= next_done;
+				current_cache		<= next_current_cache;
+				current_tag			<= next_current_tag;
+				current_block		<= next_current_block;
+				current_word		<= next_current_word;
+				critical_word		<= next_critical_word;
 			end
-			if(valid_flag)
+			1'b1:
 			begin
-				valid[valid_cache][valid_block] <= 1;
-				tag[valid_cache][valid_block] <= valid_tag;
+				state				<=	next_state;
+				done				<=	next_done;
+				if (next_done)
+					non_cached_data		<= 	next_non_cached_data;
 			end
-			if(flush_flag_i)
-				valid[one_hot_lookup[found_in_cache_flush]][addr_flush_index] <= 0;
-			state				<= next_state;
-			done				<= next_done;
-			current_cache		<= next_current_cache;
-			current_tag			<= next_current_tag;
-			current_block		<= next_current_block;
-			current_word		<= next_current_word;
-			critical_word		<= next_critical_word;
+			endcase
 		end
 	end
 	
@@ -361,6 +382,8 @@ module Cache
 		mem_addr_o  	= 0;
 		mem_w_data_o	= 0;
 		mem_w_mask_o	= 0;
+
+		next_non_cached_data = 0;
 		
 		case(state)
 		STATE_IDLE:
@@ -378,18 +401,29 @@ module Cache
 				end
 				else
 				begin
-					mem_rw_flag_o 		= 1;
-					mem_addr_o 			= {addr_tag, addr_index, addr_ws, 2'b00};
-					next_current_cache 	= lru_id;
-					next_current_tag 	= addr_tag;
-					next_current_block 	= addr_index;
-					next_current_word 	= addr_ws;
-					next_critical_word 	= addr_ws;
-					next_state 			= STATE_WAIT_FOR_r_PHASE_1;
-					valid_cache 		= lru_id;
-					valid_block 		= addr_index;
-					valid_flag 			= 1;
-					valid_tag 			= addr_tag;
+					case (non_cached)
+					default:
+					begin
+						mem_rw_flag_o 		= 1;
+						mem_addr_o 			= {addr_tag, addr_index, addr_ws, 2'b00};
+						next_current_cache 	= lru_id;
+						next_current_tag 	= addr_tag;
+						next_current_block 	= addr_index;
+						next_current_word 	= addr_ws;
+						next_critical_word 	= addr_ws;
+						next_state 			= STATE_WAIT_FOR_r_PHASE_1;
+						valid_cache 		= lru_id;
+						valid_block 		= addr_index;
+						valid_flag 			=	1;
+						valid_tag 			= addr_tag;
+					end
+					1'b1:
+					begin
+						mem_rw_flag_o 		= 1;
+						mem_addr_o 			= {addr_tag, addr_index, addr_ws, 2'b00};
+						next_state 			= STATE_WAIT_FOR_r_PHASE_1;
+					end
+					endcase
 				end
 			end
 			
@@ -417,19 +451,30 @@ module Cache
 		begin
 			if(mem_done)
 			begin
-				w_cache 			= current_cache;
-				w_block 			= current_block;
-				w_word 				= current_word;
-				w_data 				= mem_r_data_i;
-				w_mask 				= 4'b1111;
-				//w_flag = 1;
-				
-				//next_done = 1;
-				
-				next_current_word	= critical_word == 0 ? 1 : 0;
-				mem_rw_flag_o			= 1;
-				mem_addr_o			= {current_tag, current_block, next_current_word, 2'b00};
-				next_state			= STATE_WAIT_FOR_r_PHASE_2;
+				case(non_cached)
+				default:
+				begin
+					w_cache 			= current_cache;
+					w_block 			= current_block;
+					w_word 				= current_word;
+					w_data 				= mem_r_data_i;
+					w_mask 				= 4'b1111;
+					//w_flag = 1;
+					
+					//next_done = 1;
+					
+					next_current_word	= critical_word == 0 ? 1 : 0;
+					mem_rw_flag_o		= 1;
+					mem_addr_o			= {current_tag, current_block, next_current_word, 2'b00};
+					next_state			= STATE_WAIT_FOR_r_PHASE_2;
+				end
+				1'b1:
+				begin
+					next_state				= STATE_IDLE;
+					next_non_cached_data	= mem_r_data_i;
+					next_done				= 1;
+				end
+				endcase
 			end
 		end
 		

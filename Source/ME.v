@@ -118,16 +118,16 @@ begin
                 begin
                     case (ram_addr_i[1:0])
                         2'b11:	begin
-                            w_data_o	=	{{24{1'b0}},ram_r_data_i[31:24]};
+                            w_data_o	=	{{24'b0},ram_r_data_i[31:24]};
                         end
                         2'b10:	begin
-                            w_data_o	=	{{24{1'b0}},ram_r_data_i[23:16]};
+                            w_data_o	=	{{24'b0},ram_r_data_i[23:16]};
                         end
                         2'b01:	begin
-                            w_data_o	=	{{24{1'b0}},ram_r_data_i[15:8]};
+                            w_data_o	=	{{24'b0},ram_r_data_i[15:8]};
                         end
                         2'b00:	begin
-                            w_data_o	=	{{24{1'b0}},ram_r_data_i[7:0]};
+                            w_data_o	=	{{24'b0},ram_r_data_i[7:0]};
                         end
                         default:	begin
                             w_data_o	=	`ZeroWord;
@@ -139,10 +139,10 @@ begin
                 begin
                     case (ram_addr_i[1:0])
                         2'b10:	begin
-                            w_data_o	=	{{16{1'b0}},ram_r_data_i[31:16]};
+                            w_data_o	=	{{16'b0},ram_r_data_i[31:16]};
                         end
                         2'b00:	begin
-                            w_data_o	=	{{16{1'b0}},ram_r_data_i[15:0]};
+                            w_data_o	=	{{16'b0},ram_r_data_i[15:0]};
                         end
                         default:	begin
                             w_data_o	=	`ZeroWord;

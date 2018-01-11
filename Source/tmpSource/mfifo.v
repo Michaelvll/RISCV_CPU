@@ -1,23 +1,6 @@
+// Written by Zhekai Zhang
+
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 2017/06/15 16:01:34
-// Design Name: 
-// Module Name: mfifo
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
 //Multiple FIFO with single input port and multiple output port
 module simo_fifo

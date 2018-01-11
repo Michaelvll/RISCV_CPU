@@ -1,0 +1,13 @@
+关于报告
+每个人写一份报告简述一下自己的设计，自己的创新之处，以及遇到的问题
+写一份尽量不超过两页的报告
+发到sxtyzhangzk@gmail.com
+截止日期周五中午12点
+
+关于Code Review
+明天的Code Review下午4点开始，地点初步定在致远六楼
+带上电脑和板子（如果烧了的话），每人不超过15分钟
+写完CPU可以明天review的话 填一下这个表格
+https://docs.google.com/spreadsheets/d/1ecH9KpZrTuIOVUBruBzeYromA7H2-242DnaXxfcwei4/edit?usp=sharing
+
+还有把自己的代码放到github上，填表的时候填上自己的仓库地址

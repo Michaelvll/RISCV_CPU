@@ -1,23 +1,7 @@
+// Written by Zhekai Zhang
+// Modified by Zhanghao Wu @ 2017-2018
+
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 2017/06/15 07:07:54
-// Design Name: 
-// Module Name: uart_comm
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
 module uart_comm 
 	#(

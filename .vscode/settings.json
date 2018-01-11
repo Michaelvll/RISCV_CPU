@@ -30,7 +30,8 @@
 	"matlab.linterEncoding": "GB2312",
 	"files.associations": {
 		"*.m": "matlab",
-		"ostream": "c"
+		"ostream": "c",
+		"stdint.h": "c"
 	},
 	"workbench.iconTheme": "material-icon-theme",
 	"window.zoomLevel": 0,

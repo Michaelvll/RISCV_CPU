@@ -1,23 +1,8 @@
+// Written by Zhekai Zhang
+// Modified by Zhanghao Wu @ 2017-2018
+
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 2017/06/18 16:57:10
-// Design Name: 
-// Module Name: sim_memory
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
+
 `define DEBG
 `include "Defines.vh"
 

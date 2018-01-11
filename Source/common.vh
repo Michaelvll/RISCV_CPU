@@ -1,3 +1,5 @@
+// Written by Zhekai Zhang
+
 `define CLOG2(x) \
 	((x <= 0)		? -1 : \
 	(x == 1)		? 0 : \

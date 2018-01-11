@@ -6,21 +6,29 @@ Copyright (c) 2017 Zhanghao Wu
 
 ## Abstract
 
-This project is a simple five stage pipelined cpu for risc-v (rv32i) written in verilog HDL. It has features as follows:
-1. It can behave correctly for the instructions in rv32i, except 
+This project is a simple five stage pipelined cpu for risc-v (rv32i) written in verilog HDL. 
+
+It has features as follows:
+
+1. It can behave correctly for the instructions in rv32i, except ECALL, EBREAK, CSRRW, CSRRS, CSRRC, CSRRWI, CSRRSI, CSRRCI
+
+1. It has a cache on board and a uart module to link the cpu to the memory simulator on PC.
+
+1. It has exciting light and status indicator. RGB!!!
 
 ## Introduction
 
+The data and control flow are in the graph below.
 
 ## Notice
 
-1. The imm in sltiu command is signed extended, and unsigned compared.
-
-1. The aluop is firstly numbered by the opcode+funct3+(funct7?), then it is renumbered by the sequence: 0x1,0x2,..., to make the number shorter for better performance.
-
 ### Branches and Jalr
 
-1. When turn off the switches *ID_BRANCHES* and *ID_JALR*
+To get a better trade off of jumps and the clock rate, I tried a lot methods.
+
+1. I add an switch for *ID_BRANCHES* and *ID_JALR*, indicating that the where the branches and jalr should be executed. 
+
+When turn off the switches *ID_BRANCHES* and *ID_JALR*
 - EX find it needs to change PC, it will set b_flag to 1, so as to clear the content in if_id and id_ex, which clear the pipeline before EX, and set PC to the target address. This method can be regarded as always predict that the branch will not taken.
 
 1. When turn on the switches
@@ -35,6 +43,10 @@ As load can should take one more cycle to get the result of a register, it may s
 ### Makefile for test generation
 
 I write a makefile for make, which can make both .s and .cpp files automatically. And can easily compile the .cpp to .S file and see the dump result by using it. The guidance for using it is in [Makefile for risc v tool chain](https://gist.github.com/Michaelvll/46e069e29a8448326acadd7bb2bb1654).
+
+1. The imm in sltiu command is signed extended, and unsigned compared.
+
+1. The aluop is firstly numbered by the opcode+funct3+(funct7?), then it is renumbered by the sequence: 0x1,0x2,..., to make the number shorter for better performance.
 
 ## Support ISA
 

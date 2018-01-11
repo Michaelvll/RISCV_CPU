@@ -1,5 +1,8 @@
-#!/usr/bin/env python
 # based on Lequn Chen's Code
+# Written by Zhou Fan
+# Modified by Zhanghao Wu @2017-2018
+
+#!/usr/bin/env python
 import os
 import sys
 import binascii

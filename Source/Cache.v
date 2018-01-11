@@ -1,24 +1,7 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 2017/06/24 14:11:45
-// Design Name: 
-// Module Name: Cache
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
+// Written by Zhekai Zhang
+// Modified by Zhanghao Wu @ 2017-2018
 
+`timescale 1ns / 1ps
 `include "common.vh"
 
 module Cacheram

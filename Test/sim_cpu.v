@@ -1,3 +1,6 @@
+// Written by Zhekai Zhang
+// Modified by Zhanghao Wu @ 2017-2018
+
 `timescale 1ns/1ps
 `include "Defines.vh"
 

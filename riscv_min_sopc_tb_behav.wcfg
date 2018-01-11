@@ -3,134 +3,318 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="riscv_min_sopc_tb_behav.wdb" id="1">
+      <db_ref path="SimCPU_behav.wdb" id="1">
          <top_modules>
+            <top_module name="SimCPU" />
             <top_module name="glbl" />
-            <top_module name="riscv_min_sopc_tb" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="678860000fs"></ZoomStartTime>
-      <ZoomEndTime time="779460001fs"></ZoomEndTime>
-      <Cursor1Time time="2000000000fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="767443267778fs"></ZoomEndTime>
+      <Cursor1Time time="0fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="122"></NameColumnWidth>
-      <ValueColumnWidth column_width="73"></ValueColumnWidth>
+      <NameColumnWidth column_width="140"></NameColumnWidth>
+      <ValueColumnWidth column_width="90"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="26" />
-   <wvobject fp_name="/riscv_min_sopc_tb/CLOCK_50" type="logic">
-      <obj_property name="ElementShortName">CLOCK_50</obj_property>
-      <obj_property name="ObjectShortName">CLOCK_50</obj_property>
+   <WVObjectSize size="69" />
+   <wave_markers>
+      <marker time="150050000" label="" />
+      <marker time="611000000" label="" />
+      <marker time="42920000000" label="" />
+      <marker time="1460253945000" label="" />
+      <marker time="1486933334000" label="" />
+   </wave_markers>
+   <wvobject fp_name="/SimCPU/top0/cpu0/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/rst" type="logic">
+   <wvobject fp_name="/SimCPU/rst" type="logic">
       <obj_property name="ElementShortName">rst</obj_property>
       <obj_property name="ObjectShortName">rst</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/pc_reg0/pc" type="array">
+   <wvobject fp_name="/SimCPU/top0/cpu0/pc_reg0/pc" type="array">
       <obj_property name="ElementShortName">pc[31:0]</obj_property>
       <obj_property name="ObjectShortName">pc[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/id0/opcode" type="array">
-      <obj_property name="ElementShortName">opcode[6:0]</obj_property>
-      <obj_property name="ObjectShortName">opcode[6:0]</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/me0/stall_req_o" type="logic">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">stall_req_o</obj_property>
+      <obj_property name="ObjectShortName">stall_req_o</obj_property>
+      <obj_property name="label">me_stall_req_o</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/id0/inst_i" type="array">
-      <obj_property name="ElementShortName">inst_i[31:0]</obj_property>
-      <obj_property name="ObjectShortName">inst_i[31:0]</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/id0/stall_req_o" type="logic">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">stall_req_o</obj_property>
+      <obj_property name="ObjectShortName">stall_req_o</obj_property>
+      <obj_property name="label">id_stall_req_o</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/rom_addr_o" type="array">
-      <obj_property name="ElementShortName">rom_addr_o[31:0]</obj_property>
-      <obj_property name="ObjectShortName">rom_addr_o[31:0]</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_r_data_i" type="array">
+      <obj_property name="ElementShortName">ram_r_data_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ram_r_data_i[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/regfile0/regs[0]" type="array">
-      <obj_property name="ElementShortName">[0][31:0]</obj_property>
-      <obj_property name="ObjectShortName">[0][31:0]</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_w_mask_o" type="array">
+      <obj_property name="ElementShortName">ram_w_mask_o[3:0]</obj_property>
+      <obj_property name="ObjectShortName">ram_w_mask_o[3:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/regfile0/regs[1]" type="array">
-      <obj_property name="ElementShortName">[1][31:0]</obj_property>
-      <obj_property name="ObjectShortName">[1][31:0]</obj_property>
-      <obj_property name="CustomSignalColor">#00FF00</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/if0/rom_busy_i" type="logic">
+      <obj_property name="ElementShortName">rom_busy_i</obj_property>
+      <obj_property name="ObjectShortName">rom_busy_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/regfile0/regs[2]" type="array">
-      <obj_property name="ElementShortName">[2][31:0]</obj_property>
-      <obj_property name="ObjectShortName">[2][31:0]</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/if0/rom_done_i" type="logic">
+      <obj_property name="ElementShortName">rom_done_i</obj_property>
+      <obj_property name="ObjectShortName">rom_done_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/me0/aluop_i" type="array">
-      <obj_property name="ElementShortName">aluop_i[10:0]</obj_property>
-      <obj_property name="ObjectShortName">aluop_i[10:0]</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_busy" type="logic">
+      <obj_property name="ElementShortName">ram_busy</obj_property>
+      <obj_property name="ObjectShortName">ram_busy</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/regfile0/regs[10]" type="array">
-      <obj_property name="ElementShortName">[10][31:0]</obj_property>
-      <obj_property name="ObjectShortName">[10][31:0]</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_done" type="logic">
+      <obj_property name="ElementShortName">ram_done</obj_property>
+      <obj_property name="ObjectShortName">ram_done</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/regfile0/regs[11]" type="array">
-      <obj_property name="ElementShortName">[11][31:0]</obj_property>
-      <obj_property name="ObjectShortName">[11][31:0]</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_w_enable_o" type="logic">
+      <obj_property name="ElementShortName">ram_w_enable_o</obj_property>
+      <obj_property name="ObjectShortName">ram_w_enable_o</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/regfile0/regs[10]" type="array">
+   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_r_enable_o" type="logic">
+      <obj_property name="ElementShortName">ram_r_enable_o</obj_property>
+      <obj_property name="ObjectShortName">ram_r_enable_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_addr_i" type="array">
+      <obj_property name="ElementShortName">ram_addr_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ram_addr_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_r_data_i" type="array">
+      <obj_property name="ElementShortName">ram_r_data_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ram_r_data_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/pc_reg0/id_b_flag_i" type="logic">
+      <obj_property name="ElementShortName">id_b_flag_i</obj_property>
+      <obj_property name="ObjectShortName">id_b_flag_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/pc_reg0/ex_b_flag_i" type="logic">
+      <obj_property name="ElementShortName">ex_b_flag_i</obj_property>
+      <obj_property name="ObjectShortName">ex_b_flag_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/id0/pc_i" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">pc_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_i[31:0]</obj_property>
+      <obj_property name="label">id_pc</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/id0/r1_data_o" type="array">
+      <obj_property name="ElementShortName">r1_data_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">r1_data_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/id0/r2_data_o" type="array">
+      <obj_property name="ElementShortName">r2_data_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">r2_data_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/regfile0/regs[8]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[8][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[8][31:0]</obj_property>
+      <obj_property name="label">s0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/regfile0/regs[10]" type="array">
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="ElementShortName">[10][31:0]</obj_property>
       <obj_property name="ObjectShortName">[10][31:0]</obj_property>
       <obj_property name="label">a0</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/regfile0/regs[14]" type="array">
+   <wvobject fp_name="/SimCPU/top0/cpu0/regfile0/regs[14]" type="array">
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="ElementShortName">[14][31:0]</obj_property>
       <obj_property name="ObjectShortName">[14][31:0]</obj_property>
       <obj_property name="label">a4</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/regfile0/regs[15]" type="array">
+   <wvobject fp_name="/SimCPU/top0/cpu0/regfile0/regs[15]" type="array">
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="ElementShortName">[15][31:0]</obj_property>
       <obj_property name="ObjectShortName">[15][31:0]</obj_property>
       <obj_property name="label">a5</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/ex0/mem_addr_o" type="array">
-      <obj_property name="ElementShortName">mem_addr_o[31:0]</obj_property>
-      <obj_property name="ObjectShortName">mem_addr_o[31:0]</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/pc_reg0/id_b_target_addr_i" type="array">
+      <obj_property name="ElementShortName">id_b_target_addr_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">id_b_target_addr_i[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/data_ram0/we" type="logic">
-      <obj_property name="ElementShortName">we</obj_property>
-      <obj_property name="ObjectShortName">we</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/pc_reg0/next_jump" type="array">
+      <obj_property name="ElementShortName">next_jump[1:0]</obj_property>
+      <obj_property name="ObjectShortName">next_jump[1:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/data_ram0/ce" type="logic">
-      <obj_property name="ElementShortName">ce</obj_property>
-      <obj_property name="ObjectShortName">ce</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/pc_reg0/stall[0]" type="logic">
+      <obj_property name="ElementShortName">[0]</obj_property>
+      <obj_property name="ObjectShortName">[0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/data_ram0/addr" type="array">
-      <obj_property name="ElementShortName">addr[31:0]</obj_property>
-      <obj_property name="ObjectShortName">addr[31:0]</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/me0/ram_w_data_o" type="array">
+      <obj_property name="ElementShortName">ram_w_data_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ram_w_data_o[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/data_ram0/data_i" type="array">
-      <obj_property name="ElementShortName">data_i[31:0]</obj_property>
-      <obj_property name="ObjectShortName">data_i[31:0]</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/pc_reg0/target_addr" type="array">
+      <obj_property name="ElementShortName">target_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">target_addr[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/data_ram0/data_o" type="array">
-      <obj_property name="ElementShortName">data_o[31:0]</obj_property>
-      <obj_property name="ObjectShortName">data_o[31:0]</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/pc_reg0/next_pc" type="array">
+      <obj_property name="ElementShortName">next_pc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">next_pc[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/me0/mem_addr_i" type="array">
-      <obj_property name="ElementShortName">mem_addr_i[31:0]</obj_property>
-      <obj_property name="ObjectShortName">mem_addr_i[31:0]</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/if0/pc_o" type="array">
+      <obj_property name="ElementShortName">pc_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_o[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/me0/mem_addr_o" type="array">
-      <obj_property name="ElementShortName">mem_addr_o[31:0]</obj_property>
-      <obj_property name="ObjectShortName">mem_addr_o[31:0]</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/if0/inst_o" type="array">
+      <obj_property name="ElementShortName">inst_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_o[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/data_ram0/data_o" type="array">
-      <obj_property name="ElementShortName">data_o[31:0]</obj_property>
-      <obj_property name="ObjectShortName">data_o[31:0]</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/id_ex0/ex_b_flag" type="logic">
+      <obj_property name="ElementShortName">ex_b_flag</obj_property>
+      <obj_property name="ObjectShortName">ex_b_flag</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/id0/r1_data_i" type="array">
-      <obj_property name="ElementShortName">r1_data_i[31:0]</obj_property>
-      <obj_property name="ObjectShortName">r1_data_i[31:0]</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/id0/pc_i" type="array">
+      <obj_property name="ElementShortName">pc_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_i[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/riscv_min_sopc_tb/riscv_min_sopc0/cpu0/id0/r2_data_i" type="array">
-      <obj_property name="ElementShortName">r2_data_i[31:0]</obj_property>
-      <obj_property name="ObjectShortName">r2_data_i[31:0]</obj_property>
+   <wvobject fp_name="/SimCPU/top0/cpu0/id0/inst_i" type="array">
+      <obj_property name="ElementShortName">inst_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/id0/imm_J" type="array">
+      <obj_property name="ElementShortName">imm_J[31:0]</obj_property>
+      <obj_property name="ObjectShortName">imm_J[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/id0/b_flag_o" type="logic">
+      <obj_property name="ElementShortName">b_flag_o</obj_property>
+      <obj_property name="ObjectShortName">b_flag_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/id0/b_target_res" type="array">
+      <obj_property name="ElementShortName">b_target_res[31:0]</obj_property>
+      <obj_property name="ObjectShortName">b_target_res[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/id0/b_target_addr_o" type="array">
+      <obj_property name="ElementShortName">b_target_addr_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">b_target_addr_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/id_ex0/next_jump" type="logic">
+      <obj_property name="ElementShortName">next_jump</obj_property>
+      <obj_property name="ObjectShortName">next_jump</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/if_id0/id_pc" type="array">
+      <obj_property name="ElementShortName">id_pc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">id_pc[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/if_id0/id_inst" type="array">
+      <obj_property name="ElementShortName">id_inst[31:0]</obj_property>
+      <obj_property name="ObjectShortName">id_inst[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/icache0/busy" type="logic">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/icache0/done" type="logic">
+      <obj_property name="ElementShortName">done</obj_property>
+      <obj_property name="ObjectShortName">done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/MEM_CTRL/busy" type="array">
+      <obj_property name="ElementShortName">busy[1:0]</obj_property>
+      <obj_property name="ObjectShortName">busy[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/mem_busy_i" type="array">
+      <obj_property name="ElementShortName">mem_busy_i[1:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_busy_i[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/regfile0/regs[1]" type="array">
+      <obj_property name="ElementShortName">[1][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[1][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/regfile0/regs[2]" type="array">
+      <obj_property name="ElementShortName">[2][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[2][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/regfile0/regs[3]" type="array">
+      <obj_property name="ElementShortName">[3][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[3][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/regfile0/regs[4]" type="array">
+      <obj_property name="ElementShortName">[4][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[4][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/MEM_CTRL/rw_flag_[2]" type="logic">
+      <obj_property name="ElementShortName">[2]</obj_property>
+      <obj_property name="ObjectShortName">[2]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/MEM_CTRL/rw_flag_[3]" type="logic">
+      <obj_property name="ElementShortName">[3]</obj_property>
+      <obj_property name="ObjectShortName">[3]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/UART_recv_flag" type="logic">
+      <obj_property name="ElementShortName">UART_recv_flag</obj_property>
+      <obj_property name="ObjectShortName">UART_recv_flag</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/UART_recv_data" type="array">
+      <obj_property name="ElementShortName">UART_recv_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">UART_recv_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/Tx" type="logic">
+      <obj_property name="ElementShortName">Tx</obj_property>
+      <obj_property name="ObjectShortName">Tx</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/Rx" type="logic">
+      <obj_property name="ElementShortName">Rx</obj_property>
+      <obj_property name="ObjectShortName">Rx</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/mem_rw_flag_o" type="array">
+      <obj_property name="ElementShortName">mem_rw_flag_o[3:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_rw_flag_o[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/mem_addr_o" type="array">
+      <obj_property name="ElementShortName">mem_addr_o[63:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_addr_o[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/cpu0/mem_r_data_i" type="array">
+      <obj_property name="ElementShortName">mem_r_data_i[63:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_r_data_i[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/UART_send_flag" type="logic">
+      <obj_property name="ElementShortName">UART_send_flag</obj_property>
+      <obj_property name="ObjectShortName">UART_send_flag</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/UART_send_data" type="array">
+      <obj_property name="ElementShortName">UART_send_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">UART_send_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/UART_recv_flag" type="logic">
+      <obj_property name="ElementShortName">UART_recv_flag</obj_property>
+      <obj_property name="ObjectShortName">UART_recv_flag</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/top0/UART_recv_data" type="array">
+      <obj_property name="ElementShortName">UART_recv_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">UART_recv_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/sm/recv_flag" type="logic">
+      <obj_property name="ElementShortName">recv_flag</obj_property>
+      <obj_property name="ObjectShortName">recv_flag</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/sm/recv_data" type="array">
+      <obj_property name="ElementShortName">recv_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">recv_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/sm/send_flag" type="logic">
+      <obj_property name="ElementShortName">send_flag</obj_property>
+      <obj_property name="ObjectShortName">send_flag</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/sm/uart/send_data" type="array">
+      <obj_property name="ElementShortName">send_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">send_data[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/sm/read_flag" type="logic">
+      <obj_property name="ElementShortName">read_flag</obj_property>
+      <obj_property name="ObjectShortName">read_flag</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SimCPU/sm/write_flag" type="logic">
+      <obj_property name="ElementShortName">write_flag</obj_property>
+      <obj_property name="ObjectShortName">write_flag</obj_property>
    </wvobject>
 </wave_config>

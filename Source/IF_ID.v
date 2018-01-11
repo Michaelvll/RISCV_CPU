@@ -19,27 +19,64 @@ module IF_ID(
 	input wire					id_b_flag
 );
 
+reg					next_jump;
+reg[`InstAddrBus]	next_pc;
+reg[`InstBus]		next_inst;
+
+initial
+begin
+	next_jump	<=	1'b0;
+end
+
 always @ (posedge clk)
 begin
 	if (rst)
 	begin
-		id_pc   <=  `ZeroWord;
-		id_inst <=  `ZeroWord;
+		id_pc				<=  `ZeroWord;
+		id_inst 			<=  `ZeroWord;
+		next_jump			<=	1'b0;
 	end
-	else if (id_b_flag || ex_b_flag)
+	else 
 	begin
-		id_pc 	<=	`ZeroWord;
-		id_inst	<=	`ZeroWord;
-	end
-	else if(stall[1] && !stall[2])
-	begin
-		id_pc 	<=	`ZeroWord;
-		id_inst	<=	`ZeroWord;
-	end
-	else if (!stall[1])
-	begin
-		id_pc	<=	if_pc;
-		id_inst	<=	if_inst;
+		if (id_b_flag || ex_b_flag)
+		begin
+			if (stall[1] && !stall[2])
+			begin
+				id_pc 			<=	`ZeroWord;
+				id_inst			<=	`ZeroWord;
+				next_jump		<=	1'b1;
+			end
+			else if (stall[1] && stall[2])
+			begin
+				next_jump 		<=	1'b1;
+			end
+			else
+			begin
+				id_pc 		<=	`ZeroWord;
+				id_inst		<=	`ZeroWord;
+				next_jump	<=	1'b0;
+			end
+		end
+		else if(stall[1] && !stall[2])
+		begin
+			id_pc 			<=	`ZeroWord;
+			id_inst			<=	`ZeroWord;
+		end
+		else if (!stall[1])
+		begin
+			if (next_jump)
+			begin
+				id_pc 			<=	`ZeroWord;
+				id_inst			<=	`ZeroWord;
+				next_jump		<=	1'b0;
+			end
+			else
+			begin
+				id_pc		<=	if_pc;
+				id_inst		<=	if_inst;
+				next_jump	<=	1'b0;
+			end
+		end
 	end
 end
 

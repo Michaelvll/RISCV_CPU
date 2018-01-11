@@ -33,7 +33,10 @@ module EX(
 
 	output wire					is_ld
 );
-
+always@(*)
+begin
+	stall_req_o		=		1'b0;
+end
 
 
 reg[`RegBus]		logic_res;
@@ -68,7 +71,14 @@ assign pc_plus_offset = pc_i + offset_i;
 
 // ============ ALU LOAD_STORE part ================
 
-assign aluop_o = aluop_i;
+assign aluop_o = ((aluop_i == `EX_LB_OP) || 
+				(aluop_i == `EX_LH_OP) ||
+				(aluop_i == `EX_LW_OP) ||
+				(aluop_i == `EX_LBU_OP)||
+				(aluop_i == `EX_LHU_OP)||
+				(aluop_i == `EX_SB_OP) ||
+				(aluop_i == `EX_SH_OP) ||
+				(aluop_i == `EX_SW_OP) ) ? aluop_i : `ME_NOP_OP;
 
 assign mem_addr_o = r1_data_i + offset_i;
 
@@ -84,55 +94,62 @@ always @ (*)
 begin
 	if (rst) 
 	begin
-		J_B_res		<=	`ZeroWord;
-		b_flag_o	<=	1'b0;
+		J_B_res		=	`ZeroWord;
+		b_flag_o	=	1'b0;
+		b_target_addr_o	=	`ZeroWord;
+		
 	end
 	else
 	begin
+		b_flag_o		=	1'b0;
+		b_target_addr_o	=	pc_plus_offset;
+		J_B_res			=	`ZeroWord;
+		
 		case (aluop_i)
 			`EX_JAL_OP:
 			begin
-				J_B_res				<=	pc_plus_4;
+				b_flag_o			=	1'b0;
+				J_B_res				=	pc_plus_4;
 			end
 			
 			`EX_JALR_OP:
 			begin
 `ifndef ID_JALR
-				b_flag_o			<=	1'b1;
-				b_target_addr_o		<=	{sum_res[31:1], 1'h0};
+				b_flag_o			=	1'b1;
+				b_target_addr_o		=	{sum_res[31:1], 1'h0};
 `endif //ID_JALR
-				J_B_res				<=	pc_plus_4;
+				J_B_res				=	pc_plus_4;
 			end
 `ifndef ID_BRANCHES
 			`EX_BEQ_OP:
 			begin
-				b_flag_o			<=	eq_res;
-				b_target_addr_o		<=	pc_plus_offset;
+				b_flag_o			=	eq_res;
+				b_target_addr_o		=	pc_plus_offset;
 			end
 
 			`EX_BNE_OP:
 			begin
-				b_flag_o			<= ~eq_res;
-				b_target_addr_o		<= pc_plus_offset;
+				b_flag_o			= ~eq_res;
+				b_target_addr_o		= pc_plus_offset;
 			end
 
 			`EX_BLT_OP,`EX_BLTU_OP:
 			begin
-				b_flag_o			<=	lt_res;
-				b_target_addr_o		<=	pc_plus_offset;
+				b_flag_o			=	lt_res;
+				b_target_addr_o		=	pc_plus_offset;
 			end
 
 			`EX_BGE_OP,`EX_BGEU_OP:
 			begin
-				b_flag_o			<=	~lt_res;
-				b_target_addr_o		<=	pc_plus_offset;
+				b_flag_o			=	~lt_res;
+				b_target_addr_o		=	pc_plus_offset;
 			end
 `endif //ID_BRANCHES
 			default:
 			begin
-				b_flag_o			<=	1'b0;
-				b_target_addr_o		<=	`ZeroWord;
-				J_B_res				<=	`ZeroWord;
+				b_flag_o			=	1'b0;
+				b_target_addr_o		=	`ZeroWord;
+                J_B_res				=	`ZeroWord;
 			end	
 		endcase
 	end
@@ -146,29 +163,29 @@ always @ (*)
 begin
 	if (rst) 
 	begin
-		arith_res	<=	`ZeroWord;
+		arith_res	=	`ZeroWord;
 	end
 	else 
 	begin
 		case (aluop_i)
 			`EX_SLT_OP, `EX_SLTU_OP:
 			begin
-				arith_res	<=	{31'h0, lt_res};
+				arith_res	=	{31'h0, lt_res};
 			end
 
 			`EX_ADD_OP, `EX_SUB_OP: 
 			begin
-				arith_res	<=	sum_res;			
+				arith_res	=	sum_res;			
 			end
 			
 			`EX_AUIPC_OP:
 			begin
-			  	arith_res	<=	pc_plus_offset;
+			  	arith_res	=	pc_plus_offset;
 			end
 
 			default: 
 			begin
-				arith_res	<=	`ZeroWord;
+				arith_res	=	`ZeroWord;
 			end
 		endcase
 	end
@@ -180,29 +197,29 @@ end
 always @ (*)
 begin
 	if (rst)
-		logic_res	<=	`ZeroWord;
+		logic_res	=	`ZeroWord;
 	else 
 	begin
 		case (aluop_i)
 			`EX_OR_OP:
 			begin
-				logic_res	<=	r1_data_i | r2_data_i;
+				logic_res	=	r1_data_i | r2_data_i;
 			end
 			
 			`EX_XOR_OP:
 			begin
-				logic_res	<=	r1_data_i ^ r2_data_i;
+				logic_res	=	r1_data_i ^ r2_data_i;
 			end
 
 			`EX_AND_OP:
 			begin
-				logic_res	<=	r1_data_i & r2_data_i;
+				logic_res	=	r1_data_i & r2_data_i;
 			end
 
 
 			default:
 			begin
-				logic_res	<=	`ZeroWord;
+				logic_res	=	`ZeroWord;
 			end
 		endcase
 	end	
@@ -212,27 +229,27 @@ end
 always @ (*)
 begin
 	if (rst)
-		shift_res	<=	`ZeroWord;
+		shift_res	=	`ZeroWord;
 	else 
 	begin
 		case (aluop_i)
 			`EX_SLL_OP:
 			begin
-				shift_res	<=	r1_data_i << r2_data_i[4:0];
+				shift_res	=	r1_data_i << r2_data_i[4:0];
 			end
 			`EX_SRL_OP:
 			begin
-				shift_res	<=	r1_data_i  >> r2_data_i[4:0];
+				shift_res	=	r1_data_i  >> r2_data_i[4:0];
 			end
 			`EX_SRA_OP:
 			begin
-				shift_res	<=	({32{r1_data_i[31]}} << (6'd32 - {1'b0,r2_data_i[4:0]})) | r1_data_i >> r2_data_i[4:0];
+				shift_res	=	({32{r1_data_i[31]}} << (6'd32 - {1'b0,r2_data_i[4:0]})) | r1_data_i >> r2_data_i[4:0];
 			end
 
 
 			default:
 			begin
-				shift_res	<=	`ZeroWord;
+				shift_res	=	`ZeroWord;
 			end
 		endcase
 	end	
@@ -245,44 +262,44 @@ always @ (*)
 begin
 	if (rst)
 	begin
-		w_enable_o		<=	`WriteDisable;
-		w_addr_o		<=	`ZeroWord;
-		w_data_o		<=	`ZeroWord;
+		w_enable_o		=	`WriteDisable;
+		w_addr_o		=	`ZeroWord;
+		w_data_o		=	`ZeroWord;
 	end
 	else if (w_enable_i && w_addr_i == `ZeroWord)
 	begin
-		w_enable_o		<=	`WriteDisable;
-		w_addr_o		<=	`ZeroWord;
-		w_data_o		<=	`ZeroWord;
+		w_enable_o		=	`WriteDisable;
+		w_addr_o		=	`ZeroWord;
+		w_data_o		=	`ZeroWord;
 	end
 	else
 	begin
-		w_enable_o	<=	w_enable_i;
-		w_addr_o	<=	w_addr_i;
+		w_enable_o	=	w_enable_i;
+		w_addr_o	=	w_addr_i;
 		case (alusel_i)
 			`EX_RES_LOGIC:
 			begin
-				w_data_o	<=	logic_res;
+				w_data_o	=	logic_res;
 			end
 			`EX_RES_SHIFT:
 			begin
-				w_data_o	<=	shift_res;
+				w_data_o	=	shift_res;
 			end
 			`EX_RES_ARITH:
 			begin
-				w_data_o	<=	arith_res;
+				w_data_o	=	arith_res;
 			end
 			`EX_RES_J_B:
 			begin
-				w_data_o	<=	J_B_res;
+				w_data_o	=	J_B_res;
 			end
 			`EX_RES_LD_ST:
 			begin
-				w_data_o	<=	r2_data_i;
+				w_data_o	=	r2_data_i;
 			end
 			default:
 			begin
-				w_data_o	<=	`ZeroWord;
+				w_data_o	=	`ZeroWord;
 			end
 		endcase
 	end

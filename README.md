@@ -11,15 +11,16 @@ This is a project of Computer System class of ACM honor class in SJTU.
 ### Branches and Jalr
 
 1. When turn off the switches *ID_BRANCHES* and *ID_JALR*
-	
-	EX find it needs to change PC, it will set b_flag to 1, so as to clear the content in if_id and id_ex, which clear the pipeline before EX, and set PC to the target address. This method can be regarded as always predict that the branch will not taken.
-1. When turn on the switches
+- EX find it needs to change PC, it will set b_flag to 1, so as to clear the content in if_id and id_ex, which clear the pipeline before EX, and set PC to the target address. This method can be regarded as always predict that the branch will not taken.
 
-	ID will find out whether should PC be changed, and clear IF_ID directly, and set PC to the target address. ID_BRANCHES will slow down ID to some degree, which may cause the pipeline become unbalanced (untested!), and the impact of ID_JALR is much larger than the former one.
+1. When turn on the switches
+- ID will find out whether should PC be changed, and clear IF_ID directly, and set PC to the target address. ID_BRANCHES will slow down ID to some degree, which may cause the pipeline become unbalanced (untested!), and the impact of ID_JALR is much larger than the former one.
 
 ### Stall for load
 
 As load can should take one more cycle to get the result of a register, it may stall the pipeline to avoid RAW hazard.
+
+### The cache 
 
 ### Makefile for test generation
 
@@ -36,8 +37,7 @@ I am trying to change the architecture from Havard architecture to Von Neumann a
 ## Q&A
 
 1. Why op_imm, like xori command doesn't support imm larger than 0x7ff such as 0x801?
-	
-	 Because the imm is signed.
+- Because the imm is signed.
 
 ## Reference
 

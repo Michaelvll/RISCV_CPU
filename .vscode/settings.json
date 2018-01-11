@@ -1,4 +1,45 @@
 {
+	"editor.wordWrap": "on",
+	"editor.formatOnPaste": true,
+	"C_Cpp.clang_format_fallbackStyle": "LLVM",
+	"python.linting.pylintArgs": [
+		"--disable=C0103,C0111"
+	],
 	"editor.insertSpaces": false,
-	"hexdump.nibbles": 8
+	"editor.detectIndentation": false,
+	"editor.formatOnSave": true,
+	"pandoc.pdfOptString": "--standalone --self-contained --latex-engine=xelatex --template=C:/Users/wuzha/Desktop/my_program/setting_files/markdown_setting/template.tex",
+	"pandoc.htmlOptString": "--standalone --self-contained --css C:/Users/wuzha/Desktop/my_program/setting_files/markdown_setting/github-markdown.css",
+	"pandoc.docxOptString": "--standalone --self-contained --css C:/Users/wuzha/Desktop/my_program/setting_files/markdown_setting/github-markdown.css",
+	"editor.minimap.enabled": true,
+	"editor.renderIndentGuides": true,
+	//"terminal.integrated.shell.windows": "C:\\WINDOWS\\Sysnative\\WindowsPowerShell\\v1.0\\powershell.exe",
+	"latex-workshop.latex.toolchain": [
+		{
+			"command": "xelatex",
+			"args": [
+				"-interaction=nonstopmode",
+				"%DOC%"
+			]
+		}
+	],
+	"files.autoSave": "off",
+	"python.pythonPath": "python",
+	"matlab.matlabpath": "C:/Program Files/MATLAB/R2017a/bin",
+	"matlab.mlintpath": "C:/Program Files/MATLAB/R2017a/bin/win64",
+	"matlab.linterEncoding": "GB2312",
+	"files.associations": {
+		"*.m": "matlab",
+		"ostream": "c"
+	},
+	"workbench.iconTheme": "material-icon-theme",
+	"window.zoomLevel": 0,
+	"C_Cpp.intelliSenseEngine": "Default",
+	"workbench.colorTheme": "One Dark Pro",
+	"python.autoComplete.extraPaths": [
+		"C:/Anaconda/Anaconda3/Lib/site-packages"
+	],
+	"C_Cpp.intelliSenseEngineFallback": "Enabled",
+	"files.eol": "\n",
+	"[matlab]": {}
 }

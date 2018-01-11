@@ -52,7 +52,6 @@ module ID (
 
 reg instvalid;
 reg[`RegBus] imm;
-reg pre_ld;
 reg r1_stall_req;
 reg r2_stall_req;
 
@@ -85,16 +84,18 @@ assign imm_U		=	{inst_i[31:12], 12'h0};
 assign imm_J		=	{{12{inst_i[31]}}, inst_i[19:12],
 							inst_i[20], inst_i[30:21],1'h0};
 
-wire				b_flag;
 wire[`InstAddrBus]	b_target_res;
 
-assign b_target_res = (opcode == `OP_JAL)? imm_J + pc_i: imm_B + pc_i;
+assign b_target_res = ((opcode == `OP_JAL)? imm_J + pc_i: imm_B + pc_i);
 
 `ifdef ID_BRANCHES
 // This part may cause lower speed
 wire				lt_res;
 wire				gt_res;
 wire				eq_res;
+
+
+
 assign lt_res = ((aluop_o == `EX_BLT_OP ||
 				aluop_o == `EX_BGE_OP)? 
 				$signed(r1_data_o) < $signed(r2_data_o):
@@ -111,20 +112,19 @@ assign sum_res = r1_data_o + {{20{imm_I[11]}}, imm_I};
 //end
 `endif //ID_JALR
 
-
 always @(*)
 begin
 	case(opcode)
 		`OP_JAL:
 		begin
-			b_flag_o		<=	1'b1;
-			b_target_addr_o	<=	b_target_res;
+			b_flag_o		=	1'b1;
+			b_target_addr_o	=	b_target_res;
 		end
 `ifdef ID_JALR
 		`OP_JALR:
 		begin
-			b_flag_o		<=	1'b1;
-			b_target_addr_o	<=	sum_res;
+			b_flag_o		=	1'b1;
+			b_target_addr_o	=	sum_res;
 		end
 `endif //ID_JALR
 
@@ -135,29 +135,29 @@ begin
 			case (funct3)
 				`FUNCT3_BEQ:
 				begin
-					b_flag_o		<=	eq_res;
-					b_target_addr_o	<=	b_target_res;
+					b_flag_o		=	eq_res;
+					b_target_addr_o	=	b_target_res;
 				end
 				`FUNCT3_BNE:
 				begin
-					b_flag_o		<=	~eq_res;
-					b_target_addr_o	<=	b_target_res;
+					b_flag_o		=	~eq_res;
+					b_target_addr_o	=	b_target_res;
 				end
 				`FUNCT3_BLT, `FUNCT3_BLTU:
 				begin
-					b_flag_o		<=	lt_res;
-					b_target_addr_o	<=	b_target_res;
+					b_flag_o		=	lt_res;
+					b_target_addr_o	=	b_target_res;
 				end
 				`FUNCT3_BGE, `FUNCT3_BGEU:
 				begin
-					b_flag_o		<=	~lt_res;
-					b_target_addr_o	<=	b_target_res;
+					b_flag_o		=	~lt_res;
+					b_target_addr_o	=	b_target_res;
 				end
 				  
 				default:
 				begin
-					b_flag_o		<=	1'b0;
-					b_target_addr_o	<=	`ZeroWord;
+                    b_flag_o		=	1'b0;
+                    b_target_addr_o	=	`ZeroWord;
 				end
 			endcase
 		end
@@ -165,8 +165,8 @@ begin
 `endif //ID_BRANCHES
 		default:
 		begin
-			b_flag_o		<=	1'b0;
-			b_target_addr_o	<=	`ZeroWord;
+			b_flag_o		=	1'b0;
+			b_target_addr_o	=	`ZeroWord;
 		end
 	endcase
 end
@@ -176,89 +176,85 @@ always @ (*)
 begin
 	if (rst)
 	begin
-		aluop_o			<=	`EX_NOP_OP;
-		alusel_o		<=	`EX_RES_NOP;
-		r1_enable_o		<=	1'b0;
-		r2_enable_o		<=	1'b0;
-		r1_addr_o		<=	`NOPRegAddr;
-		r2_addr_o		<=	`NOPRegAddr;
-		w_enable_o		<= 	`WriteDisable;
-		w_addr_o		<= 	`NOPRegAddr;
-		instvalid		<=	`InstValid;
-		imm 			<=	`ZeroWord;
+		pc_o			=	`ZeroWord;
+		aluop_o			=	`EX_NOP_OP;
+		alusel_o		=	`EX_RES_NOP;
+		r1_enable_o		=	1'b0;
+		r2_enable_o		=	1'b0;
+		r1_addr_o		=	`NOPRegAddr;
+		r2_addr_o		=	`NOPRegAddr;
+		w_enable_o		= 	`WriteDisable;
+		w_addr_o		= 	`NOPRegAddr;
+		instvalid		=	`InstValid;
+		imm 			=	`ZeroWord;
 
-		pre_ld		<=	1'b0;
-		
+				
 	end
 
 	else
 	begin
-		pc_o			<=	pc_i;
+		pc_o			=	pc_i;
 		case(opcode)
 			`OP_LUI:
 			begin
-				aluop_o			<=	`EX_OR_OP;
-				alusel_o		<=	`EX_RES_LOGIC;
-				r1_enable_o		<=	1'b0;
-				r2_enable_o		<=	1'b0;
-				r1_addr_o		<=	rs1;
-				r2_addr_o		<=	rs2;
-				imm				<=	imm_U;
-				w_enable_o		<=	`WriteEnable;
-				w_addr_o		<=	rd;
-				instvalid		<=	`InstValid;
+				aluop_o			=	`EX_OR_OP;
+				alusel_o		=	`EX_RES_LOGIC;
+				r1_enable_o		=	1'b0;
+				r2_enable_o		=	1'b0;
+				r1_addr_o		=	rs1;
+				r2_addr_o		=	rs2;
+				imm				=	imm_U;
+				w_enable_o		=	`WriteEnable;
+				w_addr_o		=	rd;
+				instvalid		=	`InstValid;
 
-				pre_ld		<=	1'b0;
-				
+								
 			end
 
 			`OP_AUIPC:
 			begin
-				aluop_o			<=	`EX_AUIPC_OP;
-				alusel_o		<=	`EX_RES_ARITH;
-				r1_enable_o		<=	1'b0;
-				r2_enable_o		<=	1'b0;
-				r1_addr_o		<=	rs1;
-				r2_addr_o		<=	rs2;
-				imm				<=	imm_U;
-				w_enable_o		<=	`WriteEnable;
-				w_addr_o		<=	rd;
-				instvalid		<=	`InstValid;
+				aluop_o			=	`EX_AUIPC_OP;
+				alusel_o		=	`EX_RES_ARITH;
+				r1_enable_o		=	1'b0;
+				r2_enable_o		=	1'b0;
+				r1_addr_o		=	rs1;
+				r2_addr_o		=	rs2;
+				imm				=	imm_U;
+				w_enable_o		=	`WriteEnable;
+				w_addr_o		=	rd;
+				instvalid		=	`InstValid;
 
-				pre_ld		<=	1'b0;
 			end
 
 			`OP_JAL:
 			begin
-				aluop_o			<=	`EX_JAL_OP;
-				alusel_o		<=	`EX_RES_J_B;
-				r1_enable_o		<=	1'b0;
-				r2_enable_o		<=	1'b0;
-				r1_addr_o		<=	rs1;
-				r2_addr_o		<=	rs2;
-				imm				<=	imm_J;
-				w_enable_o		<=	`WriteEnable;
-				w_addr_o		<=	rd;
-				instvalid		<=	`InstValid;
+				aluop_o			=	`EX_JAL_OP;
+				alusel_o		=	`EX_RES_J_B;
+				r1_enable_o		=	1'b0;
+				r2_enable_o		=	1'b0;
+				r1_addr_o		=	rs1;
+				r2_addr_o		=	rs2;
+				imm				=	imm_J;
+				w_enable_o		=	`WriteEnable;
+				w_addr_o		=	rd;
+				instvalid		=	`InstValid;
 
-				pre_ld		<=	1'b0;
-				
+								
 			end
 
 			`OP_JALR:
 			begin
-				aluop_o			<=	`EX_JALR_OP;
-				alusel_o		<=	`EX_RES_J_B;
-				r1_enable_o		<=	1'b1;
-				r2_enable_o		<=	1'b0;
-				r1_addr_o		<=	rs1;
-				r2_addr_o		<=	rs2;
-				imm				<=	{{20{imm_I[11]}}, imm_I};
-				w_enable_o		<=	`WriteEnable;
-				w_addr_o		<=	rd;
-				instvalid		<=	`InstValid;
+				aluop_o			=	`EX_JALR_OP;
+				alusel_o		=	`EX_RES_J_B;
+				r1_enable_o		=	1'b1;
+				r2_enable_o		=	1'b0;
+				r1_addr_o		=	rs1;
+				r2_addr_o		=	rs2;
+				imm				=	{{20{imm_I[11]}}, imm_I};
+				w_enable_o		=	`WriteEnable;
+				w_addr_o		=	rd;
+				instvalid		=	`InstValid;
 
-				pre_ld		<=	1'b0;
 			end
 
 			`OP_BRANCH:
@@ -266,102 +262,95 @@ begin
 				case(funct3)
 					`FUNCT3_BEQ:
 					begin
-						aluop_o			<=	`EX_BEQ_OP;
-						alusel_o		<=	`EX_RES_NOP;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b1;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	imm_B;
-						w_enable_o		<=	`WriteDisable;
-						w_addr_o		<=	`ZeroWord;
-						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
+						aluop_o			=	`EX_BEQ_OP;
+						alusel_o		=	`EX_RES_NOP;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b1;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	imm_B;
+						w_enable_o		=	`WriteDisable;
+						w_addr_o		=	`ZeroWord;
+						instvalid		=	`InstValid;
 					end
 					`FUNCT3_BNE:
 					begin
-						aluop_o			<=	`EX_BNE_OP;
-						alusel_o		<=	`EX_RES_NOP;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b1;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	imm_B;
-						w_enable_o		<=	`WriteDisable;
-						w_addr_o		<=	`ZeroWord;
-						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
+						aluop_o			=	`EX_BNE_OP;
+						alusel_o		=	`EX_RES_NOP;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b1;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	imm_B;
+						w_enable_o		=	`WriteDisable;
+						w_addr_o		=	`ZeroWord;
+						instvalid		=	`InstValid;
 					end
 					`FUNCT3_BLT:
 					begin
-						aluop_o			<=	`EX_BLT_OP;
-						alusel_o		<=	`EX_RES_NOP;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b1;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	imm_B;
-						w_enable_o		<=	`WriteDisable;
-						w_addr_o		<=	`ZeroWord;
-						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
+						aluop_o			=	`EX_BLT_OP;
+						alusel_o		=	`EX_RES_NOP;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b1;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	imm_B;
+						w_enable_o		=	`WriteDisable;
+						w_addr_o		=	`ZeroWord;
+						instvalid		=	`InstValid;
 					end
 					`FUNCT3_BGE:
 					begin
-						aluop_o			<=	`EX_BGE_OP;
-						alusel_o		<=	`EX_RES_NOP;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b1;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	imm_B;
-						w_enable_o		<=	`WriteDisable;
-						w_addr_o		<=	`ZeroWord;
-						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
+						aluop_o			=	`EX_BGE_OP;
+						alusel_o		=	`EX_RES_NOP;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b1;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	imm_B;
+						w_enable_o		=	`WriteDisable;
+						w_addr_o		=	`ZeroWord;
+						instvalid		=	`InstValid;
 					end
 					`FUNCT3_BLTU:
 					begin
-						aluop_o			<=	`EX_BLTU_OP;
-						alusel_o		<=	`EX_RES_NOP;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b1;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	imm_B;
-						w_enable_o		<=	`WriteDisable;
-						w_addr_o		<=	`ZeroWord;
-						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
+						aluop_o			=	`EX_BLTU_OP;
+						alusel_o		=	`EX_RES_NOP;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b1;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	imm_B;
+						w_enable_o		=	`WriteDisable;
+						w_addr_o		=	`ZeroWord;
+						instvalid		=	`InstValid;
 					end
 					`FUNCT3_BGEU:
 					begin
-						aluop_o			<=	`EX_BGEU_OP;
-						alusel_o		<=	`EX_RES_NOP;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b1;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	imm_B;
-						w_enable_o		<=	`WriteDisable;
-						w_addr_o		<=	`ZeroWord;
-						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
+						aluop_o			=	`EX_BGEU_OP;
+						alusel_o		=	`EX_RES_NOP;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b1;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	imm_B;
+						w_enable_o		=	`WriteDisable;
+						w_addr_o		=	`ZeroWord;
+						instvalid		=	`InstValid;
 					end
 					default:
 					begin
-						aluop_o			<=	`EX_NOP_OP;
-						alusel_o		<=	`EX_RES_NOP;
-						r1_enable_o		<=	1'b0;
-						r2_enable_o		<=	1'b0;
-						r1_addr_o		<=	`NOPRegAddr;
-						r2_addr_o		<=	`NOPRegAddr;
-						w_enable_o		<= 	`WriteDisable;
-						w_addr_o		<= 	`NOPRegAddr;
-						instvalid		<=	`InstValid;
-						imm 			<=	`ZeroWord;
+						aluop_o			=	`EX_NOP_OP;
+						alusel_o		=	`EX_RES_NOP;
+						r1_enable_o		=	1'b0;
+						r2_enable_o		=	1'b0;
+						r1_addr_o		=	`NOPRegAddr;
+						r2_addr_o		=	`NOPRegAddr;
+						w_enable_o		= 	`WriteDisable;
+						w_addr_o		= 	`NOPRegAddr;
+						instvalid		=	`InstValid;
+						imm 			=	`ZeroWord;
 
-						pre_ld		<=	1'b0;
 					end
 				endcase
 			end
@@ -371,98 +360,92 @@ begin
 				case (funct3)
 					`FUNCT3_LB:
 					begin
-						aluop_o			<=	`EX_LB_OP;
-						alusel_o		<=	`EX_RES_LD_ST;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b0;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	{{20{imm_I[11]}}, imm_I[11: 0]};
-						w_enable_o		<=	`WriteEnable;
-						w_addr_o		<=	rd;
-						instvalid		<=	`InstValid;
+						aluop_o			=	`EX_LB_OP;
+						alusel_o		=	`EX_RES_LD_ST;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b0;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	{{20{imm_I[11]}}, imm_I[11: 0]};
+						w_enable_o		=	`WriteEnable;
+						w_addr_o		=	rd;
+						instvalid		=	`InstValid;
 
-						pre_ld		<=	1'b1;
 					end 
 					
 					`FUNCT3_LH:
 					begin
-						aluop_o			<=	`EX_LH_OP;
-						alusel_o		<=	`EX_RES_LD_ST;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b0;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	{{20{imm_I[11]}}, imm_I[11: 0]};
-						w_enable_o		<=	`WriteEnable;
-						w_addr_o		<=	rd;
-						instvalid		<=	`InstValid;
+						aluop_o			=	`EX_LH_OP;
+						alusel_o		=	`EX_RES_LD_ST;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b0;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	{{20{imm_I[11]}}, imm_I[11: 0]};
+						w_enable_o		=	`WriteEnable;
+						w_addr_o		=	rd;
+						instvalid		=	`InstValid;
 
-						pre_ld		<=	1'b1;
 					end
 
 					`FUNCT3_LW:
 					begin
-						aluop_o			<=	`EX_LW_OP;
-						alusel_o		<=	`EX_RES_LD_ST;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b0;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	{{20{imm_I[11]}}, imm_I[11: 0]};
-						w_enable_o		<=	`WriteEnable;
-						w_addr_o		<=	rd;
-						instvalid		<=	`InstValid;
+						aluop_o			=	`EX_LW_OP;
+						alusel_o		=	`EX_RES_LD_ST;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b0;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	{{20{imm_I[11]}}, imm_I[11: 0]};
+						w_enable_o		=	`WriteEnable;
+						w_addr_o		=	rd;
+						instvalid		=	`InstValid;
 
-						pre_ld		<=	1'b1;
 					end
 
 					`FUNCT3_LBU:
 					begin
-						aluop_o			<=	`EX_LBU_OP;
-						alusel_o		<=	`EX_RES_LD_ST;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b0;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	{{20{imm_I[11]}}, imm_I[11: 0]};
-						w_enable_o		<=	`WriteEnable;
-						w_addr_o		<=	rd;
-						instvalid		<=	`InstValid;
+						aluop_o			=	`EX_LBU_OP;
+						alusel_o		=	`EX_RES_LD_ST;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b0;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	{{20{imm_I[11]}}, imm_I[11: 0]};
+						w_enable_o		=	`WriteEnable;
+						w_addr_o		=	rd;
+						instvalid		=	`InstValid;
 
-						pre_ld		<=	1'b1;
 					end
 
 					`FUNCT3_LHU:
 					begin
-						aluop_o			<=	`EX_LHU_OP;
-						alusel_o		<=	`EX_RES_LD_ST;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b0;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	{{20{imm_I[11]}}, imm_I[11: 0]};
-						w_enable_o		<=	`WriteEnable;
-						w_addr_o		<=	rd;
-						instvalid		<=	`InstValid;
+						aluop_o			=	`EX_LHU_OP;
+						alusel_o		=	`EX_RES_LD_ST;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b0;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	{{20{imm_I[11]}}, imm_I[11: 0]};
+						w_enable_o		=	`WriteEnable;
+						w_addr_o		=	rd;
+						instvalid		=	`InstValid;
 
-						pre_ld		<=	1'b1;
 					end
 
 					default:
 					begin
-						aluop_o			<=	`EX_NOP_OP;
-						alusel_o		<=	`EX_RES_NOP;
-						r1_enable_o		<=	1'b0;
-						r2_enable_o		<=	1'b0;
-						r1_addr_o		<=	`NOPRegAddr;
-						r2_addr_o		<=	`NOPRegAddr;
-						w_enable_o		<= 	`WriteDisable;
-						w_addr_o		<= 	`NOPRegAddr;
-						instvalid		<=	`InstValid;
-						imm 			<=	`ZeroWord;
+						aluop_o			=	`EX_NOP_OP;
+						alusel_o		=	`EX_RES_NOP;
+						r1_enable_o		=	1'b0;
+						r2_enable_o		=	1'b0;
+						r1_addr_o		=	`NOPRegAddr;
+						r2_addr_o		=	`NOPRegAddr;
+						w_enable_o		= 	`WriteDisable;
+						w_addr_o		= 	`NOPRegAddr;
+						instvalid		=	`InstValid;
+						imm 			=	`ZeroWord;
 
-						pre_ld		<=	1'b0;
 					end 
 				endcase
 			end
@@ -472,66 +455,62 @@ begin
 				case (funct3)
 				  	`FUNCT3_SB: 
 					begin
-						aluop_o			<=	`EX_SB_OP;
-						alusel_o		<=	`EX_RES_LD_ST;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b1;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	{{20{imm_S[11]}}, imm_S[11: 0]};
-						w_enable_o		<=	`WriteDisable;
-						w_addr_o		<=	rd;
-						instvalid		<=	`InstValid;
+						aluop_o			=	`EX_SB_OP;
+						alusel_o		=	`EX_RES_LD_ST;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b1;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	{{20{imm_S[11]}}, imm_S[11: 0]};
+						w_enable_o		=	`WriteDisable;
+						w_addr_o		=	rd;
+						instvalid		=	`InstValid;
 
-						pre_ld		<=	1'b0;
 					end
 
 					`FUNCT3_SH:
 					begin
-						aluop_o			<=	`EX_SH_OP;
-						alusel_o		<=	`EX_RES_LD_ST;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b1;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	{{20{imm_S[11]}}, imm_S[11: 0]};
-						w_enable_o		<=	`WriteDisable;
-						w_addr_o		<=	rd;
-						instvalid		<=	`InstValid;
+						aluop_o			=	`EX_SH_OP;
+						alusel_o		=	`EX_RES_LD_ST;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b1;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	{{20{imm_S[11]}}, imm_S[11: 0]};
+						w_enable_o		=	`WriteDisable;
+						w_addr_o		=	rd;
+						instvalid		=	`InstValid;
 
-						pre_ld		<=	1'b0;
 					end
 
 					`FUNCT3_SW:
 					begin
-						aluop_o			<=	`EX_SW_OP;
-						alusel_o		<=	`EX_RES_LD_ST;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b1;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	{{20{imm_S[11]}}, imm_S[11: 0]};
-						w_enable_o		<=	`WriteDisable;
-						w_addr_o		<=	rd;
-						instvalid		<=	`InstValid;
+						aluop_o			=	`EX_SW_OP;
+						alusel_o		=	`EX_RES_LD_ST;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b1;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	{{20{imm_S[11]}}, imm_S[11: 0]};
+						w_enable_o		=	`WriteDisable;
+						w_addr_o		=	rd;
+						instvalid		=	`InstValid;
 
-						pre_ld		<=	1'b0;
 					end
 
 				  	default:
 					begin
-						aluop_o			<=	`EX_NOP_OP;
-						alusel_o		<=	`EX_RES_NOP;
-						r1_enable_o		<=	1'b0;
-						r2_enable_o		<=	1'b0;
-						r1_addr_o		<=	`NOPRegAddr;
-						r2_addr_o		<=	`NOPRegAddr;
-						w_enable_o		<= 	`WriteDisable;
-						w_addr_o		<= 	`NOPRegAddr;
-						instvalid		<=	`InstValid;
-						imm 			<=	`ZeroWord;
+						aluop_o			=	`EX_NOP_OP;
+						alusel_o		=	`EX_RES_NOP;
+						r1_enable_o		=	1'b0;
+						r2_enable_o		=	1'b0;
+						r1_addr_o		=	`NOPRegAddr;
+						r2_addr_o		=	`NOPRegAddr;
+						w_enable_o		= 	`WriteDisable;
+						w_addr_o		= 	`NOPRegAddr;
+						instvalid		=	`InstValid;
+						imm 			=	`ZeroWord;
 
-						pre_ld		<=	1'b0;
 					end
 				endcase
 			end
@@ -541,107 +520,100 @@ begin
 				case(funct3)
 					`FUNCT3_ADDI:
 					begin
-						aluop_o			<=	`EX_ADD_OP;
-						alusel_o		<=	`EX_RES_ARITH;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b0;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	{{20{imm_I[11]}}, imm_I[11: 0]};
-						w_enable_o		<=	`WriteEnable;
-						w_addr_o		<=	rd;
-						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
+						aluop_o			=	`EX_ADD_OP;
+						alusel_o		=	`EX_RES_ARITH;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b0;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	{{20{imm_I[11]}}, imm_I[11: 0]};
+						w_enable_o		=	`WriteEnable;
+						w_addr_o		=	rd;
+						instvalid		=	`InstValid;
 					end
 
 					`FUNCT3_SLTI:
 					begin
-						aluop_o			<=	`EX_SLT_OP;
-						alusel_o		<=	`EX_RES_ARITH;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b0;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	{{20{imm_I[11]}}, imm_I[11: 0]};
-						w_enable_o		<=	`WriteEnable;
-						w_addr_o		<=	rd;
-						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
+						aluop_o			=	`EX_SLT_OP;
+						alusel_o		=	`EX_RES_ARITH;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b0;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	{{20{imm_I[11]}}, imm_I[11: 0]};
+						w_enable_o		=	`WriteEnable;
+						w_addr_o		=	rd;
+						instvalid		=	`InstValid;
 					end
 
 					`FUNCT3_SLTIU:
 					begin
-						aluop_o			<=	`EX_SLTU_OP;
-						alusel_o		<=	`EX_RES_ARITH;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b0;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	{{20{imm_I[11]}}, imm_I[11: 0]};	
-						w_enable_o		<=	`WriteEnable;
-						w_addr_o		<=	rd;
-						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
+						aluop_o			=	`EX_SLTU_OP;
+						alusel_o		=	`EX_RES_ARITH;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b0;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	{{20{imm_I[11]}}, imm_I[11: 0]};	
+						w_enable_o		=	`WriteEnable;
+						w_addr_o		=	rd;
+						instvalid		=	`InstValid;
 					end
 					
 					`FUNCT3_XORI:
 					begin
-						aluop_o			<=	`EX_XOR_OP;
-						alusel_o		<=	`EX_RES_LOGIC;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b0;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	{20'h0, imm_I};
-						w_enable_o		<=	`WriteEnable;
-						w_addr_o		<=	rd;
-						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
+						aluop_o			=	`EX_XOR_OP;
+						alusel_o		=	`EX_RES_LOGIC;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b0;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	{20'h0, imm_I};
+						w_enable_o		=	`WriteEnable;
+						w_addr_o		=	rd;
+						instvalid		=	`InstValid;
 					end
 
 					`FUNCT3_ORI: // ORI
 					begin
-						aluop_o			<=	`EX_OR_OP;
-						alusel_o		<=	`EX_RES_LOGIC;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b0;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	{20'h0, imm_I};
-						w_enable_o		<=	`WriteEnable;
-						w_addr_o		<=	rd;
-						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
+						aluop_o			=	`EX_OR_OP;
+						alusel_o		=	`EX_RES_LOGIC;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b0;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	{20'h0, imm_I};
+						w_enable_o		=	`WriteEnable;
+						w_addr_o		=	rd;
+						instvalid		=	`InstValid;
 					end
 
 					`FUNCT3_ANDI:
 					begin
-						aluop_o			<=	`EX_AND_OP;
-						alusel_o		<=	`EX_RES_LOGIC;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b0;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	{20'h0, imm_I};
-						w_enable_o		<=	`WriteEnable;
-						w_addr_o		<=	rd;
-						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
+						aluop_o			=	`EX_AND_OP;
+						alusel_o		=	`EX_RES_LOGIC;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b0;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	{20'h0, imm_I};
+						w_enable_o		=	`WriteEnable;
+						w_addr_o		=	rd;
+						instvalid		=	`InstValid;
 					end
 					
 					`FUNCT3_SLLI:
 					begin
-						aluop_o			<=	`EX_SLL_OP;
-						alusel_o		<=	`EX_RES_SHIFT;
-						r1_enable_o		<=	1'b1;
-						r2_enable_o		<=	1'b0;
-						r1_addr_o		<=	rs1;
-						r2_addr_o		<=	rs2;
-						imm				<=	{27'h0, rs2};
-						w_enable_o		<=	`WriteEnable;
-						w_addr_o		<=	rd;
-						instvalid		<=	`InstValid;
-						pre_ld		<=	1'b0;
+						aluop_o			=	`EX_SLL_OP;
+						alusel_o		=	`EX_RES_SHIFT;
+						r1_enable_o		=	1'b1;
+						r2_enable_o		=	1'b0;
+						r1_addr_o		=	rs1;
+						r2_addr_o		=	rs2;
+						imm				=	{27'h0, rs2};
+						w_enable_o		=	`WriteEnable;
+						w_addr_o		=	rd;
+						instvalid		=	`InstValid;
 					end
 
 					`FUNCT3_SRLI_SRAI:
@@ -649,66 +621,62 @@ begin
 						case (funct7)
 							`FUNCT7_SRLI:
 							begin
-								aluop_o		<=	`EX_SRL_OP;
-								alusel_o	<=	`EX_RES_SHIFT;
-								r1_enable_o	<=	1'b1;
-								r2_enable_o	<=	1'b0;
-								r1_addr_o	<=	rs1;
-								r2_addr_o	<=	rs2;
-								imm			<=	{27'h0, rs2};
-								w_enable_o	<=	`WriteEnable;
-								w_addr_o	<=	rd;
-								instvalid	<=	`InstValid;
-								pre_ld	<=	1'b0;
+								aluop_o		=	`EX_SRL_OP;
+								alusel_o	=	`EX_RES_SHIFT;
+								r1_enable_o	=	1'b1;
+								r2_enable_o	=	1'b0;
+								r1_addr_o	=	rs1;
+								r2_addr_o	=	rs2;
+								imm			=	{27'h0, rs2};
+								w_enable_o	=	`WriteEnable;
+								w_addr_o	=	rd;
+								instvalid	=	`InstValid;
 							end
 
 							`FUNCT7_SRAI:
 							begin
-								aluop_o		<=	`EX_SRA_OP;
-								alusel_o	<=	`EX_RES_SHIFT;
-								r1_enable_o	<=	1'b1;
-								r2_enable_o	<=	1'b0;
-								r1_addr_o	<=	rs1;
-								r2_addr_o	<=	rs2;
-								imm			<=	{27'h0, rs2};
-								w_enable_o	<=	`WriteEnable;
-								w_addr_o	<=	rd;
-								instvalid	<=	`InstValid;
-								pre_ld	<=	1'b0;
+								aluop_o		=	`EX_SRA_OP;
+								alusel_o	=	`EX_RES_SHIFT;
+								r1_enable_o	=	1'b1;
+								r2_enable_o	=	1'b0;
+								r1_addr_o	=	rs1;
+								r2_addr_o	=	rs2;
+								imm			=	{27'h0, rs2};
+								w_enable_o	=	`WriteEnable;
+								w_addr_o	=	rd;
+								instvalid	=	`InstValid;
 							end
 
 						 	default:
 							begin
-								aluop_o			<=	`EX_NOP_OP;
-								alusel_o		<=	`EX_RES_NOP;
-								r1_enable_o		<=	1'b0;
-								r2_enable_o		<=	1'b0;
-								r1_addr_o		<=	`NOPRegAddr;
-								r2_addr_o		<=	`NOPRegAddr;
-								w_enable_o		<= 	`WriteDisable;
-								w_addr_o		<= 	`NOPRegAddr;
-								instvalid		<=	`InstValid;
-								imm 			<=	`ZeroWord;
+								aluop_o			=	`EX_NOP_OP;
+								alusel_o		=	`EX_RES_NOP;
+								r1_enable_o		=	1'b0;
+								r2_enable_o		=	1'b0;
+								r1_addr_o		=	`NOPRegAddr;
+								r2_addr_o		=	`NOPRegAddr;
+								w_enable_o		= 	`WriteDisable;
+								w_addr_o		= 	`NOPRegAddr;
+								instvalid		=	`InstValid;
+								imm 			=	`ZeroWord;
 
-								pre_ld		<=	1'b0;
 							end
 						endcase
 					end
 
 					default:
 					begin
-						aluop_o			<=	`EX_NOP_OP;
-						alusel_o		<=	`EX_RES_NOP;
-						r1_enable_o		<=	1'b0;
-						r2_enable_o		<=	1'b0;
-						r1_addr_o		<=	`NOPRegAddr;
-						r2_addr_o		<=	`NOPRegAddr;
-						w_enable_o		<= 	`WriteDisable;
-						w_addr_o		<= 	`NOPRegAddr;
-						instvalid		<=	`InstValid;
-						imm 			<=	`ZeroWord;
+						aluop_o			=	`EX_NOP_OP;
+						alusel_o		=	`EX_RES_NOP;
+						r1_enable_o		=	1'b0;
+						r2_enable_o		=	1'b0;
+						r1_addr_o		=	`NOPRegAddr;
+						r2_addr_o		=	`NOPRegAddr;
+						w_enable_o		= 	`WriteDisable;
+						w_addr_o		= 	`NOPRegAddr;
+						instvalid		=	`InstValid;
+						imm 			=	`ZeroWord;
 
-						pre_ld		<=	1'b0;
 					end
 				endcase
 			end
@@ -721,223 +689,207 @@ begin
 						case (funct7)
 							`FUNCT7_ADD:
 							begin
-								aluop_o		<=	`EX_ADD_OP;
-								alusel_o	<=	`EX_RES_ARITH;
-								r1_enable_o	<=	1'b1;
-								r2_enable_o	<=	1'b1;
-								r1_addr_o	<=	rs1;
-								r2_addr_o	<=	rs2;
-								imm			<=	`ZeroWord;
-								w_enable_o	<=	`WriteEnable;
-								w_addr_o	<=	rd;
-								instvalid	<=	`InstValid;
-								pre_ld	<=	1'b0;
+								aluop_o		=	`EX_ADD_OP;
+								alusel_o	=	`EX_RES_ARITH;
+								r1_enable_o	=	1'b1;
+								r2_enable_o	=	1'b1;
+								r1_addr_o	=	rs1;
+								r2_addr_o	=	rs2;
+								imm			=	`ZeroWord;
+								w_enable_o	=	`WriteEnable;
+								w_addr_o	=	rd;
+								instvalid	=	`InstValid;
 							end
 
 							`FUNCT7_SUB:
 							begin
-								aluop_o		<=	`EX_SUB_OP;
-								alusel_o	<=	`EX_RES_ARITH;
-								r1_enable_o	<=	1'b1;
-								r2_enable_o	<=	1'b1;
-								r1_addr_o	<=	rs1;
-								r2_addr_o	<=	rs2;
-								imm			<=	`ZeroWord;
-								w_enable_o	<=	`WriteEnable;
-								w_addr_o	<=	rd;
-								instvalid	<=	`InstValid;
-								pre_ld	<=	1'b0;
+								aluop_o		=	`EX_SUB_OP;
+								alusel_o	=	`EX_RES_ARITH;
+								r1_enable_o	=	1'b1;
+								r2_enable_o	=	1'b1;
+								r1_addr_o	=	rs1;
+								r2_addr_o	=	rs2;
+								imm			=	`ZeroWord;
+								w_enable_o	=	`WriteEnable;
+								w_addr_o	=	rd;
+								instvalid	=	`InstValid;
 							end
 							default:
 							begin
-								aluop_o			<=	`EX_NOP_OP;
-								alusel_o		<=	`EX_RES_NOP;
-								r1_enable_o		<=	1'b0;
-								r2_enable_o		<=	1'b0;
-								r1_addr_o		<=	`NOPRegAddr;
-								r2_addr_o		<=	`NOPRegAddr;
-								w_enable_o		<= 	`WriteDisable;
-								w_addr_o		<= 	`NOPRegAddr;
-								instvalid		<=	`InstValid;
-								imm 			<=	`ZeroWord;
+								aluop_o			=	`EX_NOP_OP;
+								alusel_o		=	`EX_RES_NOP;
+								r1_enable_o		=	1'b0;
+								r2_enable_o		=	1'b0;
+								r1_addr_o		=	`NOPRegAddr;
+								r2_addr_o		=	`NOPRegAddr;
+								w_enable_o		= 	`WriteDisable;
+								w_addr_o		= 	`NOPRegAddr;
+								instvalid		=	`InstValid;
+								imm 			=	`ZeroWord;
 
-								pre_ld		<=	1'b0;
 							end
 						endcase
 					end
 
 					`FUNCT3_SLL:
 					begin
-						aluop_o		<=	`EX_SLL_OP;
-						alusel_o	<=	`EX_RES_SHIFT;
-						r1_enable_o	<=	1'b1;
-						r2_enable_o	<=	1'b1;
-						r1_addr_o	<=	rs1;
-						r2_addr_o	<=	rs2;
-						imm			<=	`ZeroWord;
-						w_enable_o	<=	`WriteEnable;
-						w_addr_o	<=	rd;
-						instvalid	<=	`InstValid;
-						pre_ld	<=	1'b0;
+						aluop_o		=	`EX_SLL_OP;
+						alusel_o	=	`EX_RES_SHIFT;
+						r1_enable_o	=	1'b1;
+						r2_enable_o	=	1'b1;
+						r1_addr_o	=	rs1;
+						r2_addr_o	=	rs2;
+						imm			=	`ZeroWord;
+						w_enable_o	=	`WriteEnable;
+						w_addr_o	=	rd;
+						instvalid	=	`InstValid;
 					end
 
 					`FUNCT3_SLT:
 					begin
-						aluop_o		<=	`EX_SLT_OP;
-						alusel_o	<=	`EX_RES_ARITH;
-						r1_enable_o	<=	1'b1;
-						r2_enable_o	<=	1'b1;
-						r1_addr_o	<=	rs1;
-						r2_addr_o	<=	rs2;
-						imm			<=	`ZeroWord;
-						w_enable_o	<=	`WriteEnable;
-						w_addr_o	<=	rd;
-						instvalid	<=	`InstValid;
-						pre_ld	<=	1'b0;
+						aluop_o		=	`EX_SLT_OP;
+						alusel_o	=	`EX_RES_ARITH;
+						r1_enable_o	=	1'b1;
+						r2_enable_o	=	1'b1;
+						r1_addr_o	=	rs1;
+						r2_addr_o	=	rs2;
+						imm			=	`ZeroWord;
+						w_enable_o	=	`WriteEnable;
+						w_addr_o	=	rd;
+						instvalid	=	`InstValid;
 					end
 
 					`FUNCT3_SLTU:
 					begin
-						aluop_o		<=	`EX_SLTU_OP;
-						alusel_o	<=	`EX_RES_ARITH;
-						r1_enable_o	<=	1'b1;
-						r2_enable_o	<=	1'b1;
-						r1_addr_o	<=	rs1;
-						r2_addr_o	<=	rs2;
-						imm			<=	`ZeroWord;
-						w_enable_o	<=	`WriteEnable;
-						w_addr_o	<=	rd;
-						instvalid	<=	`InstValid;
-						pre_ld	<=	1'b0;
+						aluop_o		=	`EX_SLTU_OP;
+						alusel_o	=	`EX_RES_ARITH;
+						r1_enable_o	=	1'b1;
+						r2_enable_o	=	1'b1;
+						r1_addr_o	=	rs1;
+						r2_addr_o	=	rs2;
+						imm			=	`ZeroWord;
+						w_enable_o	=	`WriteEnable;
+						w_addr_o	=	rd;
+						instvalid	=	`InstValid;
 					end
 
 					`FUNCT3_XOR:
 					begin
-						aluop_o		<=	`EX_XOR_OP;
-						alusel_o	<=	`EX_RES_LOGIC;
-						r1_enable_o	<=	1'b1;
-						r2_enable_o	<=	1'b1;
-						r1_addr_o	<=	rs1;
-						r2_addr_o	<=	rs2;
-						imm			<=	`ZeroWord;
-						w_enable_o	<=	`WriteEnable;
-						w_addr_o	<=	rd;
-						instvalid	<=	`InstValid;
-						pre_ld	<=	1'b0;
+						aluop_o		=	`EX_XOR_OP;
+						alusel_o	=	`EX_RES_LOGIC;
+						r1_enable_o	=	1'b1;
+						r2_enable_o	=	1'b1;
+						r1_addr_o	=	rs1;
+						r2_addr_o	=	rs2;
+						imm			=	`ZeroWord;
+						w_enable_o	=	`WriteEnable;
+						w_addr_o	=	rd;
+						instvalid	=	`InstValid;
 					end
 					`FUNCT3_SRL_SRA:
 					begin
 					   case (funct7)
                             `FUNCT7_SRL:
                             begin
-                                aluop_o		<=	`EX_SRL_OP;
-                                alusel_o	<=	`EX_RES_SHIFT;
-                                r1_enable_o	<=	1'b1;
-                                r2_enable_o	<=	1'b1;
-                                r1_addr_o	<=	rs1;
-                                r2_addr_o	<=	rs2;
-                                imm			<=	`ZeroWord;
-                                w_enable_o	<=	`WriteEnable;
-                                w_addr_o	<=	rd;
-                                instvalid	<=	`InstValid;
-                                pre_ld	<=	1'b0;
-                                
-                                
+                                aluop_o		=	`EX_SRL_OP;
+                                alusel_o	=	`EX_RES_SHIFT;
+                                r1_enable_o	=	1'b1;
+                                r2_enable_o	=	1'b1;
+                                r1_addr_o	=	rs1;
+                                r2_addr_o	=	rs2;
+                                imm			=	`ZeroWord;
+                                w_enable_o	=	`WriteEnable;
+                                w_addr_o	=	rd;
+                                instvalid	=	`InstValid;
                             end
     
                             `FUNCT7_SRA:
                             begin
-                                aluop_o		<=	`EX_SRA_OP;
-                                alusel_o	<=	`EX_RES_SHIFT;
-                                r1_enable_o	<=	1'b1;
-                                r2_enable_o	<=	1'b1;
-                                r1_addr_o	<=	rs1;
-                                r2_addr_o	<=	rs2;
-                                imm			<=	`ZeroWord;
-                                w_enable_o	<=	`WriteEnable;
-                                w_addr_o	<=	rd;
-                                instvalid	<=	`InstValid;
-                                pre_ld	<=	1'b0;
+                                aluop_o		=	`EX_SRA_OP;
+                                alusel_o	=	`EX_RES_SHIFT;
+                                r1_enable_o	=	1'b1;
+                                r2_enable_o	=	1'b1;
+                                r1_addr_o	=	rs1;
+                                r2_addr_o	=	rs2;
+                                imm			=	`ZeroWord;
+                                w_enable_o	=	`WriteEnable;
+                                w_addr_o	=	rd;
+                                instvalid	=	`InstValid;
                             end
 
 							default:
 							begin
-								aluop_o			<=	`EX_NOP_OP;
-								alusel_o		<=	`EX_RES_NOP;
-								r1_enable_o		<=	1'b0;
-								r2_enable_o		<=	1'b0;
-								r1_addr_o		<=	`NOPRegAddr;
-								r2_addr_o		<=	`NOPRegAddr;
-								w_enable_o		<= 	`WriteDisable;
-								w_addr_o		<= 	`NOPRegAddr;
-								instvalid		<=	`InstValid;
-								imm 			<=	`ZeroWord;
+								aluop_o			=	`EX_NOP_OP;
+								alusel_o		=	`EX_RES_NOP;
+								r1_enable_o		=	1'b0;
+								r2_enable_o		=	1'b0;
+								r1_addr_o		=	`NOPRegAddr;
+								r2_addr_o		=	`NOPRegAddr;
+								w_enable_o		= 	`WriteDisable;
+								w_addr_o		= 	`NOPRegAddr;
+								instvalid		=	`InstValid;
+								imm 			=	`ZeroWord;
 
-								pre_ld		<=	1'b0;
 							end
                         endcase
 					end
 					
 					`FUNCT3_OR:
 					begin
-						aluop_o		<=	`EX_OR_OP;
-						alusel_o	<=	`EX_RES_LOGIC;
-						r1_enable_o	<=	1'b1;
-						r2_enable_o	<=	1'b1;
-						r1_addr_o	<=	rs1;
-						r2_addr_o	<=	rs2;
-						imm			<=	`ZeroWord;
-						w_enable_o	<=	`WriteEnable;
-						w_addr_o	<=	rd;
-						instvalid	<=	`InstValid;
-						pre_ld	<=	1'b0;
+						aluop_o		=	`EX_OR_OP;
+						alusel_o	=	`EX_RES_LOGIC;
+						r1_enable_o	=	1'b1;
+						r2_enable_o	=	1'b1;
+						r1_addr_o	=	rs1;
+						r2_addr_o	=	rs2;
+						imm			=	`ZeroWord;
+						w_enable_o	=	`WriteEnable;
+						w_addr_o	=	rd;
+						instvalid	=	`InstValid;
 					end
 
 					`FUNCT3_AND:
 					begin
-						aluop_o		<=	`EX_AND_OP;
-						alusel_o	<=	`EX_RES_LOGIC;
-						r1_enable_o	<=	1'b1;
-						r2_enable_o	<=	1'b1;
-						r1_addr_o	<=	rs1;
-						r2_addr_o	<=	rs2;
-						imm			<=	`ZeroWord;
-						w_enable_o	<=	`WriteEnable;
-						w_addr_o	<=	rd;
-						instvalid	<=	`InstValid;
-						pre_ld	<=	1'b0;
+						aluop_o		=	`EX_AND_OP;
+						alusel_o	=	`EX_RES_LOGIC;
+						r1_enable_o	=	1'b1;
+						r2_enable_o	=	1'b1;
+						r1_addr_o	=	rs1;
+						r2_addr_o	=	rs2;
+						imm			=	`ZeroWord;
+						w_enable_o	=	`WriteEnable;
+						w_addr_o	=	rd;
+						instvalid	=	`InstValid;
 					end
 					default:
 					begin
-						aluop_o			<=	`EX_NOP_OP;
-						alusel_o		<=	`EX_RES_NOP;
-						r1_enable_o		<=	1'b0;
-						r2_enable_o		<=	1'b0;
-						r1_addr_o		<=	`NOPRegAddr;
-						r2_addr_o		<=	`NOPRegAddr;
-						w_enable_o		<= 	`WriteDisable;
-						w_addr_o		<= 	`NOPRegAddr;
-						instvalid		<=	`InstValid;
-						imm 			<=	`ZeroWord;
+						aluop_o			=	`EX_NOP_OP;
+						alusel_o		=	`EX_RES_NOP;
+						r1_enable_o		=	1'b0;
+						r2_enable_o		=	1'b0;
+						r1_addr_o		=	`NOPRegAddr;
+						r2_addr_o		=	`NOPRegAddr;
+						w_enable_o		= 	`WriteDisable;
+						w_addr_o		= 	`NOPRegAddr;
+						instvalid		=	`InstValid;
+						imm 			=	`ZeroWord;
 
-						pre_ld		<=	1'b0;
 					end
 				endcase
 			end
 			
 			default:
 			begin
-				aluop_o		<=	`EX_NOP_OP;
-				alusel_o	<=	`EX_RES_NOP;
-				r1_enable_o	<=	1'b0;
-				r2_enable_o	<=	1'b0;
-				r1_addr_o	<=	rs1;
-				r2_addr_o	<=	rs2;
-				imm			<=	`ZeroWord;
-				w_enable_o	<= 	`WriteDisable;
-				w_addr_o	<= 	rd;
-				instvalid	<=	`InstInvalid;
-				pre_ld	<=	1'b0;
+				aluop_o		=	`EX_NOP_OP;
+				alusel_o	=	`EX_RES_NOP;
+				r1_enable_o	=	1'b0;
+				r2_enable_o	=	1'b0;
+				r1_addr_o	=	rs1;
+				r2_addr_o	=	rs2;
+				imm			=	`ZeroWord;
+				w_enable_o	= 	`WriteDisable;
+				w_addr_o	= 	rd;
+				instvalid	=	`InstInvalid;
 				
 			end
 		endcase
@@ -948,35 +900,35 @@ always @ (*)
 begin
 	if (rst)
 	begin
-		r1_data_o		<=	`ZeroWord;
-		r1_stall_req	<= 1'b0;
+		r1_data_o		=	`ZeroWord;
+		r1_stall_req	= 1'b0;
 	end		
 	else if (r1_enable_o && ex_pre_ld && ex_w_addr_i == r1_addr_o)
-		r1_stall_req	<= 1'b1;
+		r1_stall_req	= 1'b1;
 	else if (r1_enable_o && ex_w_enable_i && ex_w_addr_i == r1_addr_o)
 	begin
-		r1_data_o		<=	ex_w_data_i;
-		r1_stall_req	<= 1'b0;
+		r1_data_o		=	ex_w_data_i;
+		r1_stall_req	= 1'b0;
 	end		
 	else if (r1_enable_o && me_w_enable_i && me_w_addr_i == r1_addr_o)
 	begin
-		r1_data_o		<=	me_w_data_i;
-		r1_stall_req	<= 1'b0;
+		r1_data_o		=	me_w_data_i;
+		r1_stall_req	= 1'b0;
 	end	
 	else if (r1_enable_o)
 	begin
-		r1_data_o		<=	r1_data_i;
-		r1_stall_req	<= 1'b0;
+		r1_data_o		=	r1_data_i;
+		r1_stall_req	= 1'b0;
 	end		
 	else if (!r1_enable_o)
 	begin
-		r1_data_o		<=	imm;
-		r1_stall_req	<= 1'b0;
+		r1_data_o		=	imm;
+		r1_stall_req	= 1'b0;
 	end		
 	else
 	begin
-		r1_data_o	<=	`ZeroWord;
-		r1_stall_req	<= 1'b0;
+		r1_data_o	=	`ZeroWord;
+		r1_stall_req	= 1'b0;
 	end		
 end
 
@@ -984,37 +936,37 @@ always @ (*)
 begin
 	if (rst)
 	begin
-		r2_data_o		<=	`ZeroWord;
-		r2_stall_req	<=	1'b0;
+		r2_data_o		=	`ZeroWord;
+		r2_stall_req	=	1'b0;
 	end
 	else if (r2_enable_o && ex_pre_ld && ex_w_addr_i == r2_addr_o)
 	begin
-		r2_stall_req	<=	1'b1;
+		r2_stall_req	=	1'b1;
 	end		
 	else if (r2_enable_o && ex_w_enable_i && ex_w_addr_i == r2_addr_o)
 	begin
-		r2_data_o 		<=	ex_w_data_i;
-		r2_stall_req	<=	1'b0;
+		r2_data_o 		=	ex_w_data_i;
+		r2_stall_req	=	1'b0;
 	end		
 	else if (r2_enable_o && me_w_enable_i && me_w_addr_i == r2_addr_o)
 	begin
-		r2_data_o		<=	me_w_data_i;
-		r2_stall_req	<=	1'b0;
+		r2_data_o		=	me_w_data_i;
+		r2_stall_req	=	1'b0;
 	end		
 	else if (r2_enable_o)
 	begin
-		r2_data_o		<=	r2_data_i;
-		r2_stall_req	<=	1'b0;
+		r2_data_o		=	r2_data_i;
+		r2_stall_req	=	1'b0;
 	end		
 	else if (!r2_enable_o)
 	begin
-		r2_data_o		<=	imm;
-		r2_stall_req	<=	1'b0;
+		r2_data_o		=	imm;
+		r2_stall_req	=	1'b0;
 	end
 	else
 	begin
-		r2_data_o		<=	`ZeroWord;
-		r2_stall_req	<=	1'b0;
+		r2_data_o		=	`ZeroWord;
+		r2_stall_req	=	1'b0;
 	end		
 end
 
@@ -1022,11 +974,11 @@ always @(*)
 begin
 	if (rst)
 	begin
-		offset_o	<=	`ZeroWord;
+		offset_o	=	`ZeroWord;
 	end
 	else
 	begin
-		offset_o	<=	imm;
+		offset_o	=	imm;
 	end
 end
 

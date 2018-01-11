@@ -20,29 +20,44 @@ It has features as follows:
 
 The data and control flow are in the graph below.
 
-## Notice
+### Five stge pipline
 
-### Branches and Jalr
+The pipeline is similar to the standard mips five stage pipeline with forwardings. For more information, you can read the [Reference [1]](#ref1).
 
-To get a better trade off of jumps and the clock rate, I tried a lot methods.
+### Forwarding
 
-1. I add an switch for *ID_BRANCHES* and *ID_JALR*, indicating that the where the branches and jalr should be executed. 
+Just as the graph above shows, each stage after ID has a wire connecting to it, to forward the data back. And in this design, ID stage can get the data in the same cpu cycle.
 
-When turn off the switches *ID_BRANCHES* and *ID_JALR*
-- EX find it needs to change PC, it will set b_flag to 1, so as to clear the content in if_id and id_ex, which clear the pipeline before EX, and set PC to the target address. This method can be regarded as always predict that the branch will not taken.
+### Jumps and Branches
 
-1. When turn on the switches
-- ID will find out whether should PC be changed, and clear IF_ID directly, and set PC to the target address. ID_BRANCHES will slow down ID to some degree, which may cause the pipeline become unbalanced (untested!), and the impact of ID_JALR is much larger than the former one.
+To get a better trade off of jumps and the clock rate, I tried a lot methods. And my work can be divided into 2 stages, no-memory-delay and great-memory-delay.
 
-### Stall for load
+1. In my disgn, there are some wires from ID and EX to pc_reg and mid stage -- IF_ID and ID_EX, in order to set new address and clear the former instruction ( presice interrupt ).
+	- no-memory-delay: PC_reg and mid stage update their status as soon as the signal reach, which works well when the IF stage never stall.
+	- great-memory-delay: In this case the pc_reg and mid stages are disgned as state machine, when they get a signal for jump, they get into another state to save the signal.
 
-As load can should take one more cycle to get the result of a register, it may stall the pipeline to avoid RAW hazard.
+2. I add switches for *ID_BRANCHES* and *ID_JALR*, indicating that the in which state the branches and jalr should be executed.
+	- Firstly, the JAL can be safely executed at ID stage. And the other branches and jumps can be set at ID stage, when the IF stage will never stall.
+	- However, as the branch instruction needs data from regeisters which may be forwarded from the stage after ID. More comparation and addition will make ID take more time, and that can be a bottle neck that make the CPU clock rate much slower.
+	- Another reason I put the all of the execution of branches, execpt jal, to EX stage is that, when the IF and ME should stall for some cycles, and the pc_reg and mid stage should save the signal, the time for ID to get the forwarding data will be much longer, ID may give wrong branch signal before the needed data reach.
+	- Further more, when the branches are set in EX, we can use branch prediction in ID, to speed up our pipeline (uncompleted).
 
-### The cache 
+	PS: Branches in EX, without branch prediction can be regarded as always predict not jump, when the instruction is recogonized by ID.
+
+### IF and ME
+
+The logic to wait data to be ready can be quite hard to implement in hardware, when sequential logic is needed. My first design will generate latch, which is strongly not recommanded. ( [Reference [3]](#ref3) )
+
+As the cache will give a done signal when the data is ready and the signal only last for one cycle, the logical to wait for the cache to be done can be quite simple and amazing. ( In IF.v and ME.v you can see the code ).
+
+### Cache and memory control
+
+The cache and memory control of my design is from Zhekai Zhang's design ( [Referece [2]](#ref2) ). And the cache is modified by me to make it able to uncache the address 0x100
+
 
 ### Makefile for test generation
 
-I write a makefile for make, which can make both .s and .cpp files automatically. And can easily compile the .cpp to .S file and see the dump result by using it. The guidance for using it is in [Makefile for risc v tool chain](https://gist.github.com/Michaelvll/46e069e29a8448326acadd7bb2bb1654).
+I write a makefile for make, which can make both .s and .cpp/.c files by using the riscv-tool-chain. The guidance for using it is in [Makefile for risc v tool chain](https://gist.github.com/Michaelvll/46e069e29a8448326acadd7bb2bb1654).
 
 1. The imm in sltiu command is signed extended, and unsigned compared.
 
@@ -52,10 +67,6 @@ I write a makefile for make, which can make both .s and .cpp files automatically
 
 Now this project support almost all of the commands in rv32i. The suppoted commands are listed in the [Appendix A](#ApdxA)
 
-## Future
-
-I am trying to change the architecture from Havard architecture to Von Neumann architecture and add uart for memory access with icache and dcache.
-
 ## Q&A
 
 1. Why op_imm, like xori command doesn't support imm larger than 0x7ff such as 0x801?
@@ -63,9 +74,10 @@ I am trying to change the architecture from Havard architecture to Von Neumann a
 
 ## Reference
 
-1. [A MIPS CPU written in Verilog by jmahler](https://github.com/jmahler/mips-cpu.git)
+1. <span id="ref1">[A MIPS CPU written in Verilog by jmahler](https://github.com/jmahler/mips-cpu.git)</span>
+1. <span id="ref2">[A Mips CPU written in verilog by sxtyzhangzk](https://github.com/sxtyzhangzk/mips-cpu.git)</span>
+1. <span id="ref3">[Always@](www-inst.eecs.berkeley.edu/~cs150/sp13/resources/Always.pdf)</span>
 1. 《自己动手写CPU》雷思磊
-1. [A Mips CPU written in verilog by sxtyzhangzk](https://github.com/sxtyzhangzk/mips-cpu.git)
 
 ## Appendix
 

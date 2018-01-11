@@ -1,0 +1,45 @@
+Software Version: 11.8.0.26
+creating folder: C:\Users\ciaran.lappin\Desktop\Github\IGL2_M2GL025_Creative_Development_Kit\Programming_The_Target_Device\PROC_SUBSYSTEM_BaseDesign
+Embedded FlashPro5 programmer detected.
+programmer 'E20010YOAP' : FlashPro5
+Created new project 'C:\Users\ciaran.lappin\Desktop\Github\IGL2_M2GL025_Creative_Development_Kit\Programming_The_Target_Device\PROC_SUBSYSTEM_BaseDesign\PROC_SUBSYSTEM_BaseDesign.pro'
+STAPL file 'C:\Users\ciaran.lappin\Desktop\Github\IGL2_M2GL025_Creative_Development_Kit\Programming_The_Target_Device\PROC_SUBSYSTEM_BaseDesign\M2GL025_1.stp' has been loaded successfully.
+DESIGN : PROC_SUBSYSTEM;  CHECKSUM : F0CA;  ALG_VERSION : 2
+creating folder: C:\Users\ciaran.lappin\Desktop\Github\IGL2_M2GL025_Creative_Development_Kit\Programming_The_Target_Device\PROC_SUBSYSTEM_BaseDesign\projectData
+Software Version: 11.8.0.26
+STAPL file 'C:\Users\ciaran.lappin\Desktop\Github\IGL2_M2GL025_Creative_Development_Kit\Programming_The_Target_Device\PROC_SUBSYSTEM_BaseDesign\M2GL025_1.stp' has been loaded successfully.
+DESIGN : PROC_SUBSYSTEM;  CHECKSUM : F0CA;  ALG_VERSION : 2
+Embedded FlashPro5 programmer detected.
+programmer 'E20010YOAP' : FlashPro5
+
+Created FlashPro Express Job Project.
+programmer 'E20010YOAP' : Scan Chain...
+Warning: programmer 'E20010YOAP' : Vpump has been selected on programmer AND an externally provided Vpump has also been detected. Using externally provided Vpump voltage source.
+programmer 'E20010YOAP' : Check Chain...
+programmer 'E20010YOAP' : Scan and Check Chain PASSED.
+programmer 'E20010YOAP' : device 'M2GL025' : Executing action PROGRAM
+programmer 'E20010YOAP' : device 'M2GL025' : Family: Igloo2
+programmer 'E20010YOAP' : device 'M2GL025' : Product:      M2GL025
+programmer 'E20010YOAP' : device 'M2GL025' : EXPORT ISC_ENABLE_RESULT[32] = 007e6844
+programmer 'E20010YOAP' : device 'M2GL025' : EXPORT CRCERR[1] = 0
+programmer 'E20010YOAP' : device 'M2GL025' : EXPORT EDCERR[1] = 0
+programmer 'E20010YOAP' : device 'M2GL025' : TEMPGRADE: ROOM
+programmer 'E20010YOAP' : device 'M2GL025' : EXPORT VPPRANGE[3] = 2
+programmer 'E20010YOAP' : device 'M2GL025' : VPPRANGE: HIGH
+programmer 'E20010YOAP' : device 'M2GL025' : EXPORT TEMP[8] = 68
+programmer 'E20010YOAP' : device 'M2GL025' : EXPORT VPP[8] = 7e
+programmer 'E20010YOAP' : device 'M2GL025' : Programming FPGA Array and eNVM...
+programmer 'E20010YOAP' : device 'M2GL025' : EXPORT Fabric component digest[256] = e954d8e04d81cbbaf961fe87568a951c726de63ac681b903e760c9fc1aa79cc0
+programmer 'E20010YOAP' : device 'M2GL025' : EXPORT eNVM component digest[256] = f12f03bf16046689f995d83b0e8de8b428a4cfe5d56ceb26134d1881819b1089
+programmer 'E20010YOAP' : device 'M2GL025' : ===================================================================================
+programmer 'E20010YOAP' : device 'M2GL025' : EXPORT DSN[128] = d912550bee9fcfaf9f7a0034676cfb0b
+programmer 'E20010YOAP' : device 'M2GL025' : ===================================================================================
+programmer 'E20010YOAP' : device 'M2GL025' : Finished: Thu Jun 15 10:50:42 2017 (Elapsed time 00:00:35)
+programmer 'E20010YOAP' : device 'M2GL025' : Executing action PROGRAM PASSED.
+programmer 'E20010YOAP' : Chain programming PASSED.
+Chain Programming Finished: Thu Jun 15 10:50:42 2017 (Elapsed time 00:00:35)
+
+                        o - o - o - o - o - o
+
+Project saved.
+Project closed.

@@ -2,6 +2,16 @@
 
 This is a project of Computer System class of ACM honor class in SJTU.
 
+Copyright (c) 2017 Zhanghao Wu
+
+## Abstract
+
+This project is a simple five stage pipelined cpu for risc-v (rv32i) written in verilog HDL. It has features as follows:
+1. It can behave correctly for the instructions in rv32i, except 
+
+## Introduction
+
+
 ## Notice
 
 1. The imm in sltiu command is signed extended, and unsigned compared.

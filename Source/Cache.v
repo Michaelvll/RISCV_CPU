@@ -236,7 +236,7 @@ module Cache
 	wire [31:0]						RAM_r_data[WAY_NUM-1:0];
 	reg [WAY_SELECT_BIT-1:0]		RAM_r_select;
 	
-	wire		non_cached = (addr == 32'h100)? 1'b1:1'b0;
+	wire		non_cached = (addr==32'h100)? 1'b1:1'b0;
 	reg			pre_non_cached;
 	reg[31:0]	non_cached_data;
 	reg[31:0]	next_non_cached_data;

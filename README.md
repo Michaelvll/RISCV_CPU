@@ -1,6 +1,6 @@
 # RISCV-CPU
 
-This project is a FPGA supported RISC-V CPU with 5-stage pipeline implemented in Verilog HDL, a course project of Computer Architecture of ACM honor class @ SJTU.
+This project is a FPGA supported RISC-V CPU with 5-stage pipeline implemented in Verilog HDL, a course project of Computer Architecture(MS108), ACM honor class @ SJTU.
 
 Copyright (c) 2017 Zhanghao Wu
 
